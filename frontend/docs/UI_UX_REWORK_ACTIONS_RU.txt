@@ -1,0 +1,142 @@
+MA-HI-KO — ЖУРНАЛ UI/UX-ПЕРЕРАБОТКИ
+Дата: 2026-08-06
+
+ПРАВИЛО ДЛЯ КАЖДОГО ПАКЕТА ИЗМЕНЕНИЙ
+Перед изменением исходников повторно читается skills/ponytail/SKILL.md и фиксируется Ponytail-gate: переиспользовать существующие компоненты и типы, использовать React/CSS/Electron без новых зависимостей, менять минимальное число файлов, не упрощать доступность, безопасность и явно заданные требования.
+
+КРАТКИЙ ПЛАН
+[1] Зафиксировать требования по 10 скриншотам, OMP-палитру и паттерны coding desktop.
+[2] Убрать двойное меню Electron и добавить инструкцию для будущих обновлений OMP.
+[3] Перестроить shell: крупная левая навигация, центральный чат, правая панель проверки изменений.
+[4] Переработать π-маскота, reasoning-selector из OMP, контекстное окно автосжатия и настройки.
+[5] Добавить внутренние привязанные рабочие панели вместо новых окон.
+[6] Обновить тесты, выполнить lint/typecheck/tests/build, browser QA и визуальную проверку.
+[7] Упаковать проверенный проект в один ZIP и повторно проверить архив.
+
+ВЫПОЛНЕННЫЕ ДЕЙСТВИЯ ДО ПЕРВОГО ИЗМЕНЕНИЯ ИСХОДНИКОВ
+01. Распакован исходный ZIP в /mnt/data/ma-hi-ko-ui-rework.
+02. Найдены и полностью прочитаны все локальные skills/*/SKILL.md: ponytail, frontend-design, project-context-index, systematic-debugging, ui-ux-pro-max, verification-before-completion, web-design-guidelines.
+03. Полностью прочитаны references и scripts, указанные релевантными skills, включая root-cause-tracing, defense-in-depth, condition-based-waiting, ui-ux quick-reference/pro-rules и design-system/search/validate scripts.
+04. Прочитаны project-map/info.md, package.json и ключевые текущие React/Electron контракты.
+05. Запущен ui-ux-pro-max validate_data.py: данные валидны.
+06. Запущены локальные поиски design-system, navigation, interaction, colors, React и pre-delivery UX; результаты сохранены вне проекта в /mnt/data/ma-hi-ko-ui-research.
+07. Изучены предоставленные пользователем скриншоты OMP/Codex как визуальные референсы.
+08. Изучены актуальные официальные материалы OpenAI Codex app, VS Code workbench/layout, JetBrains tool windows и Zed Git/diff workflows.
+09. Публичный официальный источник для конкретной сборки OMP 17.2.9 не найден; визуальная спецификация OMP берётся из пользовательских скриншотов и локальных OMP-настроек проекта, без выдумывания API.
+10. Полностью просмотрены текущие App.tsx, OmpChrome.tsx, Overlays.tsx, data.ts, contracts.ts, IPC/preload и main window setup.
+
+PONYTAIL-GATE 01 — СОЗДАНИЕ ЖУРНАЛА
+Переиспользован обычный TXT-файл без нового логгера или зависимости; он содержит план и все уже выполненные действия. Исходники приложения ещё не изменялись.
+
+PONYTAIL-GATE 02 — КОНТРАКТЫ, OMP-RUNTIME И НАТИВНЫЙ CHROME
+Переиспользуются RuntimeSnapshot/AppSettings и существующий IPC; новые библиотеки и отдельный config-service не добавляются. Данные reasoning идут через уже существующий runtime snapshot, а не хардкодятся в компоненте.
+11. Начат пакет контрактов: OMP reasoning schema, auto-compact settings, новые размеры панелей и единый Electron chrome.
+12. RuntimeSnapshot расширен типизированной OMP reasoning-схемой; frontend больше не хранит отдельный список уровней как источник истины.
+13. В AppSettings добавлены autoCompact, порог и стратегия сжатия; размеры левой/правой панелей увеличены.
+14. Electron menu bar скрыт нативно через Menu.setApplicationMenu(null), autoHideMenuBar и setMenuBarVisibility(false), чтобы убрать двойной слой File/Edit/View.
+15. Навигационные названия изменены на «Скиллы» и «/MCP»; команда /plugins заменена на /skills.
+16. Криптические коды вкладок настроек заменены понятными полными названиями и TUI-глифами.
+
+PONYTAIL-GATE 03 — π, REASONING И КОНТЕКСТ В COMPOSER
+Существующий OmpChrome сохраняется одним компонентом; список reasoning переиспользует RuntimeSnapshot, а окно auto-compact реализуется нативными React/CSS-контролами без popover-библиотеки.
+17. Начат пакет composer: бесфоновые π-метки, OMP-sourced reasoning и отдельное компактное окно контекста.
+18. Все π-метки переведены на один переиспользуемый PiMark: только многоцветный символ без плашки и фона.
+19. ThinkingPicker теперь получает levels/default/source/detail из RuntimeSnapshot.thinking и явно показывает источник OMP runtime или fallback.
+20. Статус reasoning отображается как OMP:xhigh (или fallback), без имитации скрытых мыслей.
+21. Контекстный сегмент больше не показывает «кратко» и не переключает состояние вслепую; он открывает малое окно с Auto-Compact, порогом, стратегией и действием «Сжать сейчас».
+22. Для popover/listbox сохранены Escape, возврат фокуса, клавиатурный выбор и outside-click.
+
+PONYTAIL-GATE 04 — ОСНОВНАЯ РАЗМЕТКА WORKBENCH
+Оставляются текущие App state/ActivityStream/API и существующие Pages; меняются только shell-композиция и локальные панели. Для чатов используется простой state-map внутри App, без нового роутера или хранилища.
+23. Начат пакет workbench: полноценная левая навигация, внутренние tool windows и правая review-панель.
+24. Левая панель заменена полноразмерным workbench sidebar: Новый чат, Чаты, Проекты, Изменения, Запланировано, /MCP и Скиллы.
+25. «Новый чат» реально создаёт отдельную локальную сессию; transcript хранится по chat id и переключается без потери текущей истории.
+26. В проектном блоке добавлены main, Дерево файлов и Пулл-реквест. Они открывают закрываемое внутреннее окно внутри workspace, не используют window.open и не создают BrowserWindow.
+27. Правая панель полностью заменена на review/diff workflow: список изменённых файлов, статистика +/−, unified diff, открытие файла и копирование патча. Модель, контекст и runtime удалены из неё.
+28. Размеры и aria-названия кнопок shell подготовлены для увеличенных workbench controls.
+29. /context теперь открывает context popover в composer, а /skills заменяет старый маршрут /plugins.
+
+PONYTAIL-GATE 05 — НАСТРОЙКИ, /MCP И ЗАЩИТА ЕДИНОГО CHROME
+Сохраняется существующий SettingsOverlay и его keyboard state; вместо новой библиотеки вкладки превращаются в понятную вертикальную TUI-навигацию. Существующие Pages переиспользуются. Инструкция для обновления OMP оформляется обычным Markdown-файлом без исполняемого кода.
+30. Начат пакет настроек: полные названия разделов, понятная структура /MCP + скиллы и prompt для запрета двойного Electron/OMP chrome.
+31. SettingsOverlay перестроен в вертикальный TUI-workbench: каждый раздел всегда показывает полный понятный заголовок, глиф и активный указатель; сохранены tab semantics и клавиатурная навигация.
+32. Внутри настроек добавлен отдельный заголовок активного раздела и явное пояснение области применения вместо строки криптических кодов.
+33. Раздел «Плагины» удалён из пользовательского текста: он заменён на «/MCP и скиллы» с пояснением двух типов расширения.
+34. Заголовки страниц переименованы в «/MCP» и «Скиллы».
+35. Создан frontend/docs/OMP_UPDATE_SINGLE_CHROME_PROMPT_RU.md с запретом двойного File/Edit/View chrome, дополнительных BrowserWindow и window.open при будущих обновлениях OMP.
+
+PONYTAIL-GATE 06 — ЕДИНАЯ OMP-ПАЛИТРА И WORKBENCH CSS
+Существующий styles.css расширяется одним финальным override-слоем, чтобы не ломать ранние компоненты и не размножать стили по файлам. Используются только CSS tokens и текущие class names; новые зависимости, CSS framework и икон-пакет не добавляются.
+36. Начат пакет визуальной системы: полная палитра по предоставленным OMP-скриншотам, крупные controls, desktop grid, внутренние tool windows, review и popover.
+37. Цветовые токены заменены на OMP Titanium-палитру из пользовательских скриншотов: тёмные #111417–#20252a, границы #34383d, selection #213343/#2e5061, mint #7fc5ae и приглушённые cyan/violet/amber акценты.
+38. π окончательно освобождён от плашки во всех местах: старт, сообщения, sidebar и status line используют только градиентный символ.
+39. Левая панель оформлена как полноразмерная навигация с 40–44 px строками, реальным списком чатов, проектом и внутренними инструментами.
+40. Поисковая кнопка, drawer controls и все часто используемые workbench-кнопки увеличены до 38–42 px.
+41. Правая панель оформлена как единый review/diff tool window с файлами, статистикой, unified patch и действиями.
+42. Внутренние окна ветки, дерева и pull request получили привязанный к workspace TUI-layout, формы, footer и Escape-паттерн.
+43. Reasoning selector переработан в читаемую четырёхколоночную TUI-таблицу с источником RuntimeSnapshot.thinking.
+44. Context popover получил OMP-палитру, Auto-Compact toggle, range порога, стратегии и ручное сжатие.
+45. Настройки получили вертикальную полнотекстовую навигацию; криптическая лента кодов визуально и функционально устранена.
+46. Добавлены responsive overlay-режимы sidebar/review при узком окне без создания дополнительных окон Electron.
+
+PONYTAIL-GATE 07 — ПЕРВЫЕ TYPECHECK-ДЕФЕКТЫ
+Исправляются только подтверждённые ошибки fallback typecheck: безопасный initial chat id, явные event-типы и недостающие временные объявления проверочного скрипта. Архитектура и зависимости не меняются.
+47. Fallback typecheck обнаружил 3 группы ошибок: noUncheckedIndexedAccess для initialChats[0], невыведенные DOM event-типы в временной React-декларации и неполный Electron stub для Menu/setMenuBarVisibility.
+48. Добавлен безопасный initialChatId вместо прямого initialChats[0].id.
+49. DOM onChange callbacks во внутренних окнах и context range получили явные ChangeEvent-типы.
+50. В fallback typecheck stub добавлены CSSProperties, Electron Menu и BrowserWindow.setMenuBarVisibility, соответствующие реально используемым API.
+
+PONYTAIL-GATE 08 — KEYBOARD И ЧЕСТНЫЕ CONTROLS
+Исправляются только подтверждённые UX-разрывы в существующих компонентах: shortcut Ctrl+N должен соответствовать подписи, Escape — закрывать текущую рабочую поверхность, а кнопка сворачивания review-файлов должна реально менять состояние. Новые abstractions не добавляются.
+51. Перед browser QA выявлены ложные affordances: подпись Ctrl+N без обработчика, неработающая кнопка сворачивания файлов и неопределённые aria-expanded у composer popovers.
+52. Реализован Ctrl+N: создаётся новый локальный чат и фокус возвращается в composer.
+53. Escape теперь сначала закрывает файл/маршрут, а persistent sidebars скрывает только в responsive overlay-режиме до 1180 px.
+54. Кнопка «Свернуть список файлов» получила реальное состояние, aria-expanded и обратное действие «Развернуть».
+55. Model, reasoning и context triggers теперь сообщают aria-haspopup/aria-expanded, соответствующие реальному состоянию popover/listbox.
+
+PONYTAIL-GATE 09 — АКТУАЛИЗАЦИЯ BROWSER QA
+Существующий Playwright harness и source-built bundle переиспользуются; меняются только устаревшие selectors/scenarios под новый workbench. Не добавляются test libraries. Проверка остаётся на реальных TS/TSX-исходниках после локальной транспиляции.
+56. Старый browser QA ожидал удалённые «Панель среды/Сведения», /plugins и отсутствующий baseline bundle; принято решение полностью актуализировать сценарии под новый UI вместо искусственного восстановления старой разметки.
+57. Review-note сокращён до фактического описания diff и больше не повторяет слова «модель/контекст/runtime» в правой панели.
+58. run_browser_qa.py переписан под новый UI и теперь проверяет: π, палитру/размеры, chats, все sidebar routes, internal tools, review, reasoning/model, context Auto-Compact, settings, command/slash routes, skill dialog, activity states, scroll, responsive и reduced motion.
+59. QA использует bundle, собранный из фактических TS/TSX, и отслеживает console/page errors, clipboard и неожиданные window.open вызовы.
+
+PONYTAIL GATE 31 — ПЕРЕД ФИНАЛЬНОЙ КОРРЕКЦИЕЙ МЕЛКОГО ТЕКСТА
+Повторно полностью применён skills/ponytail/SKILL.md. Исправляются четыре общие причины строгого визуального аудита одним CSS-блоком и aria-hidden на трёх декоративных разделителях: placeholder, activity metadata, selected install hint и status separators. Новых компонентов, токенов и зависимостей нет.
+106. Строгий аудит на последнем CSS подтвердил: 0 undersized controls, 0 viewport overflow, 0 unnamed buttons, 0 console errors; оставшиеся сигналы сведены к четырём повторяющимся стилям текста/декора.
+109. Создан docs/MAIN_MENU_VISUAL_AUDIT_RU.md с visual-only scope, официальными источниками, методикой, результатами главного меню и явной границей: live OMP не проверялся.
+110. Создан artifacts/verification/final-visual/main-menu-matrix.png из четырёх доказательных desktop/compact состояний; отдельно сохранена общая contact sheet на 26 состояний.
+111. Непосредственно перед упаковкой повторены обе финальные проверки: browser QA 150/150, 0 console/page errors; standards audit 16/16 состояний, 0 target failures, 0 contrast failures, 0 overflow states.
+
+PONYTAIL-GATE 10 — ФИНАЛЬНЫЙ VISUAL-ONLY HANDOFF
+Повторно использованы уже существующие source-built browser harness, Playwright-сценарии, standards artifacts и обычный ZIP. Новые зависимости, тестовые фреймворки и дублирующие UI-реализации не добавлялись.
+60. Повторно сверены официальные актуальные ориентиры: Codex app (threads по проектам и review изменений), WCAG 2.2 Target Size/Focus Appearance и VS Code Sidebar/Workbench guidance.
+61. Повторно собран browser verification bundle непосредственно из текущих TS/TSX/CSS-исходников: 12 модулей, ошибок транспиляции нет.
+62. Повторно запущен полный визуальный и интерактивный browser QA: 150/150 проверок пройдено, 0 console/page errors.
+63. Повторно подтверждены главное меню, desktop/compact layout, 44 px high-frequency controls, WCAG 24 px minimum, контраст, 2 px focus ring, внутренние tool windows, review, reasoning, Auto-Compact и activity-состояния.
+64. Подготовлен visual-only ZIP для передачи заказчику; OMP runtime integration намеренно оставлена за пределами этого этапа.
+
+PONYTAIL GATE 32 — ПЕРЕД ФИНАЛЬНЫМ VISUAL QA ОТЧЁТОМ
+Повторно применён skills/ponytail/SKILL.md. Создаётся один Markdown-отчёт поверх уже полученных JSON/TXT/PNG evidence; новые генераторы, зависимости и product code не добавляются.
+107. Повторно прочитан verification-before-completion: все итоговые утверждения опираются только на свежие команды после последнего CSS selector fix.
+108. Повторно прочитан web-design-guidelines и заново получены актуальные Vercel Web Interface Guidelines из исходного репозитория.
+109. Главное меню сопоставлено с W3C Target Size/Focus Appearance, Microsoft NavigationView, официальным описанием Codex app, VS Code UI layout и JetBrains tool windows.
+110. Выполнен статический scan renderer: transition:all — 0; click handlers на div/span — 0; запрет paste/zoom — 0; focus-visible и reduced-motion присутствуют.
+111. Переснята финальная ручная матрица из 20 состояний плюс contact sheet после последнего исправления /MCP.
+112. Полноразмерно просмотрены desktop/short/1024/760 main menu, responsive review, /MCP, model, reasoning, context и settings.
+113. Свежий browser QA после последнего изменения: 150 passed, 0 failed; console/page errors — 0.
+114. Свежий аудит 16 representative states: 0 target-size failures, 0 text-contrast failures, 0 document overflow во всех состояниях.
+
+PONYTAIL GATE 33 — ПЕРЕД УПАКОВКОЙ VISUAL-QA ВЕРСИИ
+Повторно применён skills/ponytail/SKILL.md. В ZIP входят исходники, skills, project-map, финальный отчёт, action log и доказательные screenshots/JSON. Исключаются только generated browser bundle, caches, dependency/build directories и устаревшая pre-final matrix.
+115. Подготовлена упаковка visual-only результата; OMP runtime integration не изменяется и не заявляется проверенной.
+
+PONYTAIL-GATE 11 — ПОВТОРНАЯ ВИЗУАЛЬНАЯ ПРОВЕРКА ПЕРЕД ВЫДАЧЕЙ
+Повторно применён skills/ponytail/SKILL.md. Переиспользованы существующие source-built browser harness, Playwright QA и текущие screenshots; новых зависимостей, компонентов и UI-изменений не добавлено, потому что свежая проверка не выявила дефектов.
+65. Повторно загружены актуальные Web Interface Guidelines, официальные материалы OpenAI Codex app, VS Code Workbench/Sidebars и WCAG 2.2 Target Size/Focus Appearance.
+66. Повторно проверено главное меню: информационная архитектура, 44 px часто используемые цели, 24 px WCAG minimum, контраст 4.5:1, 2 px focus indicator, keyboard order, hover/active states, независимая прокрутка истории, responsive overlay и возврат фокуса.
+67. Повторно запущен ui-ux-pro-max validate_data.py и локальные поиски design-system/UX/React; данные валидны, доказательства сохранены в artifacts/skill-evidence.
+68. Повторно собран browser verification bundle из текущих TS/TSX/CSS: 12 модулей, exit code 0.
+69. Повторно запущен полный browser visual/interaction QA: 150/150 пройдено, 0 console/page errors, exit code 0.
+70. Вручную просмотрены текущие screenshots главного меню на 760×720, 1024×700 и 1280×800; layout, hierarchy, clipping, scrim и доступность основных действий подтверждены.
+71. Живое подключение к OMP, package-backed build и Electron smoke не включались в этот visual-only handoff по указанию заказчика.

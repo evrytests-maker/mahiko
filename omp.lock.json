@@ -1,0 +1,8 @@
+{
+  "package": "@oh-my-pi/pi-coding-agent",
+  "version": "17.2.9",
+  "cliVersion": "omp/17.2.9",
+  "preferredRpcMode": "rpc-ui",
+  "fallbackRpcMode": "rpc",
+  "protocolVersion": 2
+}

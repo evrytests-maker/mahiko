@@ -1,0 +1,16 @@
+PASS baseline comparison screenshot is preserved
+PASS initial chat renders
+PASS left navigation is visible by default
+PASS right review is visible by default
+PASS activity is absent before submit
+PASS single app chrome contains no File/Edit/View menu
+FAIL sidebar exposes /MCP
+Traceback (most recent call last):
+  File "/mnt/data/ma-hi-ko-ui-rework/frontend/scripts/run_browser_qa.py", line 152, in run
+    qa.check("sidebar exposes /MCP", page.get_by_role("button", name="/MCP", exact=True).is_visible())
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/ma-hi-ko-ui-rework/frontend/scripts/run_browser_qa.py", line 87, in check
+    raise AssertionError(f"{name}: {detail or 'condition is false'}")
+AssertionError: sidebar exposes /MCP: condition is false
+
+{"passed": 6, "failed": 2}

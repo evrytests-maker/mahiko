@@ -1,0 +1,1 @@
+Built browser verification bundle: /mnt/data/ma-hi-ko-ui-rework/frontend/artifacts/verification/browser-build/current (12 modules)

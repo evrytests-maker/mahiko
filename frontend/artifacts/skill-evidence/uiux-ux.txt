@@ -1,0 +1,114 @@
+## UI Pro Max Search Results
+**Domain:** ux | **Query:** keyboard focus loading progress cancellation error feedback disclosure
+**Source:** ux-guidelines.csv | **Found:** 10 results
+
+### Result 1
+- **Category:** Interaction
+- **Issue:** Focus States
+- **Platform:** All
+- **Description:** Keyboard users need visible focus indicators
+- **Do:** Use visible focus rings on interactive elements
+- **Don't:** Remove focus outline without replacement
+- **Code Example Good:** focus:ring-2 focus:ring-blue-500
+- **Code Example Bad:** outline-none without alternative
+- **Severity:** High
+
+### Result 2
+- **Category:** Feedback
+- **Issue:** Progress Indicators
+- **Platform:** All
+- **Description:** Show progress for multi-step processes
+- **Do:** Step indicators or progress bar
+- **Don't:** No indication of progress
+- **Code Example Good:** Step 2 of 4 indicator
+- **Code Example Bad:** No step information
+- **Severity:** Medium
+
+### Result 3
+- **Category:** Feedback
+- **Issue:** Error Recovery
+- **Platform:** All
+- **Description:** Help users recover from errors
+- **Do:** Provide clear next steps
+- **Don't:** Error without recovery path
+- **Code Example Good:** Try again button + help link
+- **Code Example Bad:** Error message only
+- **Severity:** Medium
+
+### Result 4
+- **Category:** Interaction
+- **Issue:** Error Feedback
+- **Platform:** All
+- **Description:** Users need to know when something fails
+- **Do:** Show clear error messages near problem
+- **Don't:** Silent failures with no feedback
+- **Code Example Good:** Red border + error message
+- **Code Example Bad:** No indication of error
+- **Severity:** High
+
+### Result 5
+- **Category:** Animation
+- **Issue:** Loading States
+- **Platform:** All
+- **Description:** Show feedback during async operations
+- **Do:** Use skeleton screens or spinners
+- **Don't:** Leave UI frozen with no feedback
+- **Code Example Good:** animate-pulse skeleton
+- **Code Example Bad:** Blank screen while loading
+- **Severity:** High
+
+### Result 6
+- **Category:** Feedback
+- **Issue:** Loading Indicators
+- **Platform:** All
+- **Description:** Show system status during waits
+- **Do:** Show spinner/skeleton for operations > 300ms
+- **Don't:** No feedback during loading
+- **Code Example Good:** Skeleton or spinner
+- **Code Example Bad:** Frozen UI
+- **Severity:** High
+
+### Result 7
+- **Category:** Accessibility
+- **Issue:** Error Messages
+- **Platform:** All
+- **Description:** Error messages must be announced
+- **Do:** Use aria-live or role=alert for errors
+- **Don't:** Visual-only error indication
+- **Code Example Good:** role='alert'
+- **Code Example Bad:** Red border only
+- **Severity:** High
+
+### Result 8
+- **Category:** Accessibility
+- **Issue:** Keyboard Navigation
+- **Platform:** Web
+- **Description:** All functionality accessible via keyboard
+- **Do:** Tab order matches visual order
+- **Don't:** Keyboard traps or illogical tab order
+- **Code Example Good:** tabIndex for custom order
+- **Code Example Bad:** Unreachable elements
+- **Severity:** High
+
+### Result 9
+- **Category:** Accessibility
+- **Issue:** Skip Links
+- **Platform:** Web
+- **Description:** Allow keyboard users to skip navigation
+- **Do:** Provide skip to main content link
+- **Don't:** No skip link on nav-heavy pages
+- **Code Example Good:** Skip to main content link
+- **Code Example Bad:** 100 tabs to reach content
+- **Severity:** Medium
+
+### Result 10
+- **Category:** Forms
+- **Issue:** Error Placement
+- **Platform:** All
+- **Description:** Errors should appear near the problem
+- **Do:** Show error below related input
+- **Don't:** Single error message at top of form
+- **Code Example Good:** Error under each field
+- **Code Example Bad:** All errors at form top
+- **Severity:** Medium
+

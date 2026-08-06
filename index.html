@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://127.0.0.1:5173 ws://127.0.0.1:5173"
+    />
+    <meta name="color-scheme" content="dark" />
+    <title>Mohiko · OMP integration</title>
+  </head>
+  <body>
+    <main class="dock" aria-labelledby="title">
+      <header class="dock__header">
+        <span class="dock__eyebrow">integration dock / linux</span>
+        <h1 id="title">Mohiko</h1>
+        <p>Каркас готов принять финальный интерфейс. Сейчас отображается только фактическое состояние локального OMP.</p>
+      </header>
+
+      <section class="runtime" aria-labelledby="runtime-title" aria-live="polite">
+        <div class="runtime__heading">
+          <h2 id="runtime-title">OMP runtime</h2>
+          <button id="refresh" type="button">Проверить снова</button>
+        </div>
+        <dl>
+          <div><dt>Бинарник</dt><dd id="executable">проверка…</dd></div>
+          <div><dt>Версия</dt><dd id="version">проверка…</dd></div>
+          <div><dt>Совместимость</dt><dd id="compatibility">проверка…</dd></div>
+          <div><dt>RPC</dt><dd id="rpc">проверка…</dd></div>
+        </dl>
+        <p id="detail" class="runtime__detail">Запрашиваю состояние main process…</p>
+      </section>
+
+      <footer>Зафиксированная цель: OMP 17.2.9 · live-agent появится после подключения финального frontend.</footer>
+    </main>
+    <script type="module" src="/src/renderer/main.ts"></script>
+  </body>
+</html>

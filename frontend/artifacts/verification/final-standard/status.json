@@ -1,0 +1,66 @@
+{
+  "generatedAtUtc": "2026-08-06T15:22:19.164292+00:00",
+  "workingDirectory": "/mnt/data/ma_hi_ko_work/ma-hi-ko-gpt56-ready/frontend",
+  "results": [
+    {
+      "name": "npm-ci",
+      "command": "npm ci",
+      "startedAtUtc": "2026-08-06T15:22:16.857686+00:00",
+      "endedAtUtc": "2026-08-06T15:22:17.658473+00:00",
+      "durationSeconds": 0.801,
+      "exitCode": 1,
+      "timedOut": false,
+      "log": "artifacts/verification/final-standard/npm-ci.txt"
+    },
+    {
+      "name": "npm-typecheck",
+      "command": "npm run typecheck",
+      "startedAtUtc": "2026-08-06T15:22:17.658776+00:00",
+      "endedAtUtc": "2026-08-06T15:22:18.183342+00:00",
+      "durationSeconds": 0.525,
+      "exitCode": 2,
+      "timedOut": false,
+      "log": "artifacts/verification/final-standard/npm-typecheck.txt"
+    },
+    {
+      "name": "npm-test",
+      "command": "npm test",
+      "startedAtUtc": "2026-08-06T15:22:18.183606+00:00",
+      "endedAtUtc": "2026-08-06T15:22:18.270363+00:00",
+      "durationSeconds": 0.087,
+      "exitCode": 127,
+      "timedOut": false,
+      "log": "artifacts/verification/final-standard/npm-test.txt"
+    },
+    {
+      "name": "npm-build",
+      "command": "npm run build",
+      "startedAtUtc": "2026-08-06T15:22:18.270604+00:00",
+      "endedAtUtc": "2026-08-06T15:22:18.847116+00:00",
+      "durationSeconds": 0.577,
+      "exitCode": 2,
+      "timedOut": false,
+      "log": "artifacts/verification/final-standard/npm-build.txt"
+    },
+    {
+      "name": "npm-lint",
+      "command": "npm run lint",
+      "startedAtUtc": "2026-08-06T15:22:18.847399+00:00",
+      "endedAtUtc": "2026-08-06T15:22:19.077832+00:00",
+      "durationSeconds": 0.23,
+      "exitCode": 1,
+      "timedOut": false,
+      "log": "artifacts/verification/final-standard/npm-lint.txt"
+    },
+    {
+      "name": "electron-smoke",
+      "command": "npm start",
+      "startedAtUtc": "2026-08-06T15:22:19.078161+00:00",
+      "endedAtUtc": "2026-08-06T15:22:19.164018+00:00",
+      "durationSeconds": 0.086,
+      "exitCode": 127,
+      "timedOut": false,
+      "log": "artifacts/verification/final-standard/electron-smoke.txt"
+    }
+  ]
+}

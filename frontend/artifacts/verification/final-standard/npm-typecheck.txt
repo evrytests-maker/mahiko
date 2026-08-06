@@ -1,0 +1,17 @@
+Command: npm run typecheck
+Started UTC: 2026-08-06T15:22:17.658776+00:00
+Ended UTC: 2026-08-06T15:22:18.183342+00:00
+Duration seconds: 0.525
+Exit code: 2
+Timed out: false
+
+
+> ma-hi-ko@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit
+
+error TS2688: Cannot find type definition file for '@testing-library/jest-dom'.
+  The file is in the program because:
+    Entry point of type library '@testing-library/jest-dom' specified in compilerOptions
+error TS2688: Cannot find type definition file for 'vitest/globals'.
+  The file is in the program because:
+    Entry point of type library 'vitest/globals' specified in compilerOptions

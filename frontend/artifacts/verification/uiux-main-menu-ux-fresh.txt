@@ -1,0 +1,224 @@
+## UI Pro Max Search Results
+**Domain:** ux | **Query:** desktop navigation sidebar keyboard accessibility focus contrast z-index loading
+**Source:** ux-guidelines.csv | **Found:** 20 results
+
+### Result 1
+- **Category:** Accessibility
+- **Issue:** Keyboard Navigation
+- **Platform:** Web
+- **Description:** All functionality accessible via keyboard
+- **Do:** Tab order matches visual order
+- **Don't:** Keyboard traps or illogical tab order
+- **Code Example Good:** tabIndex for custom order
+- **Code Example Bad:** Unreachable elements
+- **Severity:** High
+
+### Result 2
+- **Category:** Interaction
+- **Issue:** Focus States
+- **Platform:** All
+- **Description:** Keyboard users need visible focus indicators
+- **Do:** Use visible focus rings on interactive elements
+- **Don't:** Remove focus outline without replacement
+- **Code Example Good:** focus:ring-2 focus:ring-blue-500
+- **Code Example Bad:** outline-none without alternative
+- **Severity:** High
+
+### Result 3
+- **Category:** Accessibility
+- **Issue:** Skip Links
+- **Platform:** Web
+- **Description:** Allow keyboard users to skip navigation
+- **Do:** Provide skip to main content link
+- **Don't:** No skip link on nav-heavy pages
+- **Code Example Good:** Skip to main content link
+- **Code Example Bad:** 100 tabs to reach content
+- **Severity:** Medium
+
+### Result 4
+- **Category:** Accessibility
+- **Issue:** Color Contrast
+- **Platform:** All
+- **Description:** Text must be readable against background
+- **Do:** Minimum 4.5:1 ratio for normal text
+- **Don't:** Low contrast text
+- **Code Example Good:** #333 on white (7:1)
+- **Code Example Bad:** #999 on white (2.8:1)
+- **Severity:** High
+
+### Result 5
+- **Category:** Typography
+- **Issue:** Contrast Readability
+- **Platform:** All
+- **Description:** Body text needs good contrast
+- **Do:** Use darker text on light backgrounds
+- **Don't:** Gray text on gray background
+- **Code Example Good:** text-gray-900 on white
+- **Code Example Bad:** text-gray-400 on gray-100
+- **Severity:** High
+
+### Result 6
+- **Category:** Accessibility
+- **Issue:** Heading Hierarchy
+- **Platform:** Web
+- **Description:** Screen readers use headings for navigation
+- **Do:** Use sequential heading levels h1-h6
+- **Don't:** Skip heading levels or misuse for styling
+- **Code Example Good:** h1 then h2 then h3
+- **Code Example Bad:** h1 then h4
+- **Severity:** Medium
+
+### Result 7
+- **Category:** Layout
+- **Issue:** Stacking Context
+- **Platform:** Web
+- **Description:** New stacking contexts reset z-index
+- **Do:** Understand what creates new stacking context
+- **Don't:** Expect z-index to work across contexts
+- **Code Example Good:** Parent with z-index isolates children
+- **Code Example Bad:** z-index: 9999 not working
+- **Severity:** Medium
+
+### Result 8
+- **Category:** Layout
+- **Issue:** Z-Index Management
+- **Platform:** Web
+- **Description:** Stacking context conflicts cause hidden elements
+- **Do:** Define z-index scale system (10 20 30 50)
+- **Don't:** Use arbitrary large z-index values
+- **Code Example Good:** z-10 z-20 z-50
+- **Code Example Bad:** z-[9999]
+- **Severity:** High
+
+### Result 9
+- **Category:** Navigation
+- **Issue:** Sticky Navigation
+- **Platform:** Web
+- **Description:** Fixed nav should not obscure content
+- **Do:** Add padding-top to body equal to nav height
+- **Don't:** Let nav overlap first section content
+- **Code Example Good:** pt-20 (if nav is h-20)
+- **Code Example Bad:** No padding compensation
+- **Severity:** Medium
+
+### Result 10
+- **Category:** Forms
+- **Issue:** Mobile Keyboards
+- **Platform:** Mobile
+- **Description:** Show appropriate keyboard for input type
+- **Do:** Use inputmode attribute
+- **Don't:** Default keyboard for all inputs
+- **Code Example Good:** inputmode='numeric'
+- **Code Example Bad:** Text keyboard for numbers
+- **Severity:** Medium
+
+### Result 11
+- **Category:** Performance
+- **Issue:** Lazy Loading
+- **Platform:** All
+- **Description:** Load content as needed
+- **Do:** Lazy load below-fold images and content
+- **Don't:** Load everything upfront
+- **Code Example Good:** loading='lazy'
+- **Code Example Bad:** All images eager load
+- **Severity:** Medium
+
+### Result 12
+- **Category:** Animation
+- **Issue:** Loading States
+- **Platform:** All
+- **Description:** Show feedback during async operations
+- **Do:** Use skeleton screens or spinners
+- **Don't:** Leave UI frozen with no feedback
+- **Code Example Good:** animate-pulse skeleton
+- **Code Example Bad:** Blank screen while loading
+- **Severity:** High
+
+### Result 13
+- **Category:** Performance
+- **Issue:** Font Loading
+- **Platform:** Web
+- **Description:** Web fonts can block rendering
+- **Do:** Use font-display swap or optional
+- **Don't:** Invisible text during font load
+- **Code Example Good:** font-display: swap
+- **Code Example Bad:** FOIT (Flash of Invisible Text)
+- **Severity:** Medium
+
+### Result 14
+- **Category:** Feedback
+- **Issue:** Loading Indicators
+- **Platform:** All
+- **Description:** Show system status during waits
+- **Do:** Show spinner/skeleton for operations > 300ms
+- **Don't:** No feedback during loading
+- **Code Example Good:** Skeleton or spinner
+- **Code Example Bad:** Frozen UI
+- **Severity:** High
+
+### Result 15
+- **Category:** Interaction
+- **Issue:** Loading Buttons
+- **Platform:** All
+- **Description:** Prevent double submission during async actions
+- **Do:** Disable button and show loading state
+- **Don't:** Allow multiple clicks during processing
+- **Code Example Good:** disabled={loading} spinner
+- **Code Example Bad:** Button clickable while loading
+- **Severity:** High
+
+### Result 16
+- **Category:** Typography
+- **Issue:** Font Loading
+- **Platform:** Web
+- **Description:** Fonts should load without layout shift
+- **Do:** Reserve space with fallback font
+- **Don't:** Layout shift when fonts load
+- **Code Example Good:** font-display: swap + similar fallback
+- **Code Example Bad:** No fallback font
+- **Severity:** Medium
+
+### Result 17
+- **Category:** Navigation
+- **Issue:** Breadcrumbs
+- **Platform:** Web
+- **Description:** Show user location in site hierarchy
+- **Do:** Use for sites with 3+ levels of depth
+- **Don't:** Use for flat single-level sites
+- **Code Example Good:** Home > Category > Product
+- **Code Example Bad:** Only on deep nested pages
+- **Severity:** Low
+
+### Result 18
+- **Category:** Navigation
+- **Issue:** Back Button
+- **Platform:** Mobile
+- **Description:** Users expect back to work predictably
+- **Do:** Preserve navigation history properly
+- **Don't:** Break browser/app back button behavior
+- **Code Example Good:** history.pushState()
+- **Code Example Bad:** location.replace()
+- **Severity:** High
+
+### Result 19
+- **Category:** Accessibility
+- **Issue:** Alt Text
+- **Platform:** All
+- **Description:** Images need text alternatives
+- **Do:** Descriptive alt text for meaningful images
+- **Don't:** Empty or missing alt attributes
+- **Code Example Good:** alt='Dog playing in park'
+- **Code Example Bad:** alt='' for content images
+- **Severity:** High
+
+### Result 20
+- **Category:** Accessibility
+- **Issue:** Error Messages
+- **Platform:** All
+- **Description:** Error messages must be announced
+- **Do:** Use aria-live or role=alert for errors
+- **Don't:** Visual-only error indication
+- **Code Example Good:** role='alert'
+- **Code Example Bad:** Red border only
+- **Severity:** High
+

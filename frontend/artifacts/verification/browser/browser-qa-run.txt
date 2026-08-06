@@ -1,0 +1,102 @@
+PASS baseline renders
+PASS baseline console is clean: captured=[]; console=[]
+PASS initial chat renders
+PASS activity is absent before submit
+PASS initial current console is clean: captured=[]; console=[]
+PASS all initial buttons have accessible text: unnamed=0
+PASS model keyboard selection
+PASS model trigger regains focus
+PASS thinking keyboard selection
+PASS thinking trigger regains focus
+PASS slash keyboard command opens settings
+PASS settings Escape restores composer focus
+PASS plugins command opens the skills screen
+PASS compact command toggles the real context state
+PASS context command opens the inspector
+PASS unsupported MCP add action is disabled
+PASS page Escape returns to chat
+PASS outside pointer closes sidebar
+PASS project file opens from tree
+PASS inspector Escape closes and restores focus
+PASS settings keyboard changes tab
+PASS composer disables during run
+PASS transcript exposes busy state
+PASS stop is immediately available
+PASS current operation is visible
+PASS running details expand
+PASS Escape cancels run
+PASS cancel progress keeps planned denominator
+PASS cancel has no late completion
+PASS composer re-enables after cancel
+PASS retry reuses activity entry
+PASS retry increments attempt
+PASS retry reaches 7/7
+PASS one final assistant recap is appended
+PASS command output is capped to 20 lines: lines=20
+PASS command output keeps tail
+PASS successful exit code is visible
+PASS copy details uses safe serialized transcript
+PASS error state is terminal and visible
+PASS error progress keeps planned denominator
+PASS error details show exit code 1
+PASS error details show recovery
+PASS error retry succeeds
+PASS manual scroll-up is preserved
+PASS long prompt does not overflow its bubble
+PASS new-events control returns to latest
+PASS 1024px layout has no document overflow
+PASS 760px minimum layout has no document overflow
+PASS 1920px layout keeps the transcript within the desktop shell
+PASS full interaction console is clean: captured=[]; console=[]
+PASS skip link targets the main workspace
+PASS empty composer keeps send disabled
+PASS composer Escape clears a draft
+PASS status context control exposes pressed state
+PASS project and runtime controls survive a cancelled browser preview
+PASS sidebar close restores its trigger
+PASS environment disclosure collapses
+PASS environment disclosure expands
+PASS unavailable git action is truly disabled
+PASS changes row opens the changes surface
+PASS branch row opens the same changes surface
+PASS browser project row returns to chat
+PASS show-all sources reveals the full bounded tree
+PASS source list can collapse again
+PASS file viewer back button returns to chat
+PASS sidebar project chooser closes after a cancelled dialog
+PASS sidebar settings action opens and closes the modal
+PASS inspector thinking control cycles the level
+PASS inspector context control exposes pressed state
+PASS inspector model action applies a mouse selection
+PASS inspector close restores its trigger
+PASS palette reports an empty search
+PASS palette Escape restores its trigger
+PASS palette hover updates option selection
+PASS palette mouse selection executes a route
+PASS settings tabs support roving arrow focus
+PASS boolean setting exposes its initial pressed state
+PASS boolean setting changes by pointer
+PASS settings rows support arrow focus
+PASS settings close restores composer focus
+PASS session slash command opens inspector
+PASS account provider action gives visible feedback
+PASS account search exposes empty state
+PASS install dialog receives focus
+PASS project install scope is enabled when a project exists
+PASS project scope updates command preview
+PASS install cancel restores its trigger
+PASS install dry-run closes with a result
+PASS MCP add remains honestly disabled
+PASS slash route /tools renders
+PASS slash route /memory renders
+PASS slash route /usage renders
+PASS slash route /changelog full renders
+PASS Stop button aborts the active stream
+PASS standalone ProjectsPage actions call their chooser
+PASS standalone ModelsPage filters and selects
+PASS standalone ModelsPage provider filter works
+PASS standalone diagnostics copy gives feedback
+PASS expanded interaction audit console is clean: captured=[]; console=[]
+PASS reduced-motion removes activity transitions: 0s
+PASS reduced-motion console is clean: captured=[]; console=[]
+{"passed": 101, "failed": 0, "info": 0}

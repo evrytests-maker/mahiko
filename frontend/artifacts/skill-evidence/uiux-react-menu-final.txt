@@ -1,0 +1,191 @@
+## UI Pro Max Stack Guidelines
+**Stack:** react | **Query:** navigation focus responsive state performance
+**Source:** stacks/react.csv | **Found:** 17 results
+
+### Result 1
+- **Category:** Accessibility
+- **Guideline:** Manage focus properly
+- **Description:** Handle focus for modals dialogs
+- **Do:** Focus trap in modals return focus on close
+- **Don't:** No focus management
+- **Code Good:** useEffect to focus input
+- **Code Bad:** Modal without focus trap
+- **Severity:** High
+- **Docs URL:** 
+
+### Result 2
+- **Category:** Performance
+- **Guideline:** Batch state updates
+- **Description:** React 18 auto-batches but be aware
+- **Do:** Let React batch related updates
+- **Don't:** Manual batching with flushSync
+- **Code Good:** setA(1); setB(2); // batched
+- **Code Bad:** flushSync(() => setA(1))
+- **Severity:** Low
+- **Docs URL:** https://react.dev/learn/queueing-a-series-of-state-updates
+
+### Result 3
+- **Category:** Performance
+- **Guideline:** Use React DevTools Profiler
+- **Description:** Profile to identify performance bottlenecks
+- **Do:** Profile before optimizing
+- **Don't:** Optimize without measuring
+- **Code Good:** React DevTools Profiler
+- **Code Bad:** Guessing at bottlenecks
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/learn/react-developer-tools
+
+### Result 4
+- **Category:** Accessibility
+- **Guideline:** Use semantic HTML
+- **Description:** Proper HTML elements for their purpose
+- **Do:** button for clicks nav for navigation
+- **Don't:** div with onClick for buttons
+- **Code Good:** <button onClick={...}>
+- **Code Bad:** <div onClick={...}>
+- **Severity:** High
+- **Docs URL:** https://react.dev/reference/react-dom/components#all-html-components
+
+### Result 5
+- **Category:** State
+- **Guideline:** Avoid unnecessary state
+- **Description:** Derive values from existing state when possible
+- **Do:** Compute derived values in render
+- **Don't:** Store derivable values in state
+- **Code Good:** const total = items.reduce(...)
+- **Code Bad:** const [total, setTotal] = useState(0)
+- **Severity:** High
+- **Docs URL:** https://react.dev/learn/choosing-the-state-structure
+
+### Result 6
+- **Category:** Performance
+- **Guideline:** Lazy load components
+- **Description:** Use React.lazy for code splitting
+- **Do:** lazy() for routes and heavy components
+- **Don't:** Import everything upfront
+- **Code Good:** const Page = lazy(() => import('./Page'))
+- **Code Bad:** import Page from './Page'
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/reference/react/lazy
+
+### Result 7
+- **Category:** State
+- **Guideline:** Initialize state lazily
+- **Description:** Use function form for expensive initial state
+- **Do:** useState(() => computeExpensive())
+- **Don't:** useState(computeExpensive())
+- **Code Good:** useState(() => JSON.parse(data))
+- **Code Bad:** useState(JSON.parse(data))
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/reference/react/useState#avoiding-recreating-the-initial-state
+
+### Result 8
+- **Category:** State
+- **Guideline:** Use useState for local state
+- **Description:** Simple component state should use useState hook
+- **Do:** useState for form inputs toggles counters
+- **Don't:** Class components this.state
+- **Code Good:** const [count, setCount] = useState(0)
+- **Code Bad:** this.state = { count: 0 }
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/reference/react/useState
+
+### Result 9
+- **Category:** State
+- **Guideline:** Lift state up when needed
+- **Description:** Share state between siblings by lifting to parent
+- **Do:** Lift shared state to common ancestor
+- **Don't:** Prop drilling through many levels
+- **Code Good:** Parent holds state passes down
+- **Code Bad:** Deep prop chains
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/learn/sharing-state-between-components
+
+### Result 10
+- **Category:** State
+- **Guideline:** Use useReducer for complex state
+- **Description:** Complex state logic benefits from reducer pattern
+- **Do:** useReducer for state with multiple sub-values
+- **Don't:** Multiple useState for related values
+- **Code Good:** useReducer with action types
+- **Code Bad:** 5+ useState calls that update together
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/reference/react/useReducer
+
+### Result 11
+- **Category:** Performance
+- **Guideline:** Virtualize long lists
+- **Description:** Use windowing for lists over 100 items
+- **Do:** react-window or react-virtual
+- **Don't:** Render thousands of DOM nodes
+- **Code Good:** <VirtualizedList items={items}/>
+- **Code Bad:** {items.map(i => <Item />)}
+- **Severity:** High
+- **Docs URL:** 
+
+### Result 12
+- **Category:** TypeScript
+- **Guideline:** Type state properly
+- **Description:** Provide types for useState
+- **Do:** useState<Type>() for complex state
+- **Don't:** Inferred any types
+- **Code Good:** useState<User | null>(null)
+- **Code Bad:** useState(null)
+- **Severity:** Medium
+- **Docs URL:** 
+
+### Result 13
+- **Category:** Patterns
+- **Guideline:** Compound components
+- **Description:** Related components sharing state
+- **Do:** Tab + TabPanel sharing context
+- **Don't:** Prop drilling between related
+- **Code Good:** <Tabs><Tab/><TabPanel/></Tabs>
+- **Code Bad:** <Tabs tabs={[]} panels={[...]}/>
+- **Severity:** Low
+- **Docs URL:** 
+
+### Result 14
+- **Category:** Forms
+- **Guideline:** Controlled components for forms
+- **Description:** Use state to control form inputs
+- **Do:** value + onChange for inputs
+- **Don't:** Uncontrolled inputs with refs
+- **Code Good:** <input value={val} onChange={setVal}>
+- **Code Bad:** <input ref={inputRef}>
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/reference/react-dom/components/input#controlling-an-input-with-a-state-variable
+
+### Result 15
+- **Category:** Context
+- **Guideline:** Use context for global data
+- **Description:** Context for theme auth locale
+- **Do:** Context for app-wide state
+- **Don't:** Context for frequently changing data
+- **Code Good:** <ThemeContext.Provider>
+- **Code Bad:** Context for form field values
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/learn/passing-data-deeply-with-context
+
+### Result 16
+- **Category:** Testing
+- **Guideline:** Test behavior not implementation
+- **Description:** Test what user sees and does
+- **Do:** Test renders and interactions
+- **Don't:** Test internal state or methods
+- **Code Good:** expect(screen.getByText('Hello'))
+- **Code Bad:** expect(component.state.name)
+- **Severity:** Medium
+- **Docs URL:** https://testing-library.com/docs/react-testing-library/intro/
+
+### Result 17
+- **Category:** Effects
+- **Guideline:** Avoid unnecessary effects
+- **Description:** Don't use effects for transforming data or events
+- **Do:** Transform data during render handle events directly
+- **Don't:** useEffect for derived state or event handling
+- **Code Good:** const filtered = items.filter(...)
+- **Code Bad:** useEffect(() => setFiltered(items.filter(...)))
+- **Severity:** High
+- **Docs URL:** https://react.dev/learn/you-might-not-need-an-effect
+

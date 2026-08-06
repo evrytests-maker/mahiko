@@ -1,0 +1,6 @@
+retrieved_at: 2026-08-06
+source: https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md
+retrieval_method: raw source opened successfully with web.run; full 161-line text persisted locally because project container DNS is disabled
+sha256: 7b058c04664c6004c4c840f800f502339dce55db09e84da8d5855cad3913f292
+bytes: 6924
+lines: 161

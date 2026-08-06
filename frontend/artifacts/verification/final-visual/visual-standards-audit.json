@@ -1,0 +1,146 @@
+{
+  "initial": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "route-projects": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "route-changes": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "route-scheduled": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "route-mcp": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "route-skills": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "model-picker": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "reasoning-picker": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "context-popover": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "settings": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "command-palette": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "tool-branch": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "tool-tree": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "tool-pr": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "responsive-sidebar": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 1024,
+      "height": 700
+    }
+  },
+  "minimum-sidebar": {
+    "targets": [],
+    "contrastFails": [],
+    "documentOverflow": false,
+    "viewport": {
+      "width": 760,
+      "height": 720
+    }
+  }
+}

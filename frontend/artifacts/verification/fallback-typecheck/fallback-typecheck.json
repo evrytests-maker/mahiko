@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-08-06T17:59:55.765Z",
+  "scope": "Dependency-independent semantic fallback using temporary React/Electron declarations; not a substitute for package-backed npm typecheck.",
+  "summary": {
+    "passed": 3,
+    "failed": 0
+  },
+  "results": [
+    {
+      "name": "renderer-shared",
+      "status": "pass",
+      "output": ""
+    },
+    {
+      "name": "main-preload-shared",
+      "status": "pass",
+      "output": ""
+    },
+    {
+      "name": "source-tests-with-temporary-runner-declarations",
+      "status": "pass",
+      "output": ""
+    }
+  ]
+}

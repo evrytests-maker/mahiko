@@ -1,0 +1,224 @@
+## UI Pro Max Search Results
+**Domain:** ux | **Query:** animation accessibility z-index loading
+**Source:** ux-guidelines.csv | **Found:** 20 results
+
+### Result 1
+- **Category:** Animation
+- **Issue:** Loading States
+- **Platform:** All
+- **Description:** Show feedback during async operations
+- **Do:** Use skeleton screens or spinners
+- **Don't:** Leave UI frozen with no feedback
+- **Code Example Good:** animate-pulse skeleton
+- **Code Example Bad:** Blank screen while loading
+- **Severity:** High
+
+### Result 2
+- **Category:** Animation
+- **Issue:** Continuous Animation
+- **Platform:** All
+- **Description:** Infinite animations are distracting
+- **Do:** Use for loading indicators only
+- **Don't:** Use for decorative elements
+- **Code Example Good:** animate-spin on loader
+- **Code Example Bad:** animate-bounce on icons
+- **Severity:** Medium
+
+### Result 3
+- **Category:** Layout
+- **Issue:** Stacking Context
+- **Platform:** Web
+- **Description:** New stacking contexts reset z-index
+- **Do:** Understand what creates new stacking context
+- **Don't:** Expect z-index to work across contexts
+- **Code Example Good:** Parent with z-index isolates children
+- **Code Example Bad:** z-index: 9999 not working
+- **Severity:** Medium
+
+### Result 4
+- **Category:** Layout
+- **Issue:** Z-Index Management
+- **Platform:** Web
+- **Description:** Stacking context conflicts cause hidden elements
+- **Do:** Define z-index scale system (10 20 30 50)
+- **Don't:** Use arbitrary large z-index values
+- **Code Example Good:** z-10 z-20 z-50
+- **Code Example Bad:** z-[9999]
+- **Severity:** High
+
+### Result 5
+- **Category:** Performance
+- **Issue:** Lazy Loading
+- **Platform:** All
+- **Description:** Load content as needed
+- **Do:** Lazy load below-fold images and content
+- **Don't:** Load everything upfront
+- **Code Example Good:** loading='lazy'
+- **Code Example Bad:** All images eager load
+- **Severity:** Medium
+
+### Result 6
+- **Category:** Performance
+- **Issue:** Font Loading
+- **Platform:** Web
+- **Description:** Web fonts can block rendering
+- **Do:** Use font-display swap or optional
+- **Don't:** Invisible text during font load
+- **Code Example Good:** font-display: swap
+- **Code Example Bad:** FOIT (Flash of Invisible Text)
+- **Severity:** Medium
+
+### Result 7
+- **Category:** Feedback
+- **Issue:** Loading Indicators
+- **Platform:** All
+- **Description:** Show system status during waits
+- **Do:** Show spinner/skeleton for operations > 300ms
+- **Don't:** No feedback during loading
+- **Code Example Good:** Skeleton or spinner
+- **Code Example Bad:** Frozen UI
+- **Severity:** High
+
+### Result 8
+- **Category:** Interaction
+- **Issue:** Loading Buttons
+- **Platform:** All
+- **Description:** Prevent double submission during async actions
+- **Do:** Disable button and show loading state
+- **Don't:** Allow multiple clicks during processing
+- **Code Example Good:** disabled={loading} spinner
+- **Code Example Bad:** Button clickable while loading
+- **Severity:** High
+
+### Result 9
+- **Category:** Typography
+- **Issue:** Font Loading
+- **Platform:** Web
+- **Description:** Fonts should load without layout shift
+- **Do:** Reserve space with fallback font
+- **Don't:** Layout shift when fonts load
+- **Code Example Good:** font-display: swap + similar fallback
+- **Code Example Bad:** No fallback font
+- **Severity:** Medium
+
+### Result 10
+- **Category:** Animation
+- **Issue:** Reduced Motion
+- **Platform:** All
+- **Description:** Respect user's motion preferences
+- **Do:** Check prefers-reduced-motion media query
+- **Don't:** Ignore accessibility motion settings
+- **Code Example Good:** @media (prefers-reduced-motion: reduce)
+- **Code Example Bad:** No motion query check
+- **Severity:** High
+
+### Result 11
+- **Category:** Animation
+- **Issue:** Easing Functions
+- **Platform:** All
+- **Description:** Linear motion feels robotic
+- **Do:** Use ease-out for entering ease-in for exiting
+- **Don't:** Use linear for UI transitions
+- **Code Example Good:** ease-out
+- **Code Example Bad:** linear
+- **Severity:** Low
+
+### Result 12
+- **Category:** Animation
+- **Issue:** Duration Timing
+- **Platform:** All
+- **Description:** Animations should feel responsive not sluggish
+- **Do:** Use 150-300ms for micro-interactions
+- **Don't:** Use animations longer than 500ms for UI
+- **Code Example Good:** transition-all duration-200
+- **Code Example Bad:** duration-1000
+- **Severity:** Medium
+
+### Result 13
+- **Category:** Animation
+- **Issue:** Transform Performance
+- **Platform:** Web
+- **Description:** Some CSS properties trigger expensive repaints
+- **Do:** Use transform and opacity for animations
+- **Don't:** Animate width/height/top/left properties
+- **Code Example Good:** transform: translateY()
+- **Code Example Bad:** top: 10px animation
+- **Severity:** Medium
+
+### Result 14
+- **Category:** Accessibility
+- **Issue:** Alt Text
+- **Platform:** All
+- **Description:** Images need text alternatives
+- **Do:** Descriptive alt text for meaningful images
+- **Don't:** Empty or missing alt attributes
+- **Code Example Good:** alt='Dog playing in park'
+- **Code Example Bad:** alt='' for content images
+- **Severity:** High
+
+### Result 15
+- **Category:** Accessibility
+- **Issue:** Error Messages
+- **Platform:** All
+- **Description:** Error messages must be announced
+- **Do:** Use aria-live or role=alert for errors
+- **Don't:** Visual-only error indication
+- **Code Example Good:** role='alert'
+- **Code Example Bad:** Red border only
+- **Severity:** High
+
+### Result 16
+- **Category:** Animation
+- **Issue:** Excessive Motion
+- **Platform:** All
+- **Description:** Too many animations cause distraction and motion sickness
+- **Do:** Animate 1-2 key elements per view maximum
+- **Don't:** Animate everything that moves
+- **Code Example Good:** Single hero animation
+- **Code Example Bad:** animate-bounce on 5+ elements
+- **Severity:** High
+
+### Result 17
+- **Category:** Animation
+- **Issue:** Hover vs Tap
+- **Platform:** All
+- **Description:** Hover effects don't work on touch devices
+- **Do:** Use click/tap for primary interactions
+- **Don't:** Rely only on hover for important actions
+- **Code Example Good:** onClick handler
+- **Code Example Bad:** onMouseEnter only
+- **Severity:** High
+
+### Result 18
+- **Category:** Accessibility
+- **Issue:** Color Contrast
+- **Platform:** All
+- **Description:** Text must be readable against background
+- **Do:** Minimum 4.5:1 ratio for normal text
+- **Don't:** Low contrast text
+- **Code Example Good:** #333 on white (7:1)
+- **Code Example Bad:** #999 on white (2.8:1)
+- **Severity:** High
+
+### Result 19
+- **Category:** Accessibility
+- **Issue:** Color Only
+- **Platform:** All
+- **Description:** Don't convey information by color alone
+- **Do:** Use icons/text in addition to color
+- **Don't:** Red/green only for error/success
+- **Code Example Good:** Red text + error icon
+- **Code Example Bad:** Red border only for error
+- **Severity:** High
+
+### Result 20
+- **Category:** Accessibility
+- **Issue:** Heading Hierarchy
+- **Platform:** Web
+- **Description:** Screen readers use headings for navigation
+- **Do:** Use sequential heading levels h1-h6
+- **Don't:** Skip heading levels or misuse for styling
+- **Code Example Good:** h1 then h2 then h3
+- **Code Example Bad:** h1 then h4
+- **Severity:** Medium
+

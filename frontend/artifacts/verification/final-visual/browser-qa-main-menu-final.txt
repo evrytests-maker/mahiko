@@ -1,0 +1,35 @@
+PASS baseline comparison screenshot is preserved
+PASS initial chat renders
+PASS left navigation is visible by default
+PASS right review is visible by default
+PASS activity is absent before submit
+PASS single app chrome contains no File/Edit/View menu
+PASS workspace title and project stay inside header: {'contained': True, 'header': {'top': 0, 'bottom': 56, 'height': 56}, 'project': {'top': 23.625, 'bottom': 47.625, 'height': 24}, 'titleFont': '13px', 'titleMargin': '0px'}
+PASS workspace title uses compact TUI typography: {'contained': True, 'header': {'top': 0, 'bottom': 56, 'height': 56}, 'project': {'top': 23.625, 'bottom': 47.625, 'height': 24}, 'titleFont': '13px', 'titleMargin': '0px'}
+PASS sidebar exposes /MCP
+PASS sidebar exposes Skills next to /MCP
+PASS /MCP and Skills are adjacent: ['Чаты', 'Проекты', 'Изменения', 'Запланировано', '/MCP', 'Скиллы']
+PASS right pane contains review workflow
+PASS right pane does not duplicate model controls
+PASS right pane does not duplicate context controls
+PASS π assistant marks render: count=3
+PASS π has no tile background: {'bg': 'rgba(0, 0, 0, 0)', 'image': 'linear-gradient(100deg, rgb(147, 209, 189) 0%, rgb(130, 184, 199) 38%, rgb(163, 142, 181) 68%, rgb(183, 166, 117) 100%)', 'width': 30}
+PASS π uses a multicolor OMP spectrum: {'bg': 'rgba(0, 0, 0, 0)', 'image': 'linear-gradient(100deg, rgb(147, 209, 189) 0%, rgb(130, 184, 199) 38%, rgb(163, 142, 181) 68%, rgb(183, 166, 117) 100%)', 'width': 30}
+PASS all initial buttons have accessible names: unnamed=0
+PASS high-frequency controls meet 44px target: []
+PASS all main-menu controls meet WCAG 24px minimum: []
+PASS main-menu text contrast reaches 4.5:1: []
+PASS main-menu focus ring is visible and 2px: {'width': 2, 'style': 'solid', 'color': 'rgb(147, 209, 189)', 'active': True}
+PASS main-menu follows native keyboard order
+PASS main-menu rows expose a hover state: normal=rgba(0, 0, 0, 0); hover=rgb(23, 28, 32)
+PASS active route has current marker
+FAIL desktop menu keeps project actions above settings: {'projectActionVisible': False, 'historyOverflow': 'auto', 'action': {'top': 707.59375, 'bottom': 751.59375}, 'footer': {'top': 746.8125, 'bottom': 800}}
+Traceback (most recent call last):
+  File "/mnt/data/ma-hi-ko-ui-rework/frontend/scripts/run_browser_qa.py", line 240, in run
+    qa.check("desktop menu keeps project actions above settings", desktop_menu_geometry["projectActionVisible"], str(desktop_menu_geometry))
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/ma-hi-ko-ui-rework/frontend/scripts/run_browser_qa.py", line 87, in check
+    raise AssertionError(f"{name}: {detail or 'condition is false'}")
+AssertionError: desktop menu keeps project actions above settings: {'projectActionVisible': False, 'historyOverflow': 'auto', 'action': {'top': 707.59375, 'bottom': 751.59375}, 'footer': {'top': 746.8125, 'bottom': 800}}
+
+{"passed": 25, "failed": 2}

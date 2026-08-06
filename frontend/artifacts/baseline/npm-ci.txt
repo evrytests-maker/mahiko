@@ -1,0 +1,12 @@
+$ npm ci
+started_utc=2026-08-06T14:00:17Z
+npm error code E404
+npm error 404 Not Found - GET https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/zod/-/zod-4.4.3.tgz
+npm error 404
+npm error 404  'zod@https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/zod/-/zod-4.4.3.tgz' is not in this registry.
+npm error 404
+npm error 404 Note that you can also install from a
+npm error 404 tarball, folder, http url, or git url.
+npm error A complete log of this run can be found in: /home/oai/.npm/_logs/2026-08-06T14_00_17_811Z-debug-0.log
+finished_utc=2026-08-06T14:00:19Z
+exit_code=1

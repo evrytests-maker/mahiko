@@ -1,0 +1,15 @@
+Command: npm run lint
+Started UTC: 2026-08-06T15:22:18.847399+00:00
+Ended UTC: 2026-08-06T15:22:19.077832+00:00
+Duration seconds: 0.23
+Exit code: 1
+Timed out: false
+
+npm error Missing script: "lint"
+npm error
+npm error Did you mean this?
+npm error   npm link # Symlink a package folder
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /home/oai/.npm/_logs/2026-08-06T15_22_18_885Z-debug-0.log

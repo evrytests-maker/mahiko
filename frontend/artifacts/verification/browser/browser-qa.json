@@ -1,0 +1,760 @@
+{
+  "summary": {
+    "passed": 150,
+    "failed": 0
+  },
+  "results": [
+    {
+      "name": "baseline comparison screenshot is preserved",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "initial chat renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "left navigation is visible by default",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "right review is visible by default",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "activity is absent before submit",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "single app chrome contains no File/Edit/View menu",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "workspace title and project stay inside header",
+      "status": "pass",
+      "detail": "{'contained': True, 'header': {'top': 0, 'bottom': 56, 'height': 56}, 'project': {'top': 23.625, 'bottom': 47.625, 'height': 24}, 'titleFont': '13px', 'titleMargin': '0px'}"
+    },
+    {
+      "name": "workspace title uses compact TUI typography",
+      "status": "pass",
+      "detail": "{'contained': True, 'header': {'top': 0, 'bottom': 56, 'height': 56}, 'project': {'top': 23.625, 'bottom': 47.625, 'height': 24}, 'titleFont': '13px', 'titleMargin': '0px'}"
+    },
+    {
+      "name": "sidebar exposes /MCP",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar exposes Skills next to /MCP",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "/MCP and Skills are adjacent",
+      "status": "pass",
+      "detail": "['Чаты', 'Проекты', 'Изменения', 'Запланировано', '/MCP', 'Скиллы']"
+    },
+    {
+      "name": "right pane contains review workflow",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "right pane does not duplicate model controls",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "right pane does not duplicate context controls",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "π assistant marks render",
+      "status": "pass",
+      "detail": "count=3"
+    },
+    {
+      "name": "π has no tile background",
+      "status": "pass",
+      "detail": "{'bg': 'rgba(0, 0, 0, 0)', 'image': 'linear-gradient(100deg, rgb(147, 209, 189) 0%, rgb(130, 184, 199) 38%, rgb(163, 142, 181) 68%, rgb(183, 166, 117) 100%)', 'width': 30}"
+    },
+    {
+      "name": "π uses a multicolor OMP spectrum",
+      "status": "pass",
+      "detail": "{'bg': 'rgba(0, 0, 0, 0)', 'image': 'linear-gradient(100deg, rgb(147, 209, 189) 0%, rgb(130, 184, 199) 38%, rgb(163, 142, 181) 68%, rgb(183, 166, 117) 100%)', 'width': 30}"
+    },
+    {
+      "name": "all initial buttons have accessible names",
+      "status": "pass",
+      "detail": "unnamed=0"
+    },
+    {
+      "name": "high-frequency controls meet 44px target",
+      "status": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "all main-menu controls meet WCAG 24px minimum",
+      "status": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "main-menu text contrast reaches 4.5:1",
+      "status": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "main-menu focus ring is visible and 2px",
+      "status": "pass",
+      "detail": "{'width': 2, 'style': 'solid', 'color': 'rgb(147, 209, 189)', 'active': True}"
+    },
+    {
+      "name": "main-menu follows native keyboard order",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "main-menu rows expose a hover state",
+      "status": "pass",
+      "detail": "normal=rgba(0, 0, 0, 0); hover=rgb(23, 28, 32)"
+    },
+    {
+      "name": "active route has current marker",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "desktop menu keeps project actions above settings",
+      "status": "pass",
+      "detail": "{'projectActionVisible': True, 'historyOverflow': 'auto', 'action': {'top': 698.53125, 'bottom': 742.53125}, 'footer': {'top': 745.53125, 'bottom': 800}}"
+    },
+    {
+      "name": "desktop menu scrolls chat history independently",
+      "status": "pass",
+      "detail": "{'projectActionVisible': True, 'historyOverflow': 'auto', 'action': {'top': 698.53125, 'bottom': 742.53125}, 'footer': {'top': 745.53125, 'bottom': 800}}"
+    },
+    {
+      "name": "initial console is clean",
+      "status": "pass",
+      "detail": "captured=[]; console=[]"
+    },
+    {
+      "name": "New chat button adds a chat",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "new chat receives active state",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "New chat restores composer focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "Ctrl+N adds a chat",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "chat history switches active session",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar route Проекты renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar route Изменения renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar route Запланировано renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar route /MCP renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar route Скиллы renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "desktop Escape keeps persistent sidebars",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "branch opens inside the main workspace",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "branch tool receives focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "branch action starts disabled",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "branch action enables after input",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "branch action reports local preparation",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "file tree is an attached internal dialog",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "file tree exposes real project rows",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "file opens from attached tree",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "pull request opens inside the workspace",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "PR action starts disabled",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "PR action reports local draft",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "attached tools never call window.open",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "review file list collapses",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "review collapse exposes inverse action",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "review exposes changed files",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "review selection updates diff path",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "review copies a unified patch",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "review opens selected file",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "review close updates header state",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar close updates aria-expanded",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar trigger announces show action",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar trigger announces hide action",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar trigger remains 44px",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "model trigger reports expanded state",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "model keyboard selection works",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "model selection restores focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "reasoning options come through OMP runtime surface",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "reasoning selector exposes all OMP levels",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "reasoning trigger reports expanded state",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "reasoning keyboard selection works",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "reasoning selection restores focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "status identifies OMP source",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "status no longer contains the word кратко",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "context trigger reports expanded state",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "auto compact starts enabled",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "auto compact toggles off",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "context threshold is editable",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "context strategy is selectable",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "manual compact gives visible state",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "context Escape restores trigger focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "auto badge disappears after disabling",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "settings expose eleven full sections",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "settings tabs use readable labels",
+      "status": "pass",
+      "detail": "['◫\\nИнтерфейс\\n›', '◕\\nМодель и reasoning', '⌨\\nУправление', '◒\\nКонтекст', '◆\\nПамять', '▤\\nФайлы', '>_\\nТерминал', '⚒\\nИнструменты', '✓\\nЗадачи', '◎\\nПровайдеры', '⌘\\n/MCP и скиллы']"
+    },
+    {
+      "name": "settings have no cryptic SH/TO strip",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "settings End moves to final section",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "/MCP settings no longer say Plugins",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "settings Home returns to first section",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "settings panel heading follows selected section",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "boolean setting toggles by pointer",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "settings close restores composer focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "command palette filters",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "palette opens /MCP",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "skill install dialog receives focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "project skill scope is available",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "project scope removes global flag",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "skill dry-run reports result",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "slash route /mcp list renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "slash route /tools renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "slash route /memory renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "slash route /usage renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "slash route /changelog full renders",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "provider action gives feedback",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "provider search exposes empty state",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "composer disables during run",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "transcript exposes busy state",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "Stop is immediately available",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "current operation is visible",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "running command details expand",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "Escape cancels run",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "cancel keeps planned denominator",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "cancel publishes no late success",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "composer re-enables after cancel",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "retry reuses one activity entry",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "retry increments attempt",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "retry reaches 7/7",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "success appends one assistant recap",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "command output is capped to twenty lines",
+      "status": "pass",
+      "detail": "lines=20"
+    },
+    {
+      "name": "command output keeps the tail",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "successful exit code is visible",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "activity copy is safe and structured",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "error state is visible",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "error progress keeps denominator",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "error details expose exit code 1",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "error details expose recovery",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "error retry succeeds",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "manual scroll-up is preserved",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "long prompt does not overflow",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "new-events control returns to latest",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "1024px layout has no document overflow",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "760px layout has no document overflow",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "1440px layout has no document overflow",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "1920px layout has no document overflow",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive Escape closes overlay sidebars",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive nav trigger exposes open action",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive sidebar remains inside viewport",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive nav excludes review",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive nav has a non-focusable dark scrim",
+      "status": "pass",
+      "detail": "{'visible': True, 'background': 'rgba(7, 9, 11, 0.72)', 'z': '33', 'tabIndex': -1}"
+    },
+    {
+      "name": "responsive nav receives focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "short-window main menu uses one scroll container",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "short-window main-menu targets stay 44px",
+      "status": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "short-window menu reaches project actions by scrolling",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "sidebar footer stays visible while menu scrolls",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive nav close restores trigger focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive review remains inside viewport",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive review excludes nav",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive review receives focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "responsive review reuses the dark scrim",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "scrim close restores review trigger focus",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "full interaction console is clean",
+      "status": "pass",
+      "detail": "captured=[]; console=[]"
+    },
+    {
+      "name": "reduced motion removes activity transitions",
+      "status": "pass",
+      "detail": "0s"
+    },
+    {
+      "name": "reduced-motion console is clean",
+      "status": "pass",
+      "detail": "captured=[]; console=[]"
+    }
+  ],
+  "console": [],
+  "failure": null
+}

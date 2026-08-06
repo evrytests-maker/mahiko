@@ -1,0 +1,1814 @@
+{
+  "viewports": [
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "doc": {
+        "scrollWidth": 1920,
+        "clientWidth": 1920,
+        "scrollHeight": 1080,
+        "clientHeight": 1080
+      },
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "width": 312,
+        "height": 1080,
+        "right": 312,
+        "bottom": 1080
+      },
+      "review": {
+        "x": 1564,
+        "y": 0,
+        "width": 356,
+        "height": 1080,
+        "right": 1920,
+        "bottom": 1080
+      },
+      "main": {
+        "x": 312,
+        "y": 0,
+        "width": 1252,
+        "height": 1080,
+        "right": 1564,
+        "bottom": 1080
+      },
+      "header": {
+        "x": 312,
+        "y": 0,
+        "width": 1252,
+        "height": 56,
+        "right": 1564,
+        "bottom": 56
+      },
+      "buttons": [
+        {
+          "i": 0,
+          "text": "‹",
+          "aria": "Скрыть боковую панель",
+          "w": 38,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 1,
+          "text": "＋ Новый чат Ctrl+N",
+          "aria": null,
+          "w": 291,
+          "h": 42,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(28, 32, 36)",
+          "border": "rgb(52, 56, 61)"
+        },
+        {
+          "i": 2,
+          "text": "◫ Чаты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 3,
+          "text": "▣ Проекты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 4,
+          "text": "◩ Изменения",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 5,
+          "text": "◷ Запланировано",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 6,
+          "text": "⌘ /MCP",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 7,
+          "text": "✦ Скиллы",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 8,
+          "text": "＋",
+          "aria": "Создать новый чат",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 9,
+          "text": "Рабочая сессия сейчас",
+          "aria": null,
+          "w": 293,
+          "h": 45.4375,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 10,
+          "text": "Activity / thinking UI сегодня",
+          "aria": null,
+          "w": 293,
+          "h": 45.4375,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 11,
+          "text": "Интеграция OMP shell вчера",
+          "aria": null,
+          "w": 293,
+          "h": 45.4375,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 12,
+          "text": "＋",
+          "aria": "Выбрать папку проекта",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 13,
+          "text": "▣ codex-1-codex-hooks-skills-python локальная рабочая область",
+          "aria": null,
+          "w": 293,
+          "h": 46,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 14,
+          "text": "⑂ main ?18",
+          "aria": "Открыть окно ветки main",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 15,
+          "text": "▤ Дерево файлов внутри app",
+          "aria": "Открыть окно дерева файлов",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 16,
+          "text": "◉ Пулл-реквест черновик",
+          "aria": "Открыть окно пулл-реквеста",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 17,
+          "text": "⚙ Настройки OMP",
+          "aria": null,
+          "w": 260.109375,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        }
+      ],
+      "clipped": [],
+      "navVisible": true,
+      "reviewVisible": true,
+      "bodyText": "Перейти к чату\nπ\nma-hi-ko\nOMP desktop\n‹\n＋\nНовый чат\nCtrl+N\n◫\nЧаты\n▣\nПроекты\n◩\nИзменения\n◷\nЗапланировано\n⌘\n/MCP\n✦\nСкиллы\nЧАТЫ\n＋\nРабочая сессия\nсейчас\nActivity / thinking UI\nсегодня\nИнтеграция OMP shell"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "doc": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "width": 312,
+        "height": 900,
+        "right": 312,
+        "bottom": 900
+      },
+      "review": {
+        "x": 1084,
+        "y": 0,
+        "width": 356,
+        "height": 900,
+        "right": 1440,
+        "bottom": 900
+      },
+      "main": {
+        "x": 312,
+        "y": 0,
+        "width": 772,
+        "height": 900,
+        "right": 1084,
+        "bottom": 900
+      },
+      "header": {
+        "x": 312,
+        "y": 0,
+        "width": 772,
+        "height": 56,
+        "right": 1084,
+        "bottom": 56
+      },
+      "buttons": [
+        {
+          "i": 0,
+          "text": "‹",
+          "aria": "Скрыть боковую панель",
+          "w": 38,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 1,
+          "text": "＋ Новый чат Ctrl+N",
+          "aria": null,
+          "w": 291,
+          "h": 42,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(28, 32, 36)",
+          "border": "rgb(52, 56, 61)"
+        },
+        {
+          "i": 2,
+          "text": "◫ Чаты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 3,
+          "text": "▣ Проекты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 4,
+          "text": "◩ Изменения",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 5,
+          "text": "◷ Запланировано",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 6,
+          "text": "⌘ /MCP",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 7,
+          "text": "✦ Скиллы",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 8,
+          "text": "＋",
+          "aria": "Создать новый чат",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 9,
+          "text": "Рабочая сессия сейчас",
+          "aria": null,
+          "w": 293,
+          "h": 45.4375,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 10,
+          "text": "Activity / thinking UI сегодня",
+          "aria": null,
+          "w": 293,
+          "h": 45.4375,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 11,
+          "text": "Интеграция OMP shell вчера",
+          "aria": null,
+          "w": 293,
+          "h": 45.4375,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 12,
+          "text": "＋",
+          "aria": "Выбрать папку проекта",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 13,
+          "text": "▣ codex-1-codex-hooks-skills-python локальная рабочая область",
+          "aria": null,
+          "w": 293,
+          "h": 46,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 14,
+          "text": "⑂ main ?18",
+          "aria": "Открыть окно ветки main",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 15,
+          "text": "▤ Дерево файлов внутри app",
+          "aria": "Открыть окно дерева файлов",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 16,
+          "text": "◉ Пулл-реквест черновик",
+          "aria": "Открыть окно пулл-реквеста",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 17,
+          "text": "⚙ Настройки OMP",
+          "aria": null,
+          "w": 260.109375,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        }
+      ],
+      "clipped": [],
+      "navVisible": true,
+      "reviewVisible": true,
+      "bodyText": "Перейти к чату\nπ\nma-hi-ko\nOMP desktop\n‹\n＋\nНовый чат\nCtrl+N\n◫\nЧаты\n▣\nПроекты\n◩\nИзменения\n◷\nЗапланировано\n⌘\n/MCP\n✦\nСкиллы\nЧАТЫ\n＋\nРабочая сессия\nсейчас\nActivity / thinking UI\nсегодня\nИнтеграция OMP shell"
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "doc": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "clientHeight": 800
+      },
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "width": 312,
+        "height": 800,
+        "right": 312,
+        "bottom": 800
+      },
+      "review": {
+        "x": 924,
+        "y": 0,
+        "width": 356,
+        "height": 800,
+        "right": 1280,
+        "bottom": 800
+      },
+      "main": {
+        "x": 312,
+        "y": 0,
+        "width": 612,
+        "height": 800,
+        "right": 924,
+        "bottom": 800
+      },
+      "header": {
+        "x": 312,
+        "y": 0,
+        "width": 612,
+        "height": 56,
+        "right": 924,
+        "bottom": 56
+      },
+      "buttons": [
+        {
+          "i": 0,
+          "text": "‹",
+          "aria": "Скрыть боковую панель",
+          "w": 38,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 1,
+          "text": "＋ Новый чат Ctrl+N",
+          "aria": null,
+          "w": 291,
+          "h": 42,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(28, 32, 36)",
+          "border": "rgb(52, 56, 61)"
+        },
+        {
+          "i": 2,
+          "text": "◫ Чаты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 3,
+          "text": "▣ Проекты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 4,
+          "text": "◩ Изменения",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 5,
+          "text": "◷ Запланировано",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 6,
+          "text": "⌘ /MCP",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 7,
+          "text": "✦ Скиллы",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 8,
+          "text": "＋",
+          "aria": "Создать новый чат",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 9,
+          "text": "Рабочая сессия сейчас",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 10,
+          "text": "Activity / thinking UI сегодня",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 11,
+          "text": "Интеграция OMP shell вчера",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 12,
+          "text": "＋",
+          "aria": "Выбрать папку проекта",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 13,
+          "text": "▣ codex-1-codex-hooks-skills-python локальная рабочая область",
+          "aria": null,
+          "w": 293,
+          "h": 46,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 14,
+          "text": "⑂ main ?18",
+          "aria": "Открыть окно ветки main",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 15,
+          "text": "▤ Дерево файлов внутри app",
+          "aria": "Открыть окно дерева файлов",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 16,
+          "text": "◉ Пулл-реквест черновик",
+          "aria": "Открыть окно пулл-реквеста",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 17,
+          "text": "⚙ Настройки OMP",
+          "aria": null,
+          "w": 260.109375,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        }
+      ],
+      "clipped": [],
+      "navVisible": true,
+      "reviewVisible": true,
+      "bodyText": "Перейти к чату\nπ\nma-hi-ko\nOMP desktop\n‹\n＋\nНовый чат\nCtrl+N\n◫\nЧаты\n▣\nПроекты\n◩\nИзменения\n◷\nЗапланировано\n⌘\n/MCP\n✦\nСкиллы\nЧАТЫ\n＋\nРабочая сессия\nсейчас\nActivity / thinking UI\nсегодня\nИнтеграция OMP shell"
+    },
+    {
+      "viewport": {
+        "width": 1180,
+        "height": 800
+      },
+      "doc": {
+        "scrollWidth": 1180,
+        "clientWidth": 1180,
+        "scrollHeight": 800,
+        "clientHeight": 800
+      },
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "width": 312,
+        "height": 800,
+        "right": 312,
+        "bottom": 800
+      },
+      "review": {
+        "x": 824,
+        "y": 0,
+        "width": 356,
+        "height": 800,
+        "right": 1180,
+        "bottom": 800
+      },
+      "main": {
+        "x": 0,
+        "y": 0,
+        "width": 1180,
+        "height": 800,
+        "right": 1180,
+        "bottom": 800
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1180,
+        "height": 56,
+        "right": 1180,
+        "bottom": 56
+      },
+      "buttons": [
+        {
+          "i": 0,
+          "text": "‹",
+          "aria": "Скрыть боковую панель",
+          "w": 38,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 1,
+          "text": "＋ Новый чат Ctrl+N",
+          "aria": null,
+          "w": 291,
+          "h": 42,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(28, 32, 36)",
+          "border": "rgb(52, 56, 61)"
+        },
+        {
+          "i": 2,
+          "text": "◫ Чаты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 3,
+          "text": "▣ Проекты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 4,
+          "text": "◩ Изменения",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 5,
+          "text": "◷ Запланировано",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 6,
+          "text": "⌘ /MCP",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 7,
+          "text": "✦ Скиллы",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 8,
+          "text": "＋",
+          "aria": "Создать новый чат",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 9,
+          "text": "Рабочая сессия сейчас",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 10,
+          "text": "Activity / thinking UI сегодня",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 11,
+          "text": "Интеграция OMP shell вчера",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 12,
+          "text": "＋",
+          "aria": "Выбрать папку проекта",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 13,
+          "text": "▣ codex-1-codex-hooks-skills-python локальная рабочая область",
+          "aria": null,
+          "w": 293,
+          "h": 46,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 14,
+          "text": "⑂ main ?18",
+          "aria": "Открыть окно ветки main",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 15,
+          "text": "▤ Дерево файлов внутри app",
+          "aria": "Открыть окно дерева файлов",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 16,
+          "text": "◉ Пулл-реквест черновик",
+          "aria": "Открыть окно пулл-реквеста",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 17,
+          "text": "⚙ Настройки OMP",
+          "aria": null,
+          "w": 260.109375,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        }
+      ],
+      "clipped": [],
+      "navVisible": true,
+      "reviewVisible": true,
+      "bodyText": "Перейти к чату\nπ\nma-hi-ko\nOMP desktop\n‹\n＋\nНовый чат\nCtrl+N\n◫\nЧаты\n▣\nПроекты\n◩\nИзменения\n◷\nЗапланировано\n⌘\n/MCP\n✦\nСкиллы\nЧАТЫ\n＋\nРабочая сессия\nсейчас\nActivity / thinking UI\nсегодня\nИнтеграция OMP shell"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 700
+      },
+      "doc": {
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "scrollHeight": 700,
+        "clientHeight": 700
+      },
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "width": 312,
+        "height": 700,
+        "right": 312,
+        "bottom": 700
+      },
+      "review": {
+        "x": 668,
+        "y": 0,
+        "width": 356,
+        "height": 700,
+        "right": 1024,
+        "bottom": 700
+      },
+      "main": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 700,
+        "right": 1024,
+        "bottom": 700
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 56,
+        "right": 1024,
+        "bottom": 56
+      },
+      "buttons": [
+        {
+          "i": 0,
+          "text": "‹",
+          "aria": "Скрыть боковую панель",
+          "w": 38,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 1,
+          "text": "＋ Новый чат Ctrl+N",
+          "aria": null,
+          "w": 291,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(28, 32, 36)",
+          "border": "rgb(52, 56, 61)"
+        },
+        {
+          "i": 2,
+          "text": "◫ Чаты",
+          "aria": null,
+          "w": 293,
+          "h": 35,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 3,
+          "text": "▣ Проекты",
+          "aria": null,
+          "w": 293,
+          "h": 35,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 4,
+          "text": "◩ Изменения",
+          "aria": null,
+          "w": 293,
+          "h": 35,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 5,
+          "text": "◷ Запланировано",
+          "aria": null,
+          "w": 293,
+          "h": 35,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 6,
+          "text": "⌘ /MCP",
+          "aria": null,
+          "w": 293,
+          "h": 35,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 7,
+          "text": "✦ Скиллы",
+          "aria": null,
+          "w": 293,
+          "h": 35,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 8,
+          "text": "＋",
+          "aria": "Создать новый чат",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 9,
+          "text": "Рабочая сессия сейчас",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 10,
+          "text": "Activity / thinking UI сегодня",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 11,
+          "text": "Интеграция OMP shell вчера",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 12,
+          "text": "＋",
+          "aria": "Выбрать папку проекта",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 13,
+          "text": "▣ codex-1-codex-hooks-skills-python локальная рабочая область",
+          "aria": null,
+          "w": 293,
+          "h": 46,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 14,
+          "text": "⑂ main ?18",
+          "aria": "Открыть окно ветки main",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 15,
+          "text": "▤ Дерево файлов внутри app",
+          "aria": "Открыть окно дерева файлов",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 16,
+          "text": "◉ Пулл-реквест черновик",
+          "aria": "Открыть окно пулл-реквеста",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 17,
+          "text": "⚙ Настройки OMP",
+          "aria": null,
+          "w": 260.109375,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        }
+      ],
+      "clipped": [],
+      "navVisible": true,
+      "reviewVisible": true,
+      "bodyText": "Перейти к чату\nπ\nma-hi-ko\nOMP desktop\n‹\n＋\nНовый чат\nCtrl+N\n◫\nЧаты\n▣\nПроекты\n◩\nИзменения\n◷\nЗапланировано\n⌘\n/MCP\n✦\nСкиллы\nЧАТЫ\n＋\nРабочая сессия\nсейчас\nActivity / thinking UI\nсегодня\nИнтеграция OMP shell"
+    },
+    {
+      "viewport": {
+        "width": 760,
+        "height": 720
+      },
+      "doc": {
+        "scrollWidth": 760,
+        "clientWidth": 760,
+        "scrollHeight": 720,
+        "clientHeight": 720
+      },
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "width": 312,
+        "height": 720,
+        "right": 312,
+        "bottom": 720
+      },
+      "review": {
+        "x": 404,
+        "y": 0,
+        "width": 356,
+        "height": 720,
+        "right": 760,
+        "bottom": 720
+      },
+      "main": {
+        "x": 0,
+        "y": 0,
+        "width": 760,
+        "height": 720,
+        "right": 760,
+        "bottom": 720
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 760,
+        "height": 56,
+        "right": 760,
+        "bottom": 56
+      },
+      "buttons": [
+        {
+          "i": 0,
+          "text": "‹",
+          "aria": "Скрыть боковую панель",
+          "w": 38,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 1,
+          "text": "＋ Новый чат Ctrl+N",
+          "aria": null,
+          "w": 291,
+          "h": 42,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(28, 32, 36)",
+          "border": "rgb(52, 56, 61)"
+        },
+        {
+          "i": 2,
+          "text": "◫ Чаты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 3,
+          "text": "▣ Проекты",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 4,
+          "text": "◩ Изменения",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 5,
+          "text": "◷ Запланировано",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 6,
+          "text": "⌘ /MCP",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 7,
+          "text": "✦ Скиллы",
+          "aria": null,
+          "w": 293,
+          "h": 40,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 8,
+          "text": "＋",
+          "aria": "Создать новый чат",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 9,
+          "text": "Рабочая сессия сейчас",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(215, 218, 222)",
+          "bg": "rgb(33, 51, 67)",
+          "border": "rgb(49, 68, 81)"
+        },
+        {
+          "i": 10,
+          "text": "Activity / thinking UI сегодня",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 11,
+          "text": "Интеграция OMP shell вчера",
+          "aria": null,
+          "w": 293,
+          "h": 44,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 12,
+          "text": "＋",
+          "aria": "Выбрать папку проекта",
+          "w": 34,
+          "h": 34,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        },
+        {
+          "i": 13,
+          "text": "▣ codex-1-codex-hooks-skills-python локальная рабочая область",
+          "aria": null,
+          "w": 293,
+          "h": 46,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 14,
+          "text": "⑂ main ?18",
+          "aria": "Открыть окно ветки main",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 15,
+          "text": "▤ Дерево файлов внутри app",
+          "aria": "Открыть окно дерева файлов",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 16,
+          "text": "◉ Пулл-реквест черновик",
+          "aria": "Открыть окно пулл-реквеста",
+          "w": 293,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "i": 17,
+          "text": "⚙ Настройки OMP",
+          "aria": null,
+          "w": 260.109375,
+          "h": 38,
+          "visible": true,
+          "overflow": false,
+          "color": "rgb(139, 145, 152)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "border": "rgb(139, 145, 152)"
+        }
+      ],
+      "clipped": [],
+      "navVisible": true,
+      "reviewVisible": true,
+      "bodyText": "Перейти к чату\nπ\nma-hi-ko\nOMP desktop\n‹\n＋\nНовый чат\nCtrl+N\n◫\nЧаты\n▣\nПроекты\n◩\nИзменения\n◷\nЗапланировано\n⌘\n/MCP\n✦\nСкиллы\nЧАТЫ\n＋\nРабочая сессия\nсейчас\nActivity / thinking UI\nсегодня\nИнтеграция OMP shell"
+    }
+  ],
+  "focus": [
+    {
+      "text": "‹",
+      "aria": "Скрыть боковую панель",
+      "w": 38,
+      "h": 38,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "＋ Новый чат Ctrl+N",
+      "aria": null,
+      "w": 291,
+      "h": 42,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "◫ Чаты",
+      "aria": null,
+      "w": 293,
+      "h": 40,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "▣ Проекты",
+      "aria": null,
+      "w": 293,
+      "h": 40,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "◩ Изменения",
+      "aria": null,
+      "w": 293,
+      "h": 40,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "◷ Запланировано",
+      "aria": null,
+      "w": 293,
+      "h": 40,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "⌘ /MCP",
+      "aria": null,
+      "w": 293,
+      "h": 40,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "✦ Скиллы",
+      "aria": null,
+      "w": 293,
+      "h": 40,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "＋",
+      "aria": "Создать новый чат",
+      "w": 34,
+      "h": 34,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "Рабочая сессия сейчас",
+      "aria": null,
+      "w": 293,
+      "h": 44,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "Activity / thinking UI сегодня",
+      "aria": null,
+      "w": 293,
+      "h": 44,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "Интеграция OMP shell вчера",
+      "aria": null,
+      "w": 293,
+      "h": 44,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "＋",
+      "aria": "Выбрать папку проекта",
+      "w": 34,
+      "h": 34,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "▣ codex-1-codex-hooks-skills-python локальная рабочая область",
+      "aria": null,
+      "w": 293,
+      "h": 46,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "⑂ main ?18",
+      "aria": "Открыть окно ветки main",
+      "w": 293,
+      "h": 38,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "▤ Дерево файлов внутри app",
+      "aria": "Открыть окно дерева файлов",
+      "w": 293,
+      "h": 38,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "◉ Пулл-реквест черновик",
+      "aria": "Открыть окно пулл-реквеста",
+      "w": 293,
+      "h": 38,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    },
+    {
+      "text": "⚙ Настройки OMP",
+      "aria": null,
+      "w": 260.109375,
+      "h": 38,
+      "outlineWidth": "1px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "outlineOffset": "-1px"
+    }
+  ],
+  "buttons": [
+    {
+      "text": "◫ Чаты",
+      "aria": null,
+      "html": "<button class=\"active\" aria-current=\"page\"><span>◫</span><span>Чаты</span></button>"
+    },
+    {
+      "text": "▣ Проекты",
+      "aria": null,
+      "html": "<button class=\"\"><span>▣</span><span>Проекты</span></button>"
+    },
+    {
+      "text": "◩ Изменения",
+      "aria": null,
+      "html": "<button class=\"\"><span>◩</span><span>Изменения</span></button>"
+    },
+    {
+      "text": "◷ Запланировано",
+      "aria": null,
+      "html": "<button class=\"\"><span>◷</span><span>Запланировано</span></button>"
+    },
+    {
+      "text": "⌘ /MCP",
+      "aria": null,
+      "html": "<button class=\"\"><span>⌘</span><span>/MCP</span></button>"
+    },
+    {
+      "text": "✦ Скиллы",
+      "aria": null,
+      "html": "<button class=\"\"><span>✦</span><span>Скиллы</span></button>"
+    }
+  ]
+}

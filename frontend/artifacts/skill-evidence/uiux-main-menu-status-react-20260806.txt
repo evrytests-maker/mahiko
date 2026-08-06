@@ -1,0 +1,37 @@
+## UI Pro Max Stack Guidelines
+**Stack:** react | **Query:** navigation sidebar menu accessibility
+**Source:** stacks/react.csv | **Found:** 3 results
+
+### Result 1
+- **Category:** Accessibility
+- **Guideline:** Use semantic HTML
+- **Description:** Proper HTML elements for their purpose
+- **Do:** button for clicks nav for navigation
+- **Don't:** div with onClick for buttons
+- **Code Good:** <button onClick={...}>
+- **Code Bad:** <div onClick={...}>
+- **Severity:** High
+- **Docs URL:** https://react.dev/reference/react-dom/components#all-html-components
+
+### Result 2
+- **Category:** Accessibility
+- **Guideline:** Label form controls
+- **Description:** Associate labels with inputs
+- **Do:** htmlFor matching input id
+- **Don't:** Placeholder as only label
+- **Code Good:** <label htmlFor="email">Email</label>
+- **Code Bad:** <input placeholder="Email"/>
+- **Severity:** High
+- **Docs URL:** 
+
+### Result 3
+- **Category:** Accessibility
+- **Guideline:** Manage focus properly
+- **Description:** Handle focus for modals dialogs
+- **Do:** Focus trap in modals return focus on close
+- **Don't:** No focus management
+- **Code Good:** useEffect to focus input
+- **Code Bad:** Modal without focus trap
+- **Severity:** High
+- **Docs URL:** 
+

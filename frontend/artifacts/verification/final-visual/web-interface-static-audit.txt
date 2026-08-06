@@ -1,0 +1,152 @@
+WEB INTERFACE STATIC AUDIT
+Generated: 2026-08-06
+
+1. transition: all
+
+2. click handlers on non-semantic div/span
+
+3. dangerous paste/zoom restrictions
+src/renderer/App.tsx:355:        event.preventDefault();
+src/renderer/App.tsx:359:        event.preventDefault();
+src/renderer/App.tsx:363:        event.preventDefault();
+src/renderer/App.tsx:372:        event.preventDefault();
+src/renderer/App.tsx:381:        event.preventDefault();
+src/renderer/App.tsx:387:          event.preventDefault();
+src/renderer/App.tsx:392:          event.preventDefault();
+src/renderer/App.tsx:398:          event.preventDefault();
+src/renderer/App.tsx:404:          event.preventDefault();
+src/renderer/App.tsx:410:          event.preventDefault();
+src/renderer/App.tsx:416:          event.preventDefault();
+src/renderer/components/Pages.tsx:201:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:146:    event.preventDefault();
+src/renderer/components/OmpChrome.tsx:152:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:157:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:162:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:167:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:176:        event.preventDefault();
+src/renderer/components/OmpChrome.tsx:180:        event.preventDefault();
+src/renderer/components/OmpChrome.tsx:329:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:332:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:335:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:398:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:401:      event.preventDefault();
+src/renderer/components/OmpChrome.tsx:404:      event.preventDefault();
+src/renderer/components/Overlays.tsx:76:        event.preventDefault();
+src/renderer/components/Overlays.tsx:83:        event.preventDefault();
+src/renderer/components/Overlays.tsx:88:        event.preventDefault();
+src/renderer/components/Overlays.tsx:93:        event.preventDefault();
+src/renderer/components/Overlays.tsx:97:        event.preventDefault();
+src/renderer/components/Overlays.tsx:101:        event.preventDefault();
+src/renderer/components/Overlays.tsx:131:                  event.preventDefault();
+src/renderer/components/Overlays.tsx:171:                        event.preventDefault();
+src/renderer/components/Overlays.tsx:174:                        event.preventDefault();
+src/renderer/components/Overlays.tsx:229:        event.preventDefault();
+src/renderer/components/Overlays.tsx:234:        event.preventDefault();
+src/renderer/components/Overlays.tsx:238:        event.preventDefault();
+src/renderer/components/Overlays.tsx:242:        event.preventDefault();
+
+4. outline removal (must have later focus-visible replacement)
+142:.composer-input-row input { width: 100%; color: var(--text); outline: 0; }
+397:.composer-input-row input { width: 100%; color: #e8ecf4; font: 13.5px/1.5 "DejaVu Sans Mono", monospace; outline: 0; }
+
+5. focus-visible rules
+30:button:focus-visible, input:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
+63:.resize-handle:focus-visible { background: var(--accent); }
+391:.status-action:focus-visible { color: #e8ecf4; background: transparent; outline: 1px dotted #6f8fa0; outline-offset: 2px; }
+673:.activity-row-toggle:focus-visible { outline: 1px solid #6d9b8c; outline-offset: -1px; }
+833:button:focus-visible, input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+
+6. reduced motion
+291:@media (prefers-reduced-motion: reduce) {
+776:@media (prefers-reduced-motion: reduce) {
+1714:@media (prefers-reduced-motion: reduce) {
+
+7. icon-only button labels and decorative icons
+src/renderer/App.tsx:499:            <button id="environment-trigger" className="workbench-icon" aria-label={showNav ? "Скрыть боковую панель" : "Показать боковую панель"} aria-controls="environment-panel" aria-expanded={showNav} title={`${showNav ? "Скрыть" : "Показать"} навигацию · Ctrl+B`} onClick={toggleSidebar}><span aria-hidden="true">◫</span></button>
+src/renderer/App.tsx:500:            <div className="workspace-title"><h1>{activeLabel}</h1><button className="workspace-project" aria-label={`Выбрать проект. Текущий: ${projectName}`} onClick={chooseProject}>{projectName}</button></div>
+src/renderer/App.tsx:501:            <button className={`runtime-state ${runtime?.rpc.ready ? "success" : "warning"}`} aria-label="Обновить состояние OMP" onClick={refreshRuntime}>{runtime?.rpc.ready ? "● OMP подключён" : "○ Подключение…"}</button>
+src/renderer/App.tsx:503:              <button className="workbench-icon" aria-label="Открыть команды" title="Команды · Ctrl+K" onClick={() => setPaletteOpen(true)}><span aria-hidden="true">⌕</span></button>
+src/renderer/App.tsx:511:              ><span aria-hidden="true">◧</span></button>
+src/renderer/App.tsx:615:        <button className="workbench-icon compact" aria-label="Скрыть боковую панель" onClick={props.onClose}><span aria-hidden="true">‹</span></button>
+src/renderer/App.tsx:619:        <button className="new-chat" aria-label="Новый чат" aria-keyshortcuts="Control+N" onClick={props.onNewChat}><span aria-hidden="true">＋</span><strong>Новый чат</strong><kbd aria-hidden="true">Ctrl+N</kbd></button>
+src/renderer/App.tsx:623:            <button key={view} className={props.active === view ? "active" : ""} aria-label={label} aria-current={props.active === view ? "page" : undefined} onClick={() => props.onSelectSection(view)}>
+src/renderer/App.tsx:624:              <span aria-hidden="true">{icon}</span><span>{label}</span>
+src/renderer/App.tsx:630:          <h2 className="sidebar-heading" id="chat-history-title"><span>Чаты</span><button aria-label="Создать новый чат" onClick={props.onNewChat}><span aria-hidden="true">＋</span></button></h2>
+src/renderer/App.tsx:641:          <h2 className="sidebar-heading" id="project-block-title"><span>Проект</span><button aria-label="Выбрать папку проекта" onClick={props.onChooseProject}><span aria-hidden="true">＋</span></button></h2>
+src/renderer/App.tsx:642:          <button className="sidebar-project" aria-label={`Выбрать проект. Текущий: ${props.projectName}`} onClick={props.onChooseProject}><span aria-hidden="true">▣</span><span><strong>{props.projectName}</strong><small>локальная рабочая область</small></span></button>
+src/renderer/App.tsx:644:            <button aria-label="Открыть окно ветки main" onClick={() => props.onOpenTool("branch")}><span aria-hidden="true">⑂</span><span>main</span><small aria-hidden="true">?18</small></button>
+src/renderer/App.tsx:645:            <button aria-label="Открыть окно дерева файлов" onClick={() => props.onOpenTool("files")}><span aria-hidden="true">▤</span><span>Дерево файлов</span><small aria-hidden="true">внутри app</small></button>
+src/renderer/App.tsx:646:            <button aria-label="Открыть окно пулл-реквеста" onClick={() => props.onOpenTool("pull-request")}><span aria-hidden="true">◉</span><span>Пулл-реквест</span><small aria-hidden="true">черновик</small></button>
+src/renderer/App.tsx:652:        <button aria-label="Открыть настройки OMP" onClick={props.onOpenSettings}><span aria-hidden="true">⚙</span><span>Настройки OMP</span></button>
+src/renderer/App.tsx:672:      <header><div><span>ВНУТРЕННЕЕ ОКНО</span><strong>{title}</strong><small>{projectName}</small></div><button className="workbench-icon" aria-label={`Закрыть окно: ${title}`} onClick={onClose}>×</button></header>
+src/renderer/App.tsx:730:      <header className="review-header"><div><span>ПРОВЕРКА</span><strong>Локальные изменения</strong></div><button className="workbench-icon compact" aria-label="Скрыть проверку изменений" onClick={onClose}>›</button></header>
+src/renderer/App.tsx:732:      <section className={`review-files${filesExpanded ? "" : " collapsed"}`} aria-labelledby="review-files-title"><div className="review-section-title" id="review-files-title"><span>Файлы</span><button aria-label={filesExpanded ? "Свернуть список файлов" : "Развернуть список файлов"} aria-expanded={filesExpanded} onClick={() => setFilesExpanded((value) => !value)}>{filesExpanded ? "⌃" : "⌄"}</button></div>
+src/renderer/App.tsx:752:      <header><button className="workbench-icon compact" aria-label="Вернуться в чат" onClick={onBack}>‹</button><span>{file.path}</span>{file.truncated ? <em>показаны первые 128 КБ</em> : null}</header>
+src/renderer/components/Overlays.test.tsx:14:  return <><button type="button" aria-label="Открыть команды" onClick={() => setOpen(true)}>Команды</button>{open ? <CommandPalette onClose={() => setOpen(false)} onCommand={onCommand} /> : null}</>;
+src/renderer/components/OmpChrome.tsx:373:        <span><strong>Автосжатие</strong><small>OMP компактирует историю до переполнения</small></span><i aria-hidden="true">{autoCompact ? "● ВКЛ" : "○ ВЫКЛ"}</i>
+src/renderer/components/OmpChrome.tsx:443:        <span className="status-frame-start" aria-hidden="true">╭─</span><PiMark className="status-mark" /><i>›</i>
+src/renderer/components/OmpChrome.tsx:444:        {onModelClick ? <button id="model-picker-trigger" type="button" className="status-model status-action" aria-label={`Выбрать модель: ${selectedModel}`} aria-haspopup="listbox" aria-expanded={modelPickerOpen} onClick={onModelClick}>⬢ {selectedModel}</button> : <span className="status-model">⬢ {selectedModel}</span>}<span className="status-dot">·</span>
+src/renderer/components/OmpChrome.tsx:445:        {onThinkingClick ? <button id="thinking-picker-trigger" type="button" className="status-thinking status-action" aria-label={`Выбрать уровень рассуждения: ${selectedThinking}`} aria-haspopup="listbox" aria-expanded={thinkingPickerOpen} onClick={onThinkingClick}>◕ {thinkingSource}:{selectedThinking}</button> : <span className="status-thinking">◕ {thinkingSource}:{selectedThinking}</span>}<i>›</i>
+src/renderer/components/OmpChrome.tsx:446:        {onProjectClick ? <button type="button" className="status-path status-action" aria-label={`Выбрать проект. Текущий: ${projectName}`} onClick={onProjectClick}>▱ {projectLabel}</button> : <span className="status-path">▱ {projectLabel}</span>}<i>›</i>
+src/renderer/components/OmpChrome.tsx:447:        {onContextClick ? <button id="context-settings-trigger" type="button" className="status-context status-action" aria-label="Настроить контекст и автосжатие" aria-haspopup="dialog" aria-expanded={contextPickerOpen} data-compacted={contextCompact || undefined} onClick={onContextClick}><span>◒ Контекст</span><b>1,9%</b>{autoCompact ? <em>auto</em> : null}</button> : <span className="status-context"><span>◒ Контекст</span><b>1,9%</b></span>}
+src/renderer/components/OmpChrome.tsx:448:        {onRuntimeClick ? <button type="button" className={`${runtime?.rpc.ready ? "status-ready" : "status-warn"} status-action`} aria-label="Обновить состояние OMP" onClick={onRuntimeClick}>⟲</button> : <span className={runtime?.rpc.ready ? "status-ready" : "status-warn"}>⟲</span>}
+src/renderer/components/OmpChrome.tsx:449:        {onRunClick ? <button type="button" className="status-run status-action" aria-label="Отправить сообщение" disabled={!canRun} onClick={onRunClick}>▶</button> : <span className="status-run">▶</span>}
+src/renderer/components/OmpChrome.tsx:451:      <span className="status-rule" aria-hidden="true" /><span className="status-frame-end" aria-hidden="true">╮</span>
+src/renderer/components/Overlays.tsx:114:        <button type="button" className="settings-close" aria-label="Закрыть настройки" onClick={onClose}>esc ×</button>
+src/renderer/components/Overlays.tsx:141:                <span className="settings-code" aria-hidden="true">{icon}</span>
+src/renderer/components/Overlays.tsx:143:                <span className="settings-tab-arrow" aria-hidden="true">{index === tabIndex ? "›" : ""}</span>
+src/renderer/components/ActivityStream.tsx:131:      <span className="activity-rail" aria-hidden="true"><span>{presentation.glyph}</span></span>
+src/renderer/components/ActivityStream.tsx:151:      <span className="activity-meta"><span>{statusLabel}</span><span>{formatDuration(duration, event.status, Boolean(event.startedAt))}</span>{expandable ? <span aria-hidden="true">{expanded ? "⌃" : "⌄"}</span> : null}</span>
+src/renderer/components/ActivityStream.tsx:166:          <code><b aria-hidden="true">$</b> {event.command}</code>
+
+8. text inputs and labels
+src/renderer/App.tsx:676:          <label><span>Сообщение коммита</span><input value={commitMessage} onChange={(event: ChangeEvent<HTMLInputElement>) => setCommitMessage(event.target.value)} aria-label="Сообщение коммита" placeholder="Кратко опишите изменение" /></label>
+src/renderer/App.tsx:690:          <label><span>Заголовок</span><input value={prTitle} onChange={(event: ChangeEvent<HTMLInputElement>) => setPrTitle(event.target.value)} aria-label="Заголовок пулл-реквеста" placeholder="Что меняется" /></label>
+src/renderer/App.tsx:691:          <label><span>Описание</span><textarea value={prBody} onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setPrBody(event.target.value)} aria-label="Описание пулл-реквеста" placeholder="Контекст, проверка и риски" /></label>
+src/renderer/components/Pages.tsx:49:          <label className="inline-search"><span className="accent">⌕</span> &gt;<input name="model-search" autoComplete="off" aria-label="Поиск моделей" value={query} onChange={(event: ChangeEvent<HTMLInputElement>) => { setQuery(event.target.value); setSelected(0); }} /></label>
+src/renderer/components/Pages.tsx:92:      <label className="type-search"><span className="dim">Начните вводить название</span><input name="provider-search" autoComplete="off" value={query} onChange={(event: ChangeEvent<HTMLInputElement>) => { setQuery(event.target.value); setSelected(0); setNotice(""); }} aria-label="Поиск провайдеров" /></label>
+src/renderer/components/Pages.tsx:161:          <label className="inline-search"><span className="accent">⌕</span> &gt;<input name="skill-search" autoComplete="off" aria-label="Поиск навыков" value={query} onChange={(event: ChangeEvent<HTMLInputElement>) => { setQuery(event.target.value); setSelected(0); }} /></label>
+src/renderer/components/OmpChrome.tsx:303:          <input
+src/renderer/components/OmpChrome.tsx:375:      <label className="context-threshold">
+src/renderer/components/OmpChrome.tsx:377:        <input type="range" min="60" max="95" step="1" value={threshold} onChange={(event: ChangeEvent<HTMLInputElement>) => onChange({ compactionThreshold: Number(event.target.value) })} aria-label="Порог автосжатия" />
+src/renderer/components/Overlays.tsx:254:        <label className="palette-search"><span>⌕ &gt;</span><input name="command-search" autoComplete="off" aria-label="Фильтр команд" autoFocus value={query} onChange={(event: ChangeEvent<HTMLInputElement>) => { setQuery(event.target.value); setSelected(0); }} /></label>
+
+9. ellipsis typography
+src/renderer/App.tsx:88:      return { ...current, [activeChatId]: nextEntries };
+src/renderer/App.tsx:154:    setSettings((current) => current ? { ...current, ...patch } : current);
+src/renderer/App.tsx:220:    setChats((current) => [{ id, title: "Новый чат", meta: "сейчас" }, ...current]);
+src/renderer/App.tsx:221:    setEntriesByChat((current) => ({ ...current, [id]: [] }));
+src/renderer/App.tsx:249:        ? { ...chat, title: prompt.slice(0, 42), meta: "сейчас" }
+src/renderer/App.tsx:256:        ...current,
+src/renderer/App.tsx:279:          : [...current, { type: "message", message: answer }]);
+src/renderer/components/ActivityStream.test.tsx:13:    ...createActivityRun(reply, prompt, 0, startedAt),
+src/renderer/components/ActivityStream.test.tsx:17:      ...event,
+src/renderer/components/ActivityStream.test.tsx:56:      ...event,
+src/renderer/components/ActivityStream.test.tsx:76:      ? { ...event, status: "error", exitCode: 1, errorMessage: "Проверка завершилась с кодом 1" }
+src/renderer/components/Overlays.tsx:55:    setOverrides((current) => ({ ...current, [key]: value === "true" ? "false" : "true" }));
+src/renderer/components/ActivityStream.tsx:186:    ?? [...run.events].reverse().find((event) => event.kind === "error" || event.kind === "cancelled" || event.kind === "complete")
+src/renderer/components/ActivityStream.tsx:187:    ?? [...run.events].reverse().find((event) => event.status === "success")
+src/renderer/components/ActivityStream.tsx:194:  if (currentIndex >= MAX_VISIBLE_EVENTS) return [...events.slice(0, MAX_VISIBLE_EVENTS - 1), events[currentIndex]!];
+src/renderer/components/ActivityStream.tsx:232:    if (event.output?.length) lines.push(...event.output.map((line) => `  ${line}`));
+
+10. current route and expanded state
+src/renderer/App.tsx:499:            <button id="environment-trigger" className="workbench-icon" aria-label={showNav ? "Скрыть боковую панель" : "Показать боковую панель"} aria-controls="environment-panel" aria-expanded={showNav} title={`${showNav ? "Скрыть" : "Показать"} навигацию · Ctrl+B`} onClick={toggleSidebar}><span aria-hidden="true">◫</span></button>
+src/renderer/App.tsx:508:                aria-expanded={showReview}
+src/renderer/App.tsx:623:            <button key={view} className={props.active === view ? "active" : ""} aria-label={label} aria-current={props.active === view ? "page" : undefined} onClick={() => props.onSelectSection(view)}>
+src/renderer/App.tsx:732:      <section className={`review-files${filesExpanded ? "" : " collapsed"}`} aria-labelledby="review-files-title"><div className="review-section-title" id="review-files-title"><span>Файлы</span><button aria-label={filesExpanded ? "Свернуть список файлов" : "Развернуть список файлов"} aria-expanded={filesExpanded} onClick={() => setFilesExpanded((value) => !value)}>{filesExpanded ? "⌃" : "⌄"}</button></div>
+src/renderer/components/Overlays.test.tsx:35:    expect(colorBlind).toHaveAttribute("aria-pressed", "false");
+src/renderer/components/Overlays.test.tsx:37:    expect(colorBlind).toHaveAttribute("aria-pressed", "true");
+src/renderer/components/ActivityStream.test.tsx:35:    expect(commandToggle).toHaveAttribute("aria-expanded", "false");
+src/renderer/components/ActivityStream.test.tsx:37:    expect(commandToggle).toHaveAttribute("aria-expanded", "true");
+src/renderer/components/OmpChrome.test.tsx:75:    expect(screen.getByRole("button", { name: "Показать полный контекст" })).toHaveAttribute("aria-pressed", "true");
+src/renderer/components/OmpChrome.tsx:372:      <button type="button" className="context-toggle" aria-pressed={autoCompact} onClick={() => onChange({ autoCompact: !autoCompact })}>
+src/renderer/components/OmpChrome.tsx:381:          <button key={value} type="button" aria-pressed={strategy === value} onClick={() => onChange({ compactionStrategy: value })}>{strategyLabels[value]}</button>
+src/renderer/components/OmpChrome.tsx:444:        {onModelClick ? <button id="model-picker-trigger" type="button" className="status-model status-action" aria-label={`Выбрать модель: ${selectedModel}`} aria-haspopup="listbox" aria-expanded={modelPickerOpen} onClick={onModelClick}>⬢ {selectedModel}</button> : <span className="status-model">⬢ {selectedModel}</span>}<span className="status-dot">·</span>
+src/renderer/components/OmpChrome.tsx:445:        {onThinkingClick ? <button id="thinking-picker-trigger" type="button" className="status-thinking status-action" aria-label={`Выбрать уровень рассуждения: ${selectedThinking}`} aria-haspopup="listbox" aria-expanded={thinkingPickerOpen} onClick={onThinkingClick}>◕ {thinkingSource}:{selectedThinking}</button> : <span className="status-thinking">◕ {thinkingSource}:{selectedThinking}</span>}<i>›</i>
+src/renderer/components/OmpChrome.tsx:447:        {onContextClick ? <button id="context-settings-trigger" type="button" className="status-context status-action" aria-label="Настроить контекст и автосжатие" aria-haspopup="dialog" aria-expanded={contextPickerOpen} data-compacted={contextCompact || undefined} onClick={onContextClick}><span>◒ Контекст</span><b>1,9%</b>{autoCompact ? <em>auto</em> : null}</button> : <span className="status-context"><span>◒ Контекст</span><b>1,9%</b></span>}
+src/renderer/components/Pages.tsx:84:          <button type="button" key={name} className={index === selected ? "selected" : ""} aria-pressed={index === selected} onClick={() => chooseProvider(index)}>
+src/renderer/components/Pages.tsx:230:          <button type="button" className={scope === "user" ? "radio-row selected" : "radio-row"} aria-pressed={scope === "user"} onClick={() => setScope("user")}><span>{scope === "user" ? "◉" : "○"} Пользователь</span><span className="dim">доступно во всех проектах</span></button>
+src/renderer/components/Pages.tsx:231:          <button type="button" className={scope === "project" ? "radio-row selected" : "radio-row"} aria-pressed={scope === "project"} onClick={() => setScope("project")} disabled={!projectPath} title={!projectPath ? "Сначала выберите проект" : undefined}><span>{scope === "project" ? "◉" : "○"} Проект</span><span className="dim">{projectPath || "сначала выберите проект"}</span></button>
+src/renderer/components/ActivityStream.tsx:101:        <button type="button" className="activity-more" aria-expanded={showAll} onClick={() => setShowAll((value) => !value)}>
+src/renderer/components/ActivityStream.tsx:133:        <button type="button" className="activity-row-toggle" aria-expanded={expanded} aria-controls={detailsId} onClick={onToggle}>
+src/renderer/components/Overlays.tsx:165:                    aria-pressed={["true", "false"].includes(overrides[`${activeTab}:${row.label}`] ?? row.value ?? "")

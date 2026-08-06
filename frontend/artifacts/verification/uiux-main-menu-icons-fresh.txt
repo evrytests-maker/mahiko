@@ -1,0 +1,154 @@
+## UI Pro Max Search Results
+**Domain:** icons | **Query:** navigation icons sidebar search settings
+**Source:** icons.csv | **Found:** 15 results
+
+### Result 1
+- **Category:** Layout
+- **Icon Name:** sidebar
+- **Keywords:** panel drawer navigation menu
+- **Library:** Phosphor
+- **Import Code:** import { Sidebar } from '@phosphor-icons/react'
+- **Usage:** <Sidebar size={20} weight="regular" />
+- **Best For:** Sidebar panel
+- **Style:** Outline
+
+### Result 2
+- **Category:** Navigation
+- **Icon Name:** list
+- **Keywords:** hamburger menu navigation toggle bars
+- **Library:** Phosphor
+- **Import Code:** import { List } from '@phosphor-icons/react'
+- **Usage:** <List size={20} weight="regular" />
+- **Best For:** Mobile navigation drawer toggle sidebar
+- **Style:** Outline
+
+### Result 3
+- **Category:** Action
+- **Icon Name:** gear
+- **Keywords:** gear cog preferences config
+- **Library:** Phosphor
+- **Import Code:** import { Gear } from '@phosphor-icons/react'
+- **Usage:** <Gear size={20} weight="regular" />
+- **Best For:** Settings page configuration
+- **Style:** Outline
+
+### Result 4
+- **Category:** Action
+- **Icon Name:** magnifying-glass
+- **Keywords:** find lookup filter query
+- **Library:** Phosphor
+- **Import Code:** import { MagnifyingGlass } from '@phosphor-icons/react'
+- **Usage:** <MagnifyingGlass size={20} weight="regular" />
+- **Best For:** Search input bar
+- **Style:** Outline
+
+### Result 5
+- **Category:** Layout
+- **Icon Name:** columns
+- **Keywords:** layout split dual sidebar
+- **Library:** Phosphor
+- **Import Code:** import { Columns } from '@phosphor-icons/react'
+- **Usage:** <Columns size={20} weight="regular" />
+- **Best For:** Column layout split
+- **Style:** Outline
+
+### Result 6
+- **Category:** Navigation
+- **Icon Name:** house
+- **Keywords:** homepage main dashboard start
+- **Library:** Phosphor
+- **Import Code:** import { House } from '@phosphor-icons/react'
+- **Usage:** <House size={20} weight="regular" />
+- **Best For:** Home navigation main page
+- **Style:** Outline
+
+### Result 7
+- **Category:** Navigation
+- **Icon Name:** arrow-left
+- **Keywords:** back previous return navigate
+- **Library:** Phosphor
+- **Import Code:** import { ArrowLeft } from '@phosphor-icons/react'
+- **Usage:** <ArrowLeft size={20} weight="regular" />
+- **Best For:** Back button breadcrumb navigation
+- **Style:** Outline
+
+### Result 8
+- **Category:** Style Config
+- **Icon Name:** bold-typography-icon-system
+- **Keywords:** bold typography, editorial, mono label, phosphor, weight regular, minimal, icon+label required, size 20–32
+- **Library:** Phosphor (react-native)
+- **Import Code:** import { ArrowRight } from 'phosphor-react-native'
+- **Usage:** <ArrowRight size={20} weight="regular" color={colors.accent} />
+- **Best For:** Bold Typography Mobile style: weight="regular". Size 20px for UI controls, 32px for feature anchors. Icons MUST be paired with a Mono-stack text label (JetBrains Mono). Standalone icons only allowed for standard navigation (e.g., Back arrow). Accent color #FF3D00 only.
+- **Style:** Outline
+
+### Result 9
+- **Category:** Style Config
+- **Icon Name:** academia-icon-system
+- **Keywords:** academia, library, brass, ornate, phosphor, weight thin, muted warm, scholarly, mobile
+- **Library:** Phosphor (react-native)
+- **Import Code:** import { BookOpen } from 'phosphor-react-native'
+- **Usage:** <BookOpen size={22} weight="thin" color={colors.brass} />
+- **Best For:** Academia (Scholarly Mobile) style: weight="thin" (thin engraved feel), color={colors.brass} (#C9A962). No sharp geometric or tech-inspired icons. Prefer book, scroll, key, quill-type icon metaphors. Wrap in circular View with 1px brass border. Avoid neon or saturated colored icons. All icon-only nav...
+- **Style:** Outline
+
+### Result 10
+- **Category:** Style Config
+- **Icon Name:** web3-bitcoin-icon-system
+- **Keywords:** web3, bitcoin, defi, crypto, neon orange, holographic, blurview, phosphor, glow, fintech mobile
+- **Library:** Phosphor (react-native)
+- **Import Code:** import { TrendUp } from 'phosphor-react-native'
+- **Usage:** <TrendUp size={24} weight="regular" color={colors.bitcoinOrange} />
+- **Best For:** Bitcoin DeFi Mobile style: weight="regular", color={colors.bitcoinOrange} (#F7931A). Wrap icons in circular BlurView (intensity: 20) with 1px borderColor: '#F7931A' border (Holographic Node effect). shadowColor: '#F7931A' / shadowOpacity: 0.4 / shadowRadius: 8. Prefer finance/data icons (TrendUp, Wa...
+- **Style:** Outline
+
+### Result 11
+- **Category:** Location
+- **Icon Name:** compass
+- **Keywords:** compass direction pointer arrow
+- **Library:** Phosphor
+- **Import Code:** import { Compass } from '@phosphor-icons/react'
+- **Usage:** <Compass size={20} weight="regular" />
+- **Best For:** Navigation compass
+- **Style:** Outline
+
+### Result 12
+- **Category:** Navigation
+- **Icon Name:** caret-up
+- **Keywords:** collapse close accordion minimize
+- **Library:** Phosphor
+- **Import Code:** import { CaretUp } from '@phosphor-icons/react'
+- **Usage:** <CaretUp size={20} weight="regular" />
+- **Best For:** Accordion collapse minimize
+- **Style:** Outline
+
+### Result 13
+- **Category:** Navigation
+- **Icon Name:** x
+- **Keywords:** close cancel dismiss remove exit
+- **Library:** Phosphor
+- **Import Code:** import { X } from '@phosphor-icons/react'
+- **Usage:** <X size={20} weight="regular" />
+- **Best For:** Modal close dismiss button
+- **Style:** Outline
+
+### Result 14
+- **Category:** Navigation
+- **Icon Name:** caret-down
+- **Keywords:** dropdown expand accordion select
+- **Library:** Phosphor
+- **Import Code:** import { CaretDown } from '@phosphor-icons/react'
+- **Usage:** <CaretDown size={20} weight="regular" />
+- **Best For:** Dropdown toggle accordion header
+- **Style:** Outline
+
+### Result 15
+- **Category:** Navigation
+- **Icon Name:** arrow-right
+- **Keywords:** next forward continue navigate
+- **Library:** Phosphor
+- **Import Code:** import { ArrowRight } from '@phosphor-icons/react'
+- **Usage:** <ArrowRight size={20} weight="regular" />
+- **Best For:** Forward button next step CTA
+- **Style:** Outline
+

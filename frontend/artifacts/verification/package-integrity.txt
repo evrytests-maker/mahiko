@@ -1,0 +1,22 @@
+Generated UTC: 2026-08-06T15:25:24Z
+package.json SHA256: 32022fec7f843c874581eafdbe1dad57159e479d41f855e5cde6e9ac77ad06b6
+package-lock.json SHA256: d5ed763a9387d90fad3e693c4aea68d820020b746af55011c40073cc5ed7322a
+Dependency manifests match original archive: yes
+skills/ matches original archive byte-for-byte: yes
+Forbidden build/cache directories present: no
+Required reports:
+  present docs/SKILL_USAGE_LOG.md
+  present docs/DESIGN_REFERENCES.md
+  present docs/INTERACTION_AUDIT.md
+  present docs/VERIFICATION_REPORT.md
+Screenshots:
+  artifacts/ui-after/after-1024x700.png 66453 bytes
+  artifacts/ui-after/after-1440x900.png 80516 bytes
+  artifacts/ui-after/after-1920x1080.png 93302 bytes
+  artifacts/ui-after/after-760x720.png 63775 bytes
+  artifacts/ui-after/after-cancelled-1280x800.png 69858 bytes
+  artifacts/ui-after/after-error-1280x800.png 78176 bytes
+  artifacts/ui-after/after-initial-1280x800.png 32339 bytes
+  artifacts/ui-after/after-running-1280x800.png 68343 bytes
+  artifacts/ui-after/after-success-details-1280x800.png 89447 bytes
+  artifacts/ui-before/before-1280x800.png 32280 bytes

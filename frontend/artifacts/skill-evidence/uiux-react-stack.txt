@@ -1,0 +1,114 @@
+## UI Pro Max Stack Guidelines
+**Stack:** react | **Query:** streaming activity list accessibility performance
+**Source:** stacks/react.csv | **Found:** 10 results
+
+### Result 1
+- **Category:** Performance
+- **Guideline:** Use React DevTools Profiler
+- **Description:** Profile to identify performance bottlenecks
+- **Do:** Profile before optimizing
+- **Don't:** Optimize without measuring
+- **Code Good:** React DevTools Profiler
+- **Code Bad:** Guessing at bottlenecks
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/learn/react-developer-tools
+
+### Result 2
+- **Category:** TypeScript
+- **Guideline:** Use generics for reusable components
+- **Description:** Generic components for flexible typing
+- **Do:** Generic props for list components
+- **Don't:** Union types for flexibility
+- **Code Good:** <List<T> items={T[]}>
+- **Code Bad:** <List items={any[]}>
+- **Severity:** Medium
+- **Docs URL:** 
+
+### Result 3
+- **Category:** Rendering
+- **Guideline:** Use keys properly
+- **Description:** Stable unique keys for list items
+- **Do:** Use stable IDs as keys
+- **Don't:** Array index as key for dynamic lists
+- **Code Good:** key={item.id}
+- **Code Bad:** key={index}
+- **Severity:** High
+- **Docs URL:** https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key
+
+### Result 4
+- **Category:** Accessibility
+- **Guideline:** Label form controls
+- **Description:** Associate labels with inputs
+- **Do:** htmlFor matching input id
+- **Don't:** Placeholder as only label
+- **Code Good:** <label htmlFor="email">Email</label>
+- **Code Bad:** <input placeholder="Email"/>
+- **Severity:** High
+- **Docs URL:** 
+
+### Result 5
+- **Category:** Performance
+- **Guideline:** Lazy load components
+- **Description:** Use React.lazy for code splitting
+- **Do:** lazy() for routes and heavy components
+- **Don't:** Import everything upfront
+- **Code Good:** const Page = lazy(() => import('./Page'))
+- **Code Bad:** import Page from './Page'
+- **Severity:** Medium
+- **Docs URL:** https://react.dev/reference/react/lazy
+
+### Result 6
+- **Category:** Accessibility
+- **Guideline:** Manage focus properly
+- **Description:** Handle focus for modals dialogs
+- **Do:** Focus trap in modals return focus on close
+- **Don't:** No focus management
+- **Code Good:** useEffect to focus input
+- **Code Bad:** Modal without focus trap
+- **Severity:** High
+- **Docs URL:** 
+
+### Result 7
+- **Category:** Accessibility
+- **Guideline:** Use semantic HTML
+- **Description:** Proper HTML elements for their purpose
+- **Do:** button for clicks nav for navigation
+- **Don't:** div with onClick for buttons
+- **Code Good:** <button onClick={...}>
+- **Code Bad:** <div onClick={...}>
+- **Severity:** High
+- **Docs URL:** https://react.dev/reference/react-dom/components#all-html-components
+
+### Result 8
+- **Category:** Accessibility
+- **Guideline:** Announce dynamic content
+- **Description:** Use ARIA live regions for updates
+- **Do:** aria-live for dynamic updates
+- **Don't:** Silent updates to screen readers
+- **Code Good:** <div aria-live="polite">{msg}</div>
+- **Code Bad:** <div>{msg}</div>
+- **Severity:** Medium
+- **Docs URL:** 
+
+### Result 9
+- **Category:** Performance
+- **Guideline:** Virtualize long lists
+- **Description:** Use windowing for lists over 100 items
+- **Do:** react-window or react-virtual
+- **Don't:** Render thousands of DOM nodes
+- **Code Good:** <VirtualizedList items={items}/>
+- **Code Bad:** {items.map(i => <Item />)}
+- **Severity:** High
+- **Docs URL:** 
+
+### Result 10
+- **Category:** Performance
+- **Guideline:** Batch state updates
+- **Description:** React 18 auto-batches but be aware
+- **Do:** Let React batch related updates
+- **Don't:** Manual batching with flushSync
+- **Code Good:** setA(1); setB(2); // batched
+- **Code Bad:** flushSync(() => setA(1))
+- **Severity:** Low
+- **Docs URL:** https://react.dev/learn/queueing-a-series-of-state-updates
+

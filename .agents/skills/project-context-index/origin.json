@@ -1,0 +1,8 @@
+{
+  "repo": null,
+  "path": "local-original",
+  "commit_sha": null,
+  "installed_at": "2026-08-05T17:32:15Z",
+  "license": "project-local",
+  "purpose": "Maintain info.md as a compact, source-linked repository map"
+}

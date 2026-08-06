@@ -1,0 +1,225 @@
+{
+  "generatedAtUtc": "2026-08-06T19:12:50.492739+00:00",
+  "scope": "visual UI and interaction verification only; live OMP connectivity is intentionally outside this handoff",
+  "sourceBuiltModules": 12,
+  "automatedQa": {
+    "passed": 150,
+    "failed": 0,
+    "consoleOrPageErrors": 0,
+    "failedChecks": []
+  },
+  "mainMenuStandards": {
+    "wcagMinimumTargetPx": 24,
+    "frequentControlTargetPx": 44,
+    "minimumTextContrast": 4.5,
+    "focusPerimeterPx": 2,
+    "focus": {
+      "outlineWidth": 2,
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(147, 209, 189)",
+      "visible": true
+    },
+    "states": {
+      "desktop-1280x800": {
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "sidebar": {
+          "left": 0,
+          "top": 0,
+          "right": 312,
+          "bottom": 800,
+          "width": 312,
+          "height": 800,
+          "visible": true
+        },
+        "reviewVisible": false,
+        "scrim": null,
+        "minControlWidth": 44,
+        "minControlHeight": 44,
+        "controlsBelow24": [],
+        "controlsBelow44Height": [],
+        "minTextContrast": 5.56,
+        "textBelow45": [],
+        "projectActionAboveFooter": true,
+        "projectAction": {
+          "top": 698.53125,
+          "bottom": 742.53125
+        },
+        "footer": {
+          "top": 745.53125,
+          "bottom": 800,
+          "visible": true
+        },
+        "sidebarOverflowY": "hidden",
+        "recentOverflowY": "auto",
+        "documentOverflow": false
+      },
+      "compact-1024x700": {
+        "viewport": {
+          "width": 1024,
+          "height": 700
+        },
+        "sidebar": {
+          "left": 0,
+          "top": 0,
+          "right": 312,
+          "bottom": 700,
+          "width": 312,
+          "height": 700,
+          "visible": true
+        },
+        "reviewVisible": false,
+        "scrim": {
+          "visible": true,
+          "background": "rgba(7, 9, 11, 0.72)",
+          "tabIndex": -1
+        },
+        "minControlWidth": 44,
+        "minControlHeight": 44,
+        "controlsBelow24": [],
+        "controlsBelow44Height": [],
+        "minTextContrast": 5.56,
+        "textBelow45": [],
+        "projectActionAboveFooter": false,
+        "projectAction": {
+          "top": 777.671875,
+          "bottom": 821.671875
+        },
+        "footer": {
+          "top": 650,
+          "bottom": 700,
+          "visible": true
+        },
+        "sidebarOverflowY": "auto",
+        "recentOverflowY": "visible",
+        "documentOverflow": false
+      },
+      "minimum-760x720": {
+        "viewport": {
+          "width": 760,
+          "height": 720
+        },
+        "sidebar": {
+          "left": 0,
+          "top": 0,
+          "right": 312,
+          "bottom": 720,
+          "width": 312,
+          "height": 720,
+          "visible": true
+        },
+        "reviewVisible": false,
+        "scrim": {
+          "visible": true,
+          "background": "rgba(7, 9, 11, 0.72)",
+          "tabIndex": -1
+        },
+        "minControlWidth": 44,
+        "minControlHeight": 44,
+        "controlsBelow24": [],
+        "controlsBelow44Height": [],
+        "minTextContrast": 5.56,
+        "textBelow45": [],
+        "projectActionAboveFooter": false,
+        "projectAction": {
+          "top": 777.671875,
+          "bottom": 821.671875
+        },
+        "footer": {
+          "top": 670,
+          "bottom": 720,
+          "visible": true
+        },
+        "sidebarOverflowY": "auto",
+        "recentOverflowY": "visible",
+        "documentOverflow": false
+      },
+      "desktop-1440x900": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "sidebar": {
+          "left": 0,
+          "top": 0,
+          "right": 312,
+          "bottom": 900,
+          "width": 312,
+          "height": 900,
+          "visible": true
+        },
+        "reviewVisible": false,
+        "scrim": null,
+        "minControlWidth": 44,
+        "minControlHeight": 44,
+        "controlsBelow24": [],
+        "controlsBelow44Height": [],
+        "minTextContrast": 5.56,
+        "textBelow45": [],
+        "projectActionAboveFooter": true,
+        "projectAction": {
+          "top": 798,
+          "bottom": 842
+        },
+        "footer": {
+          "top": 845,
+          "bottom": 900,
+          "visible": true
+        },
+        "sidebarOverflowY": "hidden",
+        "recentOverflowY": "auto",
+        "documentOverflow": false
+      },
+      "desktop-1920x1080": {
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "sidebar": {
+          "left": 0,
+          "top": 0,
+          "right": 312,
+          "bottom": 1080,
+          "width": 312,
+          "height": 1080,
+          "visible": true
+        },
+        "reviewVisible": false,
+        "scrim": null,
+        "minControlWidth": 44,
+        "minControlHeight": 44,
+        "controlsBelow24": [],
+        "controlsBelow44Height": [],
+        "minTextContrast": 5.56,
+        "textBelow45": [],
+        "projectActionAboveFooter": true,
+        "projectAction": {
+          "top": 978,
+          "bottom": 1022
+        },
+        "footer": {
+          "top": 1025,
+          "bottom": 1080,
+          "visible": true
+        },
+        "sidebarOverflowY": "hidden",
+        "recentOverflowY": "auto",
+        "documentOverflow": false
+      }
+    }
+  },
+  "manualReview": {
+    "manualMatrixStateScreenshots": 12,
+    "canonicalUiAfterScreenshots": 12,
+    "contactSheet": "contact-sheet.png",
+    "openVisualDefects": 0
+  },
+  "evidence": {
+    "browserQa": "artifacts/verification/browser/browser-qa.json",
+    "browserConsole": "artifacts/verification/browser/browser-console.txt",
+    "contactSheet": "artifacts/verification/final-visual/manual-matrix/contact-sheet.png",
+    "screenshots": "artifacts/ui-after/"
+  }
+}

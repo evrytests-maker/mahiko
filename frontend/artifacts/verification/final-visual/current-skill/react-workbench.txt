@@ -1,0 +1,15 @@
+## UI Pro Max Stack Guidelines
+**Stack:** react | **Query:** desktop workbench sidebar navigation review diff keyboard
+**Source:** stacks/react.csv | **Found:** 1 results
+
+### Result 1
+- **Category:** Accessibility
+- **Guideline:** Use semantic HTML
+- **Description:** Proper HTML elements for their purpose
+- **Do:** button for clicks nav for navigation
+- **Don't:** div with onClick for buttons
+- **Code Good:** <button onClick={...}>
+- **Code Bad:** <div onClick={...}>
+- **Severity:** High
+- **Docs URL:** https://react.dev/reference/react-dom/components#all-html-components
+

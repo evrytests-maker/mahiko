@@ -1,0 +1,6 @@
+error TS2688: Cannot find type definition file for '@testing-library/jest-dom'.
+  The file is in the program because:
+    Entry point of type library '@testing-library/jest-dom' specified in compilerOptions
+error TS2688: Cannot find type definition file for 'vitest/globals'.
+  The file is in the program because:
+    Entry point of type library 'vitest/globals' specified in compilerOptions

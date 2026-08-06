@@ -1,0 +1,104 @@
+## UI Pro Max Search Results
+**Domain:** icons | **Query:** navigation search settings code review outline consistent
+**Source:** icons.csv | **Found:** 10 results
+
+### Result 1
+- **Category:** Development
+- **Icon Name:** code
+- **Keywords:** develop programming syntax html
+- **Library:** Phosphor
+- **Import Code:** import { Code } from '@phosphor-icons/react'
+- **Usage:** <Code size={20} weight="regular" />
+- **Best For:** Code development
+- **Style:** Outline
+
+### Result 2
+- **Category:** Action
+- **Icon Name:** gear
+- **Keywords:** gear cog preferences config
+- **Library:** Phosphor
+- **Import Code:** import { Gear } from '@phosphor-icons/react'
+- **Usage:** <Gear size={20} weight="regular" />
+- **Best For:** Settings page configuration
+- **Style:** Outline
+
+### Result 3
+- **Category:** Social
+- **Icon Name:** star
+- **Keywords:** rating review favorite bookmark
+- **Library:** Phosphor
+- **Import Code:** import { Star } from '@phosphor-icons/react'
+- **Usage:** <Star size={20} weight="regular" />
+- **Best For:** Star rating favorite
+- **Style:** Outline
+
+### Result 4
+- **Category:** Action
+- **Icon Name:** magnifying-glass
+- **Keywords:** find lookup filter query
+- **Library:** Phosphor
+- **Import Code:** import { MagnifyingGlass } from '@phosphor-icons/react'
+- **Usage:** <MagnifyingGlass size={20} weight="regular" />
+- **Best For:** Search input bar
+- **Style:** Outline
+
+### Result 5
+- **Category:** Development
+- **Icon Name:** github-logo
+- **Keywords:** repository code open source
+- **Library:** Phosphor
+- **Import Code:** import { GithubLogo } from '@phosphor-icons/react'
+- **Usage:** <GithubLogo size={20} weight="regular" />
+- **Best For:** GitHub repository
+- **Style:** Outline
+
+### Result 6
+- **Category:** Navigation
+- **Icon Name:** list
+- **Keywords:** hamburger menu navigation toggle bars
+- **Library:** Phosphor
+- **Import Code:** import { List } from '@phosphor-icons/react'
+- **Usage:** <List size={20} weight="regular" />
+- **Best For:** Mobile navigation drawer toggle sidebar
+- **Style:** Outline
+
+### Result 7
+- **Category:** Navigation
+- **Icon Name:** house
+- **Keywords:** homepage main dashboard start
+- **Library:** Phosphor
+- **Import Code:** import { House } from '@phosphor-icons/react'
+- **Usage:** <House size={20} weight="regular" />
+- **Best For:** Home navigation main page
+- **Style:** Outline
+
+### Result 8
+- **Category:** Navigation
+- **Icon Name:** arrow-left
+- **Keywords:** back previous return navigate
+- **Library:** Phosphor
+- **Import Code:** import { ArrowLeft } from '@phosphor-icons/react'
+- **Usage:** <ArrowLeft size={20} weight="regular" />
+- **Best For:** Back button breadcrumb navigation
+- **Style:** Outline
+
+### Result 9
+- **Category:** Layout
+- **Icon Name:** sidebar
+- **Keywords:** panel drawer navigation menu
+- **Library:** Phosphor
+- **Import Code:** import { Sidebar } from '@phosphor-icons/react'
+- **Usage:** <Sidebar size={20} weight="regular" />
+- **Best For:** Sidebar panel
+- **Style:** Outline
+
+### Result 10
+- **Category:** Location
+- **Icon Name:** compass
+- **Keywords:** compass direction pointer arrow
+- **Library:** Phosphor
+- **Import Code:** import { Compass } from '@phosphor-icons/react'
+- **Usage:** <Compass size={20} weight="regular" />
+- **Best For:** Navigation compass
+- **Style:** Outline
+
