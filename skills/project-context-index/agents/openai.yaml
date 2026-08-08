@@ -1,4 +1,0 @@
-interface:
-  display_name: "Project Context Index"
-  short_description: "Maintain a compact repo map for scoped reads"
-  default_prompt: "Use info.md to locate the smallest relevant files and symbols, then update the map after structural changes."

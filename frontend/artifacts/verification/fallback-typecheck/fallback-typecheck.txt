@@ -1,5 +1,0 @@
-Fallback semantic typecheck: 3 passed, 0 failed
-Dependency-independent semantic fallback using temporary React/Electron declarations; not a substitute for package-backed npm typecheck.
-PASS renderer-shared
-PASS main-preload-shared
-PASS source-tests-with-temporary-runner-declarations
