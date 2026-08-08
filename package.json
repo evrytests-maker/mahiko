@@ -1,0 +1,141 @@
+{
+  "name": "mahiko",
+  "desktopName": "mahiko.desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A buildable Electron integration workspace for OMP 17.2.9",
+  "homepage": "https://github.com/evrytests-maker/mahiko",
+  "author": {
+    "name": "evrytests-maker",
+    "email": "evrytests-maker@users.noreply.github.com"
+  },
+  "main": "dist-electron/main/main.js",
+  "scripts": {
+    "dev:web": "vite --host 127.0.0.1",
+    "dev:electron": "wait-on http-get://127.0.0.1:5173 && npm run build:main && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron .",
+    "dev": "concurrently -k \"npm:dev:web\" \"npm:dev:electron\"",
+    "build:main": "tsc -p tsconfig.node.json",
+    "build:renderer": "vite build",
+    "build": "npm run build:main && npm run build:renderer",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "test": "vitest run",
+    "vendor:omp": "node scripts/vendor-omp.mjs current",
+    "vendor:omp:linux": "node scripts/vendor-omp.mjs linux-x64",
+    "vendor:omp:windows": "node scripts/vendor-omp.mjs win32-x64",
+    "vendor:omp:all": "node scripts/vendor-omp.mjs all",
+    "check:omp": "npm run build:main && node scripts/check-omp.mjs",
+    "verify:omp-live": "npm run build:main && node scripts/verify-omp-live.mjs",
+    "build:source": "npm run vendor:omp && npm run build",
+    "pack:linux": "npm run vendor:omp:linux && npm run build && electron-builder --linux dir --x64",
+    "dist:linux": "npm run vendor:omp:linux && npm run build && electron-builder --linux AppImage deb rpm tar.gz --x64",
+    "pack:windows": "npm run vendor:omp:windows && npm run build && electron-builder --win dir --x64",
+    "dist:windows": "npm run vendor:omp:windows && npm run build && electron-builder --win nsis --x64",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.3",
+    "@types/node": "22.19.15",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "5.2.0",
+    "concurrently": "9.2.4",
+    "cross-env": "10.1.0",
+    "electron": "43.3.0",
+    "electron-builder": "26.15.3",
+    "jsdom": "27.4.0",
+    "typescript": "5.9.3",
+    "vite": "8.2.0",
+    "vitest": "4.1.10",
+    "wait-on": "9.1.0"
+  },
+  "build": {
+    "appId": "com.github.evrytestsmaker.mahiko",
+    "productName": "mahiko",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "omp.lock.json",
+      "package.json"
+    ],
+    "linux": {
+      "category": "Development",
+      "executableName": "mahiko",
+      "syncDesktopName": true,
+      "icon": "build/icon.png",
+      "extraResources": [
+        {
+          "from": "vendor/omp/linux-x64/omp",
+          "to": "omp/omp"
+        },
+        {
+          "from": "vendor/omp/LICENSE",
+          "to": "omp/LICENSE"
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        },
+        {
+          "target": "tar.gz",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-${version}-${arch}-setup.${ext}",
+      "extraResources": [
+        {
+          "from": "vendor/omp/win32-x64/omp.exe",
+          "to": "omp/omp.exe"
+        },
+        {
+          "from": "vendor/omp/LICENSE",
+          "to": "omp/LICENSE"
+        }
+      ],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "mahiko",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "include": "build/installer.nsh"
+    },
+    "appImage": {
+      "executableArgs": []
+    }
+  }
+}

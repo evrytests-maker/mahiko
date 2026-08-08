@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="mahiko">
+  <rect width="512" height="512" rx="112" fill="#0b0f12"/>
+  <rect x="28" y="28" width="456" height="456" rx="92" fill="none" stroke="#6fe7d8" stroke-width="12"/>
+  <path d="M134 169h244M134 343h244" stroke="#2b4a4b" stroke-width="10" stroke-linecap="round"/>
+  <text x="256" y="326" fill="#d9fffa" font-family="DejaVu Sans, sans-serif" font-size="226" text-anchor="middle">π</text>
+  <circle cx="391" cy="122" r="22" fill="#6fe7d8"/>
+</svg>

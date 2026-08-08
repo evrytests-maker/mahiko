@@ -1,0 +1,29 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Build Windows NSIS installer with pinned OMP
+        run: npm run dist:windows
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mahiko-windows-x64
+          path: release/*-setup.exe
+          if-no-files-found: error

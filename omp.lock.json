@@ -1,0 +1,16 @@
+{
+  "package": "@oh-my-pi/pi-coding-agent",
+  "version": "17.2.9",
+  "cliVersion": "omp/17.2.9",
+  "preferredRpcMode": "rpc-ui",
+  "fallbackRpcMode": "rpc",
+  "protocolVersion": 2,
+  "assets": {
+    "linux-x64": {
+      "sha256": "4f7aeb33b2f347c11a5ac8c73630e31d02c0a3eef3693468880b9f5e8f02a02b"
+    },
+    "win32-x64": {
+      "sha256": "dd0c0d3fb123dd458a534d61456b87790a8042769aa20234145fa25e4205f821"
+    }
+  }
+}
