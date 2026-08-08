@@ -1,6 +1,6 @@
-# Mohiko
+# Mahiko
 
-Mohiko is a buildable Electron workspace prepared for a later, deliberate merge of the supplied final frontend with an external OMP 17.2.9 installation.
+Mahiko is a buildable Electron workspace prepared for a later, deliberate merge of the supplied final frontend with an external OMP 17.2.9 installation.
 
 ## Current state
 

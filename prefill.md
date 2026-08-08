@@ -1,6 +1,6 @@
-# Mohiko prefill
+# Mahiko prefill
 
-Start with `info.md` and obey `AGENTS.md`.
+Start with `RULES.md`, `info.md` and `AGENTS.md`.
 
 The supplied UI lives unchanged in `frontend/`; its original map is in `project-map/`. Root `src/` is the integration shell. When the user asks to start the merge, begin with `prompts/00-start-merge.md` and preserve `frontend/` as an unchanged handoff.
 

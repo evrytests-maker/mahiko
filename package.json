@@ -1,9 +1,9 @@
 {
-  "name": "mohiko",
+  "name": "mahiko",
   "version": "0.1.0",
   "private": true,
   "description": "A buildable Electron integration workspace for OMP 17.2.9",
-  "homepage": "https://github.com/evrytests-maker/mohiko",
+  "homepage": "https://github.com/evrytests-maker/mahiko",
   "author": {
     "name": "evrytests-maker",
     "email": "evrytests-maker@users.noreply.github.com"
@@ -38,7 +38,7 @@
     "wait-on": "9.1.0"
   },
   "build": {
-    "appId": "com.github.evrytestsmaker.mohiko",
+    "appId": "com.github.evrytestsmaker.mahiko",
     "productName": "Mohiko",
     "asar": true,
     "directories": {

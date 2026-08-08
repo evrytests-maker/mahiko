@@ -35,10 +35,9 @@ let browserSettings: AppSettings = {
 };
 
 const browserFiles: ProjectFileEntry[] = [
-  { path: ".agents", name: ".agents", kind: "directory", depth: 0 },
-  { path: ".agents/skills", name: "skills", kind: "directory", depth: 1 },
-  { path: ".agents/skills/ponytail", name: "ponytail", kind: "directory", depth: 2 },
-  { path: ".agents/skills/ponytail/SKILL.md", name: "SKILL.md", kind: "file", depth: 3 },
+  { path: "skills", name: "skills", kind: "directory", depth: 0 },
+  { path: "skills/ponytail", name: "ponytail", kind: "directory", depth: 1 },
+  { path: "skills/ponytail/SKILL.md", name: "SKILL.md", kind: "file", depth: 2 },
   { path: "src", name: "src", kind: "directory", depth: 0 },
   { path: "src/renderer", name: "renderer", kind: "directory", depth: 1 },
   { path: "src/renderer/App.tsx", name: "App.tsx", kind: "file", depth: 2 },

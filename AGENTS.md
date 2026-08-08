@@ -1,4 +1,4 @@
-# Mohiko agent instructions
+# Mahiko agent instructions
 
 Read `info.md` before exploring the repository. Keep it current when entry points, top-level directories, commands or subsystem boundaries change.
 
@@ -27,6 +27,6 @@ Read `info.md` before exploring the repository. Keep it current when entry point
 ## Working method
 
 - Use the smallest change that meets the current request.
-- Use the four repository skills when their trigger applies: Ponytail, project-context-index, systematic-debugging and verification-before-completion.
+- Use the four repository skills from `skills/` when their trigger applies: Ponytail, project-context-index, systematic-debugging and verification-before-completion.
 - Put disposable notes and logs in `.codex/scratch/`.
 - Before claiming completion or committing, run the checks appropriate to the changed area and report their actual results.

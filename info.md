@@ -1,6 +1,6 @@
-# Mohiko repository map
+# Mahiko repository map
 
-Mohiko is a Linux-buildable Electron integration workspace. The supplied frontend has been staged but is intentionally not connected to the root shell yet. OMP remains an external executable locked to version 17.2.9.
+Mahiko is a Linux-buildable Electron integration workspace. The supplied frontend has been staged but is intentionally not connected to the root shell yet. OMP remains an external executable locked to version 17.2.9.
 
 ## Top-level layout
 
@@ -12,7 +12,8 @@ Mohiko is a Linux-buildable Electron integration workspace. The supplied fronten
 - `src/renderer/` — framework-free runtime-status placeholder; not the supplied frontend.
 - `prompts/00-start-merge.md` — start prompt with merge scope plus browser and live OMP test authorization.
 - `prompts/01-*.md` through `03-*.md` — ordered import, live connection and verification tasks; documentation only until invoked.
-- `.agents/skills/` — only Ponytail, project-context-index, systematic-debugging and verification-before-completion.
+- `skills/` — only Ponytail, project-context-index, systematic-debugging and verification-before-completion.
+- `RULES.md`, `prefill.md`, `AGENTS.md` — root-level operating rules and merge handoff.
 - `.codex/scratch/` — ignored temporary investigation data.
 - `.github/workflows/` — clean Linux build and package verification.
 - `omp.lock.json` — exact executable, RPC mode and protocol contract.
@@ -46,4 +47,4 @@ The current discovery flow sends no prompt or tool call. The future merge prompt
 
 The root and staged frontend currently have separate package graphs and entry points. The future merge must first inventory the staged UI, then adapt it into the root renderer deliberately. Do not resolve this by copying root runtime files over similarly named files inside `frontend/`.
 
-Updated: 2026-08-06.
+Updated: 2026-08-08.
