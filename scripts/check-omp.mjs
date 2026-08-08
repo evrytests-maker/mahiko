@@ -8,9 +8,10 @@ const { discoverRuntime, loadOmpLock } = require("../dist-electron/main/omp-runt
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const lock = await loadOmpLock(root);
-const bundled = ["linux", "win32"].includes(process.platform) && process.arch === "x64"
-  ? join(root, "vendor", "omp", `${process.platform}-${process.arch}`, process.platform === "win32" ? "omp.exe" : "omp")
-  : null;
+const bundled = process.env.MAHIKO_OMP_BUNDLED_PATH
+  ?? (["linux", "win32"].includes(process.platform) && process.arch === "x64"
+    ? join(root, "vendor", "omp", `${process.platform}-${process.arch}`, process.platform === "win32" ? "omp.exe" : "omp")
+    : null);
 const snapshot = await discoverRuntime(
   process.cwd(),
   lock,
@@ -18,4 +19,4 @@ const snapshot = await discoverRuntime(
   { bundledExecutable: bundled },
 );
 process.stdout.write(`${JSON.stringify(snapshot, null, 2)}\n`);
-if (!snapshot.compatible || !snapshot.rpc.ready) process.exitCode = 1;
+if (!snapshot.compatible || !snapshot.rpc.ready || snapshot.rpc.protocolVersion !== lock.protocolVersion) process.exitCode = 1;

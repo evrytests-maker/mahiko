@@ -17,6 +17,8 @@ const readyRuntime: RuntimeSnapshot = {
   version: "17.2.9",
   available: true,
   compatible: true,
+  versionCheck: { ok: true, code: "ok", path: "/usr/bin/omp", expectedVersion: "17.2.9", foundVersion: "17.2.9", exitCode: 0, detail: "test fixture" },
+  integrity: { checked: false, ok: null, path: "/usr/bin/omp", expectedSha256: null, actualSha256: null, detail: "external fixture" },
   rpc: { ready: true, protocolVersion: 2, supportedProtocolVersions: [1, 2], mode: "rpc-ui", detail: "test fixture" },
 };
 

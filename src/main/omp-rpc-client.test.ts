@@ -1,57 +1,70 @@
 // @vitest-environment node
 
-import { chmod, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { chmod, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { OmpRpcClient } from "./omp-rpc-client";
 
 const clients: OmpRpcClient[] = [];
+const temporaryDirectories: string[] = [];
 
-afterEach(() => {
+afterEach(async () => {
   for (const client of clients.splice(0)) client.dispose();
+  await Promise.all(temporaryDirectories.splice(0).map((directory) => rm(directory, { recursive: true, force: true })));
 });
 
 async function fakeOmp(): Promise<string> {
-  const directory = await mkdtemp(join(tmpdir(), "mahiko-rpc-"));
+  const directory = await mkdtemp(join(process.cwd(), ".mahiko-rpc-"));
+  temporaryDirectories.push(directory);
   const executable = join(directory, "omp");
   await writeFile(executable, `#!${process.execPath}
-const readline = require("node:readline");
-setInterval(() => {}, 1000);
+const fs = require("node:fs");
+const emit = (frame) => fs.writeSync(1, JSON.stringify(frame) + "\\n");
+const sleep = (milliseconds) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
+const readLine = () => {
+  const bytes = [];
+  const byte = Buffer.alloc(1);
+  while (fs.readSync(0, byte, 0, 1, null) === 1) {
+    if (byte[0] === 10) return Buffer.from(bytes).toString("utf8");
+    if (byte[0] !== 13) bytes.push(byte[0]);
+  }
+  return bytes.length ? Buffer.from(bytes).toString("utf8") : null;
+};
 let emitAgentEndAfterAbort = true;
 let delayedAgentEndAfterAbort = false;
 let lastAssistantText = "old answer";
 const mode = process.argv[process.argv.indexOf("--mode") + 1];
-console.log(JSON.stringify({ type: "ready", protocolVersion: 1, supportedProtocolVersions: [1, 2], maxFrameBytes: 1048576, maxReassembledFrameBytes: 67108864, mode }));
-const input = readline.createInterface({ input: process.stdin });
-input.on("line", (line) => {
+emit({ type: "ready", protocolVersion: 1, supportedProtocolVersions: [1, 2], maxFrameBytes: 1048576, maxReassembledFrameBytes: 67108864, mode });
+for (let line = readLine(); line !== null; line = readLine()) {
   const frame = JSON.parse(line);
   if (frame.type === "negotiate_protocol") {
-    process.stdout.write(JSON.stringify({ id: frame.id, type: "response", command: frame.type, success: true, data: { protocolVersion: 2 } }) + "\\n");
+    emit({ id: frame.id, type: "response", command: frame.type, success: true, data: { protocolVersion: 2 } });
   } else if (frame.type === "prompt") {
     emitAgentEndAfterAbort = frame.message !== "cancel without terminal event";
     delayedAgentEndAfterAbort = frame.message === "cancel with delayed terminal event";
-    process.stdout.write(JSON.stringify({ id: frame.id, type: "response", command: frame.type, success: true }) + "\\n");
-    process.stdout.write(JSON.stringify({ type: "agent_start" }) + "\\n");
+    emit({ id: frame.id, type: "response", command: frame.type, success: true });
+    emit({ type: "agent_start" });
     if (frame.message === "after delayed cancellation") {
-      process.stdout.write(JSON.stringify({ type: "message_update", assistantMessageEvent: { type: "text_delta", delta: "fresh answer" }, message: {} }) + "\\n");
-      setTimeout(() => {
-        lastAssistantText = "fresh answer";
-        process.stdout.write(JSON.stringify({ type: "agent_end", isTerminal: true, messages: [] }) + "\\n");
-      }, 75);
+      emit({ type: "message_update", assistantMessageEvent: { type: "text_delta", delta: "fresh answer" }, message: {} });
+      sleep(75);
+      lastAssistantText = "fresh answer";
+      emit({ type: "agent_end", isTerminal: true, messages: [] });
     } else {
-      process.stdout.write(JSON.stringify({ type: "message_update", assistantMessageEvent: { type: "text_delta", delta: "pong" }, message: {} }) + "\\n");
-      process.stdout.write(JSON.stringify({ type: "tool_execution_start", toolCallId: "tool-1", toolName: "read", args: {} }) + "\\n");
+      emit({ type: "message_update", assistantMessageEvent: { type: "text_delta", delta: "pong" }, message: {} });
+      emit({ type: "tool_execution_start", toolCallId: "tool-1", toolName: "read", args: {} });
     }
   } else if (frame.type === "abort") {
-    process.stdout.write(JSON.stringify({ id: frame.id, type: "response", command: frame.type, success: true }) + "\\n");
-    process.stdout.write(JSON.stringify({ type: "message_update", assistantMessageEvent: { type: "error", reason: "aborted", error: {} }, message: {} }) + "\\n");
-    if (delayedAgentEndAfterAbort) setTimeout(() => process.stdout.write(JSON.stringify({ type: "agent_end", isTerminal: true, messages: [] }) + "\\n"), 25);
-    else if (emitAgentEndAfterAbort) process.stdout.write(JSON.stringify({ type: "agent_end", isTerminal: true, messages: [] }) + "\\n");
+    emit({ id: frame.id, type: "response", command: frame.type, success: true });
+    emit({ type: "message_update", assistantMessageEvent: { type: "error", reason: "aborted", error: {} }, message: {} });
+    if (delayedAgentEndAfterAbort) {
+      sleep(25);
+      emit({ type: "agent_end", isTerminal: true, messages: [] });
+    }
+    else if (emitAgentEndAfterAbort) emit({ type: "agent_end", isTerminal: true, messages: [] });
   } else if (frame.type === "get_last_assistant_text") {
-    process.stdout.write(JSON.stringify({ id: frame.id, type: "response", command: frame.type, success: true, data: { text: lastAssistantText } }) + "\\n");
+    emit({ id: frame.id, type: "response", command: frame.type, success: true, data: { text: lastAssistantText } });
   }
-});
+}
 `, { mode: 0o755 });
   await chmod(executable, 0o755);
   return executable;

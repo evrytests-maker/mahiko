@@ -395,8 +395,18 @@ export class OmpService {
   }
 
   private async requireExecutable(settings: AppSettings): Promise<string> {
-    const runtime = await this.verifiedRuntime(settings);
-    if (!runtime.executable) throw new Error(runtime.rpc.detail);
+    const runtime = await discoverRuntime(settings.projectPath || process.cwd(), await this.lock(), settings.ompExecutableOverride, {
+      bundledExecutable: this.options.bundledExecutable,
+      probeRpc: false,
+    });
+    if (!runtime.compatible || !runtime.executable) {
+      const detail = !runtime.versionCheck.ok
+        ? runtime.versionCheck.detail
+        : runtime.integrity.ok === false
+          ? runtime.integrity.detail
+          : runtime.rpc.detail;
+      throw new Error(detail);
+    }
     return runtime.executable;
   }
 

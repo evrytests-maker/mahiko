@@ -1,16 +1,11 @@
-import { createHash } from "node:crypto";
-import { execFile } from "node:child_process";
 import { constants } from "node:fs";
-import { access, chmod, copyFile, lstat, mkdir, readFile, rename, unlink } from "node:fs/promises";
+import { chmod, copyFile, lstat, mkdir, rename, unlink } from "node:fs/promises";
 import { homedir } from "node:os";
-import { basename, delimiter, dirname, isAbsolute, join, relative, resolve } from "node:path";
-import { promisify } from "node:util";
+import { posix, win32 } from "node:path";
 import type { OmpInstallation, OmpInstallationSnapshot } from "../shared/contracts";
-import { parseOmpVersion } from "./omp-runtime";
+import { checkOmpIntegrity, checkOmpVersion } from "./omp-runtime";
 
-const execFileAsync = promisify(execFile);
-
-interface InstallationOptions {
+export interface InstallationOptions {
   bundledPath: string | null;
   expectedVersion: string;
   expectedSha256: string;
@@ -28,67 +23,91 @@ export async function inspectOmpInstallation(options: InstallationOptions): Prom
   const env = options.env ?? process.env;
   const home = options.home ?? homedir();
   const platform = options.platform ?? process.platform;
-  const bundledVersion = options.bundledPath ? await readVersion(options.bundledPath) : null;
-  const bundledHash = options.bundledPath ? await sha256(options.bundledPath) : null;
-  const bundledReady = bundledVersion === options.expectedVersion && bundledHash === options.expectedSha256;
-  const candidates = externalCandidates(env, home, platform);
+  const bundledVersionCheck = options.bundledPath
+    ? await checkOmpVersion(options.bundledPath, process.cwd(), options.expectedVersion, 5_000, env)
+    : null;
+  const bundledIntegrity = await checkOmpIntegrity(options.bundledPath, options.expectedSha256);
+  const bundledVersion = bundledVersionCheck?.foundVersion ?? null;
+  const bundledHash = bundledIntegrity.actualSha256;
+  const bundledReady = bundledVersionCheck?.ok === true && bundledIntegrity.ok === true;
   let installed: OmpInstallation | null = null;
-  for (const candidate of candidates) {
-    if (!await isFileLike(candidate.path) || pathsEqual(candidate.path, options.bundledPath, platform)) continue;
+  for (const candidate of externalCandidates(env, home, platform)) {
+    if (!await isFileLikeEntry(candidate.path) || pathsEqual(candidate.path, options.bundledPath, platform)) continue;
+    const versionCheck = await checkOmpVersion(candidate.path, process.cwd(), options.expectedVersion, 5_000, env);
     installed = {
       path: candidate.path,
-      version: await readVersion(candidate.path),
+      version: versionCheck.foundVersion,
+      versionCheck,
       source: candidate.source,
-      replaceable: isReplaceable(candidate.path, env, home, platform),
+      replaceable: isReplaceableOmpPath(candidate.path, env, home, platform),
     };
     break;
   }
   return {
     checkedAt: new Date().toISOString(),
     expectedVersion: options.expectedVersion,
+    expectedSha256: options.expectedSha256,
     bundledPath: options.bundledPath,
     bundledVersion,
+    bundledSha256: bundledHash,
+    bundledVersionCheck,
+    bundledIntegrity,
     bundledReady,
     installed,
     dataLocations: ompDataLocations(env, home, platform),
-    detail: !bundledReady
-      ? `Встроенный OMP ${options.expectedVersion} отсутствует или не прошёл проверку целостности`
-      : installed
-        ? installed.replaceable
-          ? `Найден OMP ${installed.version ?? "неизвестной версии"}`
-          : "OMP найден в системном каталоге, который Mahiko не имеет права изменять"
-        : "Установленный OMP не найден",
+    detail: installationDetail(options, bundledVersionCheck, bundledIntegrity, installed),
   };
 }
 
 export async function installBundledOmp(options: InstallationOptions): Promise<OmpInstallationSnapshot> {
   const before = await inspectOmpInstallation(options);
-  if (!before.bundledReady || !before.bundledPath) throw new Error(before.detail);
+  if (!before.bundledVersionCheck?.ok) throw new Error(before.bundledVersionCheck?.detail ?? `Встроенный OMP ${options.expectedVersion} отсутствует`);
+  if (!before.bundledIntegrity.ok || !before.bundledPath) throw new Error(before.bundledIntegrity.detail);
   if (before.installed && !before.installed.replaceable) {
-    throw new Error(`Безопасная замена запрещена для ${before.installed.path}. Mahiko никогда не изменяет системные бинарники без пользовательских прав.`);
+    throw new Error(`Безопасная замена запрещена для ${before.installed.path}: найден ${before.installed.version ?? "unknown"}, ожидается ${options.expectedVersion}. Mahiko не изменяет системные и OMP data-пути.`);
   }
 
   const env = options.env ?? process.env;
   const home = options.home ?? homedir();
   const platform = options.platform ?? process.platform;
   const target = before.installed?.path ?? officialInstallPath(env, home, platform);
-  if (!isReplaceable(target, env, home, platform)) throw new Error(`Небезопасный путь установки OMP: ${target}`);
+  if (!isReplaceableOmpPath(target, env, home, platform)) throw new Error(`Небезопасный путь установки OMP: ${target}`);
 
-  await atomicReplaceExecutable(before.bundledPath, target, options.expectedVersion, platform);
+  await atomicReplaceExecutable(before.bundledPath, target, options.expectedVersion, options.expectedSha256, platform, env);
   const after = await inspectOmpInstallation(options);
   if (after.installed?.version !== options.expectedVersion || !pathsEqual(after.installed.path, target, platform)) {
-    throw new Error("OMP был скопирован, но повторная проверка установки не подтвердила версию 17.2.9");
+    throw new Error(`OMP скопирован в ${target}, но повторная проверка нашла ${after.installed?.version ?? "unknown"}; ожидается ${options.expectedVersion}`);
   }
   return after;
 }
 
+function installationDetail(
+  options: InstallationOptions,
+  bundledVersionCheck: OmpInstallationSnapshot["bundledVersionCheck"],
+  bundledIntegrity: OmpInstallationSnapshot["bundledIntegrity"],
+  installed: OmpInstallation | null,
+): string {
+  if (!bundledVersionCheck?.ok) return bundledVersionCheck?.detail ?? `Встроенный OMP ${options.expectedVersion} отсутствует`;
+  if (!bundledIntegrity.ok) return bundledIntegrity.detail;
+  if (!installed) return `OMP не найден; ожидается ${options.expectedVersion}. Встроенный OMP проверен по пути ${options.bundledPath}`;
+  const version = installed.version ?? "unknown";
+  if (!installed.replaceable) return `Найден OMP ${version} по пути ${installed.path}; ожидается ${options.expectedVersion}. Автоматическая замена этого пути запрещена`;
+  return `Найден OMP ${version} по пути ${installed.path}; ожидается ${options.expectedVersion}`;
+}
+
 function externalCandidates(env: NodeJS.ProcessEnv, home: string, platform: NodeJS.Platform): Candidate[] {
+  const pathApi = platform === "win32" ? win32 : posix;
   const executableName = platform === "win32" ? "omp.exe" : "omp";
-  const candidates: Candidate[] = [
-    { path: officialInstallPath(env, home, platform), source: "official" },
-    { path: join(home, ".bun", "bin", executableName), source: "bun" },
-    ...(env.PATH ?? "").split(delimiter).filter(Boolean).map((directory): Candidate => ({ path: join(directory, executableName), source: "path" })),
-  ];
+  const candidates: Candidate[] = platform === "win32"
+    ? [
+        { path: officialInstallPath(env, home, platform), source: "official" },
+        ...(env.PATH ?? "").split(";").filter(Boolean).map((directory): Candidate => ({ path: pathApi.join(directory, executableName), source: "path" })),
+      ]
+    : [
+        { path: officialInstallPath(env, home, platform), source: "official" },
+        { path: pathApi.join(home, ".bun", "bin", executableName), source: "bun" },
+        ...(env.PATH ?? "").split(":").filter(Boolean).map((directory): Candidate => ({ path: pathApi.join(directory, executableName), source: "path" })),
+      ];
   const seen = new Set<string>();
   return candidates.filter((candidate) => {
     const key = normalized(candidate.path, platform);
@@ -99,26 +118,46 @@ function externalCandidates(env: NodeJS.ProcessEnv, home: string, platform: Node
 }
 
 function officialInstallPath(env: NodeJS.ProcessEnv, home: string, platform: NodeJS.Platform): string {
-  if (platform === "win32") return join(env.LOCALAPPDATA || join(home, "AppData", "Local"), "omp", "omp.exe");
-  return join(home, ".local", "bin", "omp");
+  if (platform === "win32") return win32.join(env.LOCALAPPDATA || win32.join(home, "AppData", "Local"), "omp", "omp.exe");
+  return posix.join(home, ".local", "bin", "omp");
 }
 
-function isReplaceable(path: string, env: NodeJS.ProcessEnv, home: string, platform: NodeJS.Platform): boolean {
-  const name = basename(path).toLowerCase();
+export function isReplaceableOmpPath(path: string, env: NodeJS.ProcessEnv, home: string, platform: NodeJS.Platform): boolean {
+  const pathApi = platform === "win32" ? win32 : posix;
+  const name = pathApi.basename(path).toLowerCase();
   if (name !== "omp" && name !== "omp.exe") return false;
-  const dataRoot = join(home, ".omp");
-  if (pathWithin(dataRoot, path, platform)) return false;
-  const roots = [home];
-  if (platform === "win32" && env.LOCALAPPDATA) roots.push(env.LOCALAPPDATA);
-  return roots.some((root) => pathWithin(root, path, platform));
+  const normalizedPath = normalized(path, platform);
+  if (normalizedPath.split(/[\\/]+/).some((segment) => segment.toLowerCase() === ".omp")) return false;
+
+  const protectedRoots = [pathApi.join(home, ".omp")];
+  if (env.PI_CODING_AGENT_DIR) protectedRoots.push(pathApi.resolve(env.PI_CODING_AGENT_DIR));
+  if (platform !== "win32") {
+    for (const key of ["XDG_DATA_HOME", "XDG_STATE_HOME", "XDG_CACHE_HOME"] as const) {
+      if (env[key]) protectedRoots.push(pathApi.join(env[key], "omp"));
+    }
+  }
+  if (protectedRoots.some((root) => pathWithin(root, path, platform))) return false;
+
+  if (platform === "win32") {
+    for (const key of ["ProgramFiles", "ProgramFiles(x86)", "ProgramW6432"] as const) {
+      if (env[key] && pathWithin(env[key], path, platform)) return false;
+    }
+  } else if (["/usr/bin", "/usr/local/bin"].some((root) => pathWithin(root, path, platform))) {
+    return false;
+  }
+
+  const allowedRoots = [home];
+  if (platform === "win32" && env.LOCALAPPDATA) allowedRoots.push(env.LOCALAPPDATA);
+  return allowedRoots.some((root) => pathWithin(root, path, platform));
 }
 
 function ompDataLocations(env: NodeJS.ProcessEnv, home: string, platform: NodeJS.Platform): string[] {
-  const locations = [join(home, ".omp")];
-  if (env.PI_CODING_AGENT_DIR) locations.push(resolve(env.PI_CODING_AGENT_DIR));
-  if (platform === "linux" || platform === "darwin") {
+  const pathApi = platform === "win32" ? win32 : posix;
+  const locations = [pathApi.join(home, ".omp")];
+  if (env.PI_CODING_AGENT_DIR) locations.push(pathApi.resolve(env.PI_CODING_AGENT_DIR));
+  if (platform !== "win32") {
     for (const key of ["XDG_DATA_HOME", "XDG_STATE_HOME", "XDG_CACHE_HOME"] as const) {
-      if (env[key]) locations.push(join(env[key], "omp"));
+      if (env[key]) locations.push(pathApi.join(env[key], "omp"));
     }
   }
   const seen = new Set<string>();
@@ -130,63 +169,63 @@ function ompDataLocations(env: NodeJS.ProcessEnv, home: string, platform: NodeJS
   });
 }
 
-async function atomicReplaceExecutable(source: string, target: string, version: string, platform: NodeJS.Platform): Promise<void> {
-  await mkdir(dirname(target), { recursive: true });
+async function atomicReplaceExecutable(
+  source: string,
+  target: string,
+  version: string,
+  expectedSha256: string,
+  platform: NodeJS.Platform,
+  env: NodeJS.ProcessEnv,
+): Promise<void> {
+  const pathApi = platform === "win32" ? win32 : posix;
+  await mkdir(pathApi.dirname(target), { recursive: true });
   const temporary = `${target}.mahiko-new-${process.pid}`;
   const backup = `${target}.mahiko-backup-${process.pid}`;
   await unlink(temporary).catch(() => undefined);
   await unlink(backup).catch(() => undefined);
   await copyFile(source, temporary, constants.COPYFILE_EXCL);
   if (platform !== "win32") await chmod(temporary, 0o755);
-  if (await readVersion(temporary) !== version) {
+
+  const temporaryVersion = await checkOmpVersion(temporary, process.cwd(), version, 5_000, env);
+  if (!temporaryVersion.ok) {
     await unlink(temporary).catch(() => undefined);
-    throw new Error(`Встроенный OMP не подтвердил версию ${version}`);
+    throw new Error(`Временный OMP ${temporary} не прошёл проверку версии: ${temporaryVersion.detail}`);
+  }
+  const temporaryIntegrity = await checkOmpIntegrity(temporary, expectedSha256);
+  if (!temporaryIntegrity.ok) {
+    await unlink(temporary).catch(() => undefined);
+    throw new Error(`Временный OMP ${temporary} не прошёл SHA-256: ${temporaryIntegrity.detail}`);
   }
 
-  const hadTarget = await isFileLike(target);
+  const hadTarget = await isFileLikeEntry(target);
   try {
     if (hadTarget) await rename(target, backup);
     await rename(temporary, target);
-    if (await readVersion(target) !== version) throw new Error(`Установленный OMP не подтвердил версию ${version}`);
+    const installedVersion = await checkOmpVersion(target, process.cwd(), version, 5_000, env);
+    if (!installedVersion.ok) throw new Error(`Повторная проверка версии установленного OMP ${target} не пройдена: ${installedVersion.detail}`);
+    const installedIntegrity = await checkOmpIntegrity(target, expectedSha256);
+    if (!installedIntegrity.ok) throw new Error(`Повторная проверка SHA-256 установленного OMP ${target} не пройдена: ${installedIntegrity.detail}`);
     if (hadTarget) await unlink(backup);
   } catch (error) {
     await unlink(temporary).catch(() => undefined);
-    if (hadTarget && await isFileLike(backup)) {
-      await unlink(target).catch(() => undefined);
-      await rename(backup, target).catch(() => undefined);
-    } else if (!hadTarget) {
-      await unlink(target).catch(() => undefined);
+    try {
+      if (hadTarget && await isFileLikeEntry(backup)) {
+        await unlink(target).catch(() => undefined);
+        await rename(backup, target);
+      } else if (!hadTarget) {
+        await unlink(target).catch(() => undefined);
+      }
+    } catch (rollbackError) {
+      throw new Error(`Замена OMP завершилась ошибкой (${messageOf(error)}), и rollback ${backup} -> ${target} не удался: ${messageOf(rollbackError)}`);
     }
     throw error;
   }
 }
 
-async function readVersion(path: string): Promise<string | null> {
+async function isFileLikeEntry(path: string): Promise<boolean> {
   try {
-    const result = await execFileAsync(path, ["--version"], { timeout: 5_000, maxBuffer: 64 * 1024, windowsHide: true });
-    return parseOmpVersion(`${result.stdout}\n${result.stderr}`);
-  } catch (error) {
-    const output = typeof error === "object" && error !== null
-      ? `${"stdout" in error ? String(error.stdout ?? "") : ""}\n${"stderr" in error ? String(error.stderr ?? "") : ""}`
-      : "";
-    return parseOmpVersion(output);
-  }
-}
-
-async function sha256(path: string): Promise<string | null> {
-  try {
-    return createHash("sha256").update(await readFile(path)).digest("hex");
-  } catch {
-    return null;
-  }
-}
-
-async function isFileLike(path: string): Promise<boolean> {
-  try {
-    const value = await lstat(path);
-    if (!value.isFile() && !value.isSymbolicLink()) return false;
-    await access(path, constants.X_OK);
-    return true;
+    const link = await lstat(path);
+    return link.isFile() || link.isSymbolicLink();
   } catch {
     return false;
   }
@@ -197,13 +236,16 @@ function pathsEqual(left: string, right: string | null, platform: NodeJS.Platfor
 }
 
 function pathWithin(root: string, candidate: string, platform: NodeJS.Platform): boolean {
-  const rootPath = normalized(root, platform);
-  const candidatePath = normalized(candidate, platform);
-  const segment = relative(rootPath, candidatePath);
-  return segment === "" || (!segment.startsWith("..") && !isAbsolute(segment));
+  const pathApi = platform === "win32" ? win32 : posix;
+  const segment = pathApi.relative(normalized(root, platform), normalized(candidate, platform));
+  return segment === "" || (!segment.startsWith("..") && !pathApi.isAbsolute(segment));
 }
 
 function normalized(path: string, platform: NodeJS.Platform): string {
-  const value = resolve(path);
+  const value = (platform === "win32" ? win32 : posix).resolve(path);
   return platform === "win32" ? value.toLowerCase() : value;
+}
+
+function messageOf(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

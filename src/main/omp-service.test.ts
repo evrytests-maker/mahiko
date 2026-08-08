@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { chmod, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -120,6 +120,51 @@ describe("OmpService startup", () => {
     expect(discoverRuntime).toHaveBeenCalledTimes(1);
     expect(fakes.start).toHaveBeenCalledTimes(1);
     service.dispose();
+  });
+
+  it("allows first-run custom provider setup after version verification even when RPC is not ready yet", async () => {
+    const directory = await mkdtemp(join(process.cwd(), ".mahiko-test-provider-"));
+    const executable = join(directory, "omp");
+    const agentDirectory = join(directory, "agent");
+    await writeFile(executable, `#!/usr/bin/env node
+const fs = require("node:fs");
+const args = process.argv.slice(2);
+if (args[0] === "config" && args[1] === "path") fs.writeSync(1, ${JSON.stringify(agentDirectory)} + "\\n");
+else if (args[0] === "models") fs.writeSync(1, JSON.stringify({ models: [{ selector: "local/test-model" }] }) + "\\n");
+`, "utf8");
+    await chmod(executable, 0o755);
+    vi.mocked(discoverRuntime).mockResolvedValueOnce({
+      executable,
+      compatible: true,
+      version: "17.2.9",
+      versionCheck: { ok: true, detail: "version ok" },
+      integrity: { checked: false, ok: null, detail: "external" },
+      rpc: { ready: false, mode: null, protocolVersion: null, supportedProtocolVersions: [], detail: "No models available", failureStage: "runtime" },
+    } as never);
+    const service = new OmpService({
+      appRoot: "/tmp/mahiko",
+      getSettings: async () => ({ projectPath: directory, theme: "dark", ompExecutableOverride: executable }),
+      accountPoolPath: join(directory, "account-pool.json"),
+      onUiRequest: () => undefined,
+      openExternal: async () => undefined,
+    });
+
+    try {
+      await expect(service.saveCustomProvider({
+        providerId: "local",
+        baseUrl: "http://127.0.0.1:11434/v1",
+        api: "openai-completions",
+        auth: "none",
+        modelId: "test-model",
+      })).resolves.toMatchObject({ ok: true, selector: "local/test-model" });
+      expect(JSON.parse(await readFile(join(agentDirectory, "models.yml"), "utf8"))).toMatchObject({
+        providers: { local: { auth: "none", models: [{ id: "test-model" }] } },
+      });
+      expect(fakes.start).not.toHaveBeenCalled();
+    } finally {
+      service.dispose();
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 
   it("waits for OMP to expose the selected model instead of rejecting stale state", async () => {

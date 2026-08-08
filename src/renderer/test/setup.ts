@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach } from "vitest";
-import { defaultSettings, type AppSettings, type EmbeddedBrowserState, type MahikoApi, type OmpModel, type OmpSessionState } from "../../shared/contracts";
+import { defaultSettings, type AppSettings, type EmbeddedBrowserState, type MahikoApi, type OmpInstallationSnapshot, type OmpModel, type OmpSessionState, type RuntimeSnapshot } from "../../shared/contracts";
 
 const testModels: OmpModel[] = [
   { provider: "openai", id: "gpt-5.6-sol", name: "GPT-5.6 Sol", contextWindow: 1_100_000, maxTokens: 64_000, reasoning: true, thinkingLevels: ["minimal", "low", "medium", "high", "xhigh", "max"], supportsThinkingOff: true },
@@ -9,6 +9,9 @@ const testModels: OmpModel[] = [
 ];
 const initialSettings = (): AppSettings => ({ ...defaultSettings, projectPath: "/tmp/mahiko-test", runtimeSetupComplete: true, onboardingComplete: true });
 const initialSession = (): OmpSessionState => ({ model: testModels[0], thinkingLevel: "xhigh", isStreaming: false, isCompacting: false, sessionId: "test-session", autoCompactionEnabled: true, tokensPerSecond: null, messageCount: 0, queuedMessageCount: 0, contextUsage: { tokens: 20_900, contextWindow: 1_100_000, percent: 1.9 } });
+const versionCheck = (path: string) => ({ ok: true as const, code: "ok" as const, path, expectedVersion: "17.2.9", foundVersion: "17.2.9", exitCode: 0, detail: "Ready" });
+const runtimeSnapshot = (): RuntimeSnapshot => ({ checkedAt: new Date(0).toISOString(), executable: "/tmp/omp", expectedVersion: "17.2.9", version: "17.2.9", available: true, compatible: true, versionCheck: versionCheck("/tmp/omp"), integrity: { checked: false, ok: null, path: "/tmp/omp", expectedSha256: null, actualSha256: null, detail: "external fixture" }, rpc: { ready: true, mode: "rpc-ui", protocolVersion: 2, supportedProtocolVersions: [1, 2], detail: "Ready" } });
+const installationSnapshot = (): OmpInstallationSnapshot => ({ checkedAt: new Date(0).toISOString(), expectedVersion: "17.2.9", expectedSha256: "a".repeat(64), bundledPath: "/tmp/bundled-omp", bundledVersion: "17.2.9", bundledSha256: "a".repeat(64), bundledVersionCheck: versionCheck("/tmp/bundled-omp"), bundledIntegrity: { checked: true, ok: true, path: "/tmp/bundled-omp", expectedSha256: "a".repeat(64), actualSha256: "a".repeat(64), detail: "Ready" }, bundledReady: true, installed: { path: "/tmp/omp", version: "17.2.9", versionCheck: versionCheck("/tmp/omp"), source: "path", replaceable: true }, dataLocations: ["/tmp/.omp"], detail: "Ready" });
 const browserState: EmbeddedBrowserState = { url: "https://example.com/", title: "Example", loading: false, canGoBack: false, canGoForward: false, error: null };
 let settings = initialSettings();
 let session = initialSession();
@@ -25,10 +28,10 @@ if (typeof window !== "undefined" && !window.mahiko) {
   const unsupported = async (): Promise<never> => { throw new Error("Unsupported in renderer test fixture"); };
   const api: MahikoApi = {
     runtime: {
-      getSnapshot: async () => ({ checkedAt: new Date(0).toISOString(), executable: "/tmp/omp", expectedVersion: "17.2.9", version: "17.2.9", available: true, compatible: true, rpc: { ready: true, mode: "rpc-ui", protocolVersion: 2, supportedProtocolVersions: [1, 2], detail: "Ready" } }),
-      refresh: async () => ({ checkedAt: new Date(0).toISOString(), executable: "/tmp/omp", expectedVersion: "17.2.9", version: "17.2.9", available: true, compatible: true, rpc: { ready: true, mode: "rpc-ui", protocolVersion: 2, supportedProtocolVersions: [1, 2], detail: "Ready" } }),
-      getInstallation: async () => ({ checkedAt: new Date(0).toISOString(), expectedVersion: "17.2.9", bundledPath: "/tmp/bundled-omp", bundledVersion: "17.2.9", bundledReady: true, installed: { path: "/tmp/omp", version: "17.2.9", source: "path", replaceable: true }, dataLocations: ["/tmp/.omp"], detail: "Ready" }),
-      installBundled: async () => ({ checkedAt: new Date(0).toISOString(), expectedVersion: "17.2.9", bundledPath: "/tmp/bundled-omp", bundledVersion: "17.2.9", bundledReady: true, installed: { path: "/tmp/omp", version: "17.2.9", source: "path", replaceable: true }, dataLocations: ["/tmp/.omp"], detail: "Ready" }),
+      getSnapshot: async () => runtimeSnapshot(),
+      refresh: async () => runtimeSnapshot(),
+      getInstallation: async () => installationSnapshot(),
+      installBundled: async () => installationSnapshot(),
     },
     application: { quit: async () => undefined },
     project: {

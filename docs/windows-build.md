@@ -14,7 +14,7 @@ npm run dist:windows
 
 The command downloads the pinned OMP asset, verifies its SHA-256, builds the
 Electron renderer/main process and creates
-`release/mahiko-0.1.0-x64-setup.exe`.
+`release/mahiko-0.1.1-beta.1-x64-setup.exe`.
 
 At first launch, Mahiko performs the visible OMP search and replacement flow.
 The NSIS installer itself does not silently overwrite OMP. Application data is

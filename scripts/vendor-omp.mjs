@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { createWriteStream } from "node:fs";
+import { createReadStream, createWriteStream } from "node:fs";
 import { chmod, mkdir, readFile, rename, stat, unlink } from "node:fs/promises";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -41,8 +41,9 @@ for (const target of targets) {
 
 async function matches(path, expected) {
   try {
-    const file = await readFile(path);
-    return createHash("sha256").update(file).digest("hex") === expected;
+    const hash = createHash("sha256");
+    for await (const chunk of createReadStream(path)) hash.update(chunk);
+    return hash.digest("hex") === expected;
   } catch {
     return false;
   }

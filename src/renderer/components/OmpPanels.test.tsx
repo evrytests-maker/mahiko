@@ -1,9 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { RuntimeSnapshot } from "../../shared/contracts";
+import type { OmpInstallationSnapshot, RuntimeSnapshot } from "../../shared/contracts";
 import { api } from "../api";
-import { OmpSetupOverlay } from "./OmpPanels";
+import "../styles.css";
+import { OmpBootstrapOverlay, OmpSetupOverlay } from "./OmpPanels";
 
 const readyRuntime: RuntimeSnapshot = {
   checkedAt: new Date(0).toISOString(),
@@ -12,10 +13,43 @@ const readyRuntime: RuntimeSnapshot = {
   version: "17.2.9",
   available: true,
   compatible: true,
+  versionCheck: { ok: true, code: "ok", path: "/usr/bin/omp", expectedVersion: "17.2.9", foundVersion: "17.2.9", exitCode: 0, detail: "test fixture" },
+  integrity: { checked: false, ok: null, path: "/usr/bin/omp", expectedSha256: null, actualSha256: null, detail: "external fixture" },
   rpc: { ready: true, protocolVersion: 2, supportedProtocolVersions: [1, 2], mode: "rpc-ui", detail: "test fixture" },
 };
 
 afterEach(() => vi.restoreAllMocks());
+
+describe("OmpBootstrapOverlay", () => {
+  it.each([
+    ["Linux", "/home/test/.bun/bin/omp"],
+    ["Windows", "C:\\Users\\test\\AppData\\Local\\omp\\omp.exe"],
+  ])("allows the %s replace action to receive a real pointer click", async (_platform, installedPath) => {
+    const user = userEvent.setup();
+    const onInstall = vi.fn();
+    const snapshot: OmpInstallationSnapshot = {
+      checkedAt: new Date(0).toISOString(),
+      expectedVersion: "17.2.9",
+      bundledPath: installedPath.endsWith(".exe") ? "C:\\Program Files\\mahiko\\resources\\omp\\omp.exe" : "/opt/mahiko/resources/omp/omp",
+      bundledVersion: "17.2.9",
+      expectedSha256: "a".repeat(64),
+      bundledSha256: "a".repeat(64),
+      bundledVersionCheck: { ok: true, code: "ok", path: installedPath, expectedVersion: "17.2.9", foundVersion: "17.2.9", exitCode: 0, detail: "test fixture" },
+      bundledIntegrity: { checked: true, ok: true, path: installedPath, expectedSha256: "a".repeat(64), actualSha256: "a".repeat(64), detail: "test fixture" },
+      bundledReady: true,
+      installed: { path: installedPath, version: "17.2.9", source: "path", replaceable: true, versionCheck: { ok: true, code: "ok", path: installedPath, expectedVersion: "17.2.9", foundVersion: "17.2.9", exitCode: 0, detail: "test fixture" } },
+      dataLocations: [],
+      detail: "Найден OMP 17.2.9",
+    };
+
+    render(<OmpBootstrapOverlay snapshot={snapshot} busy={false} error="" onInstall={onInstall} onExit={vi.fn()} />);
+    const replace = screen.getByRole("button", { name: "Заменить на версию 17.2.9" });
+
+    expect(getComputedStyle(replace).pointerEvents).toBe("auto");
+    await user.click(replace);
+    expect(onInstall).toHaveBeenCalledOnce();
+  });
+});
 
 describe("OmpSetupOverlay", () => {
   it("loads and saves the observed account pool without seeded identities", async () => {

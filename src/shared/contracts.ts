@@ -6,6 +6,30 @@ export interface RpcStatus {
   supportedProtocolVersions: number[];
   mode: RpcMode | null;
   detail: string;
+  attemptedMode?: RpcMode;
+  failureStage?: "discovery" | "version" | "integrity" | "readiness" | "protocol" | "runtime";
+  errorCode?: string;
+}
+
+export type OmpVersionCheckCode = "ok" | "ENOENT" | "EACCES" | "timeout" | "unknown-format" | "nonzero-exit" | "version-mismatch" | "spawn-error";
+
+export interface OmpVersionCheck {
+  ok: boolean;
+  code: OmpVersionCheckCode;
+  path: string;
+  expectedVersion: string;
+  foundVersion: string | null;
+  exitCode: number | null;
+  detail: string;
+}
+
+export interface OmpIntegrityCheck {
+  checked: boolean;
+  ok: boolean | null;
+  path: string | null;
+  expectedSha256: string | null;
+  actualSha256: string | null;
+  detail: string;
 }
 
 export interface RuntimeSnapshot {
@@ -15,6 +39,8 @@ export interface RuntimeSnapshot {
   version: string | null;
   available: boolean;
   compatible: boolean;
+  versionCheck: OmpVersionCheck;
+  integrity: OmpIntegrityCheck;
   rpc: RpcStatus;
 }
 
@@ -23,6 +49,7 @@ export interface OmpInstallation {
   version: string | null;
   source: "path" | "official" | "bun";
   replaceable: boolean;
+  versionCheck: OmpVersionCheck;
 }
 
 export interface OmpInstallationSnapshot {
@@ -30,6 +57,10 @@ export interface OmpInstallationSnapshot {
   expectedVersion: string;
   bundledPath: string | null;
   bundledVersion: string | null;
+  expectedSha256: string;
+  bundledSha256: string | null;
+  bundledVersionCheck: OmpVersionCheck | null;
+  bundledIntegrity: OmpIntegrityCheck;
   bundledReady: boolean;
   installed: OmpInstallation | null;
   dataLocations: string[];
