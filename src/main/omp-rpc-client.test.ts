@@ -1,6 +1,6 @@
 // @vitest-environment node
 
-import { chmod, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { OmpRpcClient } from "./omp-rpc-client";
@@ -70,7 +70,93 @@ for (let line = readLine(); line !== null; line = readLine()) {
   return executable;
 }
 
+async function fakeDelayedOmp(delayMs: number, negotiationDelayMs = 0, marker?: string, supportedVersions = [1, 2]): Promise<string> {
+  const directory = await mkdtemp(join(process.cwd(), ".mahiko-rpc-delayed-"));
+  temporaryDirectories.push(directory);
+  const executable = join(directory, "omp");
+  await writeFile(executable, `#!${process.execPath}
+const fs = require("node:fs");
+const emit = (frame) => fs.writeSync(1, JSON.stringify(frame) + "\\n");
+const readLine = () => {
+  const bytes = [];
+  const byte = Buffer.alloc(1);
+  while (fs.readSync(0, byte, 0, 1, null) === 1) {
+    if (byte[0] === 10) return Buffer.from(bytes).toString("utf8");
+    if (byte[0] !== 13) bytes.push(byte[0]);
+  }
+  return null;
+};
+const mode = process.argv[process.argv.indexOf("--mode") + 1];
+${marker ? `fs.appendFileSync(${JSON.stringify(marker)}, mode + "\\n");` : ""}
+setTimeout(() => {
+  emit({ type: "ready", protocolVersion: 1, supportedProtocolVersions: ${JSON.stringify(supportedVersions)}, mode });
+  const frame = JSON.parse(readLine());
+  setTimeout(() => emit({ id: frame.id, type: "response", command: frame.type, success: true, data: { protocolVersion: 2 } }), ${negotiationDelayMs});
+  setInterval(() => {}, 1000);
+}, ${delayMs});
+`, { mode: 0o755 });
+  await chmod(executable, 0o755);
+  return executable;
+}
+
+async function fakeRuntimeFailureOmp(marker: string): Promise<string> {
+  const directory = await mkdtemp(join(process.cwd(), ".mahiko-rpc-runtime-error-"));
+  temporaryDirectories.push(directory);
+  const executable = join(directory, "omp");
+  await writeFile(executable, `#!${process.execPath}
+const fs = require("node:fs");
+const mode = process.argv[process.argv.indexOf("--mode") + 1];
+fs.appendFileSync(${JSON.stringify(marker)}, mode + "\\n");
+fs.writeSync(2, "EACCES: cannot create native cache\\n");
+process.exit(1);
+`, { mode: 0o755 });
+  await chmod(executable, 0o755);
+  return executable;
+}
+
 describe("OmpRpcClient live process contract", () => {
+  it("waits for delayed rpc-ui readiness and negotiates v2 without switching modes", async () => {
+    const executable = await fakeDelayedOmp(75);
+    const client = new OmpRpcClient(executable, process.cwd(), process.env, ["rpc-ui", "rpc"], 250);
+    clients.push(client);
+
+    await client.start();
+    expect(client.mode).toBe("rpc-ui");
+    expect(client.protocolVersion).toBe(2);
+  });
+
+  it("honors a configured startup timeout without waiting for the production cold-start budget", async () => {
+    const executable = await fakeDelayedOmp(100);
+    const client = new OmpRpcClient(executable, process.cwd(), process.env, ["rpc-ui"], 25);
+    clients.push(client);
+
+    await expect(client.start()).rejects.toThrow("25 ms");
+  });
+
+  it("does not fall back to rpc after rpc-ui is ready but lacks protocol v2", async () => {
+    const directory = await mkdtemp(join(process.cwd(), ".mahiko-rpc-modes-"));
+    temporaryDirectories.push(directory);
+    const marker = join(directory, "modes.txt");
+    const executable = await fakeDelayedOmp(0, 0, marker, [1]);
+    const client = new OmpRpcClient(executable, process.cwd(), process.env, ["rpc-ui", "rpc"], 250);
+    clients.push(client);
+
+    await expect(client.start()).rejects.toThrow("не поддерживает protocol v2");
+    expect(await readFile(marker, "utf8")).toBe("rpc-ui\n");
+  });
+
+  it("surfaces a pre-ready runtime/cache error without falling back to rpc", async () => {
+    const directory = await mkdtemp(join(process.cwd(), ".mahiko-rpc-runtime-modes-"));
+    temporaryDirectories.push(directory);
+    const marker = join(directory, "modes.txt");
+    const executable = await fakeRuntimeFailureOmp(marker);
+    const client = new OmpRpcClient(executable, process.cwd(), process.env, ["rpc-ui", "rpc"], 250);
+    clients.push(client);
+
+    await expect(client.start()).rejects.toThrow("cannot create native cache");
+    expect(await readFile(marker, "utf8")).toBe("rpc-ui\n");
+  });
+
   it("negotiates protocol v2 in rpc-ui and aborts the active streamed prompt", async () => {
     const executable = await fakeOmp();
     const client = new OmpRpcClient(executable, process.cwd(), process.env, ["rpc-ui", "rpc"]);

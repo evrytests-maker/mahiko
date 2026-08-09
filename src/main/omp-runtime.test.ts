@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import type { OmpLock } from "./omp-runtime";
-import { discoverRuntime, ompCandidatePaths, parseOmpVersion, probeRpc, sha256File } from "./omp-runtime";
+import { OMP_RPC_START_TIMEOUT_MS, discoverRuntime, ompCandidatePaths, parseOmpVersion, probeRpc, sha256File } from "./omp-runtime";
 
 const lock: OmpLock = {
   package: "@oh-my-pi/pi-coding-agent",
@@ -13,6 +13,8 @@ const lock: OmpLock = {
   preferredRpcMode: "rpc-ui",
   fallbackRpcMode: "rpc",
   protocolVersion: 2,
+  installers: {},
+  assets: {},
 };
 
 const temporaryDirectories: string[] = [];
@@ -44,6 +46,25 @@ const count = __stdio.readSync(0, input);
 const request = JSON.parse(input.subarray(0, count).toString("utf8").trim());
 __stdio.writeSync(1, JSON.stringify({ type: "response", id: request.id, command: "negotiate_protocol", success: true, data: { protocolVersion: 2, supportedProtocolVersions: [1, 2] } }) + "\\n");
 setInterval(() => {}, 1000);
+`;
+}
+
+function delayedRpcFixture(delayMs: number, marker?: string): string {
+  return `
+if (process.argv.includes("--version")) {
+  __stdio.writeSync(1, "omp/17.2.9\\n");
+  process.exit(0);
+}
+const mode = process.argv[process.argv.indexOf("--mode") + 1];
+${marker ? `require("node:fs").appendFileSync(${JSON.stringify(marker)}, mode + "\\n");` : ""}
+setTimeout(() => {
+  __stdio.writeSync(1, JSON.stringify({ type: "ready", mode, protocolVersion: 1, supportedProtocolVersions: [1, 2] }) + "\\n");
+  const input = Buffer.alloc(4096);
+  const count = __stdio.readSync(0, input);
+  const request = JSON.parse(input.subarray(0, count).toString("utf8").trim());
+  __stdio.writeSync(1, JSON.stringify({ type: "response", id: request.id, command: "negotiate_protocol", success: true, data: { protocolVersion: 2 } }) + "\\n");
+  setInterval(() => {}, 1000);
+}, ${delayMs});
 `;
 }
 
@@ -139,7 +160,7 @@ require("node:fs").writeFileSync(${JSON.stringify(marker)}, "started");
   });
 });
 
-describe("OMP candidate and bundled integrity checks", () => {
+describe("OMP candidate and managed integrity checks", () => {
   it("uses the platform-specific search order", () => {
     expect(ompCandidatePaths({ platform: "linux", home: "/home/alice", env: { PATH: "/opt/bin:/usr/bin" } })).toEqual([
       "/home/alice/.local/bin/omp",
@@ -154,19 +175,19 @@ describe("OMP candidate and bundled integrity checks", () => {
     ]);
   });
 
-  it("prefers a checksum-verified bundled OMP over an incompatible PATH executable", async () => {
+  it("prefers a checksum-verified managed OMP over an incompatible PATH executable", async () => {
     const home = temporaryDirectory(".mahiko-test-home-");
     const pathDirectory = join(home, "path-bin");
     mkdirSync(pathDirectory, { recursive: true });
     const incompatible = join(pathDirectory, "omp");
     writeFileSync(incompatible, "#!/usr/bin/env node\nrequire('node:fs').writeSync(1, 'omp/17.2.8\\n');\n", "utf8");
     chmodSync(incompatible, 0o755);
-    const bundled = fakeOmp(rpcFixture());
-    const bundledHash = createHash("sha256").update(readFileSync(bundled)).digest("hex");
-    const pinned = { ...lock, assets: { "linux-x64": { sha256: bundledHash } } };
+    const managed = fakeOmp(rpcFixture());
+    const managedHash = createHash("sha256").update(readFileSync(managed)).digest("hex");
+    const pinned = { ...lock, assets: { "linux-x64": { url: "https://github.com/can1357/oh-my-pi/releases/download/v17.2.9/omp-linux-x64", sha256: managedHash } } };
 
     const snapshot = await discoverRuntime(process.cwd(), pinned, null, {
-      bundledExecutable: bundled,
+      managedExecutable: managed,
       env: { PATH: `${pathDirectory}:${dirname(process.execPath)}` },
       home,
       platform: "linux",
@@ -174,17 +195,17 @@ describe("OMP candidate and bundled integrity checks", () => {
       probeTimeoutMs: 1000,
     });
 
-    expect(snapshot.executable).toBe(bundled);
-    expect(snapshot.integrity).toMatchObject({ checked: true, ok: true, actualSha256: bundledHash });
+    expect(snapshot.executable).toBe(managed);
+    expect(snapshot.integrity).toMatchObject({ checked: true, ok: true, actualSha256: managedHash });
     expect(snapshot).toMatchObject({ version: "17.2.9", compatible: true });
   });
 
-  it("keeps a bundled hash failure separate from the exact version result", async () => {
-    const bundled = fakeOmp(rpcFixture());
-    const pinned = { ...lock, assets: { "linux-x64": { sha256: "0".repeat(64) } } };
+  it("keeps a managed hash failure separate from the exact version result", async () => {
+    const managed = fakeOmp(rpcFixture());
+    const pinned = { ...lock, assets: { "linux-x64": { url: "https://github.com/can1357/oh-my-pi/releases/download/v17.2.9/omp-linux-x64", sha256: "0".repeat(64) } } };
     const emptyHome = temporaryDirectory(".mahiko-test-empty-home-");
     const snapshot = await discoverRuntime(process.cwd(), pinned, null, {
-      bundledExecutable: bundled,
+      managedExecutable: managed,
       env: { PATH: dirname(process.execPath) },
       home: emptyHome,
       platform: "linux",
@@ -204,6 +225,26 @@ describe("OMP candidate and bundled integrity checks", () => {
 });
 
 describe("OMP RPC readiness", () => {
+  it("keeps the production cold-start window above 10 seconds and accepts delayed readiness inside a configured window", async () => {
+    expect(OMP_RPC_START_TIMEOUT_MS).toBe(45_000);
+    const status = await probeRpc(fakeOmp(delayedRpcFixture(75)), process.cwd(), "rpc-ui", 250);
+    expect(status).toMatchObject({ ready: true, mode: "rpc-ui" });
+  });
+
+  it("negotiates protocol v2 after a delayed ready frame", async () => {
+    const status = await probeRpc(fakeOmp(delayedRpcFixture(75)), process.cwd(), "rpc-ui", 250);
+    expect(status).toMatchObject({ ready: true, mode: "rpc-ui", protocolVersion: 2 });
+    expect(status.supportedProtocolVersions).toEqual([1, 2]);
+  });
+
+  it("does not fall back from rpc-ui during a normal delayed cold start", async () => {
+    const marker = join(tmpdir(), `mahiko-rpc-delayed-modes-${process.pid}-${Date.now()}`);
+    const snapshot = await discoverRuntime(process.cwd(), lock, fakeOmp(delayedRpcFixture(100, marker)), { probeTimeoutMs: 300 });
+    expect(snapshot.rpc).toMatchObject({ ready: true, mode: "rpc-ui", protocolVersion: 2 });
+    expect(readFileSync(marker, "utf8")).toBe("rpc-ui\n");
+    rmSync(marker);
+  });
+
   it("negotiates protocol v2 in rpc-ui mode", async () => {
     const status = await probeRpc(fakeOmp(rpcFixture()), process.cwd(), "rpc-ui", 1000);
     expect(status).toMatchObject({ ready: true, mode: "rpc-ui", protocolVersion: 2 });

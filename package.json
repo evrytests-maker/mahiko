@@ -19,17 +19,13 @@
     "build": "npm run build:main && npm run build:renderer",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit",
     "test": "vitest run",
-    "vendor:omp": "node scripts/vendor-omp.mjs current",
-    "vendor:omp:linux": "node scripts/vendor-omp.mjs linux-x64",
-    "vendor:omp:windows": "node scripts/vendor-omp.mjs win32-x64",
-    "vendor:omp:all": "node scripts/vendor-omp.mjs all",
     "check:omp": "npm run build:main && node scripts/check-omp.mjs",
     "verify:omp-live": "npm run build:main && node scripts/verify-omp-live.mjs",
-    "build:source": "npm run vendor:omp && npm run build",
-    "pack:linux": "npm run vendor:omp:linux && npm run build && electron-builder --linux dir --x64",
-    "dist:linux": "npm run vendor:omp:linux && npm run build && electron-builder --linux AppImage deb rpm tar.gz --x64",
-    "pack:windows": "npm run vendor:omp:windows && npm run build && electron-builder --win dir --x64",
-    "dist:windows": "npm run vendor:omp:windows && npm run build && electron-builder --win nsis --x64",
+    "build:source": "npm run build",
+    "pack:linux": "npm run build && electron-builder --linux dir --x64",
+    "dist:linux": "npm run build && electron-builder --linux AppImage deb rpm tar.gz --x64",
+    "pack:windows": "npm run build && electron-builder --win dir --x64",
+    "dist:windows": "npm run build && electron-builder --win nsis --x64",
     "start": "electron ."
   },
   "dependencies": {
@@ -75,14 +71,6 @@
       "icon": "build/icon.png",
       "extraResources": [
         {
-          "from": "vendor/omp/linux-x64/omp",
-          "to": "omp/omp"
-        },
-        {
-          "from": "vendor/omp/LICENSE",
-          "to": "omp/LICENSE"
-        },
-        {
           "from": "build/icon.png",
           "to": "tray/icon.png"
         }
@@ -111,14 +99,6 @@
       "icon": "build/icon.ico",
       "artifactName": "${productName}-${version}-${arch}-setup.${ext}",
       "extraResources": [
-        {
-          "from": "vendor/omp/win32-x64/omp.exe",
-          "to": "omp/omp.exe"
-        },
-        {
-          "from": "vendor/omp/LICENSE",
-          "to": "omp/LICENSE"
-        },
         {
           "from": "build/icon.ico",
           "to": "tray/icon.ico"

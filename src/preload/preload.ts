@@ -6,7 +6,7 @@ const api: MahikoApi = {
     getSnapshot: () => ipcRenderer.invoke("runtime:get"),
     refresh: () => ipcRenderer.invoke("runtime:refresh"),
     getInstallation: () => ipcRenderer.invoke("runtime:installation"),
-    installBundled: () => ipcRenderer.invoke("runtime:install-bundled"),
+    installOfficial: () => ipcRenderer.invoke("runtime:install-official"),
   },
   application: {
     openExternal: (url) => ipcRenderer.invoke("application:open-external", url),

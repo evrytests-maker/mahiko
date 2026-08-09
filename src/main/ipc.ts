@@ -1,5 +1,6 @@
 import { app, BrowserWindow, clipboard, dialog, ipcMain, shell } from "electron";
 import { spawn } from "node:child_process";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import type { AccountPoolConfig, AppSettings, CustomProviderRequest, DiagnosticReport, EmbeddedBrowserBounds, OmpUiResponse, TerminalResult } from "../shared/contracts";
 import { safeErrorMessage } from "../shared/redaction";
@@ -7,16 +8,28 @@ import { OmpService } from "./omp-service";
 import { listProjectFiles, readProjectFile } from "./project-files";
 import { SettingsStore } from "./settings-store";
 import { browserWindowFor, embeddedBrowserFor } from "./browser-view";
-import { inspectOmpInstallation, installBundledOmp } from "./omp-installation";
+import { inspectOmpInstallation, installOfficialOmp, officialOmpAsset, officialOmpCliPath, officialOmpInstaller } from "./omp-installation";
 import { loadOmpLock } from "./omp-runtime";
 import { normalizeExternalUrl } from "./external-url";
 
-export function registerIpcHandlers(): void {
+export async function registerIpcHandlers(): Promise<void> {
   const settings = new SettingsStore(join(app.getPath("userData"), "settings.json"));
-  const bundledExecutable = bundledOmpExecutable();
+  const lock = await loadOmpLock(app.getAppPath());
+  const asset = officialOmpAsset(lock, process.platform, process.arch);
+  const installer = officialOmpInstaller(lock, process.platform);
+  const managedExecutable = officialOmpCliPath(process.platform, homedir(), process.env);
+  const installationOptions = () => ({
+    assetUrl: asset.url,
+    installerUrl: installer.url,
+    targetPath: managedExecutable,
+    expectedVersion: lock.version,
+    expectedCliVersion: lock.cliVersion,
+    expectedSha256: asset.sha256,
+    expectedInstallerSha256: installer.sha256,
+  });
   const service = new OmpService({
     appRoot: app.getAppPath(),
-    bundledExecutable,
+    managedExecutable,
     getSettings: () => settings.get(),
     accountPoolPath: join(app.getPath("userData"), "omp-account-pool.json"),
     openExternal: async (url) => { await shell.openExternal(normalizeExternalUrl(url)); },
@@ -57,12 +70,12 @@ export function registerIpcHandlers(): void {
 
   handle("runtime:get", async () => service.runtimeSnapshot(false));
   handle("runtime:refresh", async () => { await service.reset(); return service.runtimeSnapshot(false); });
-  handle("runtime:installation", async () => inspectOmpInstallation(await installationOptions(bundledExecutable)));
-  handle("runtime:install-bundled", async () => {
-    const result = await installBundledOmp(await installationOptions(bundledExecutable));
-    if (!result.installed) throw new Error("OMP installation did not return an installed executable");
+  handle("runtime:installation", async () => inspectOmpInstallation(installationOptions()));
+  handle("runtime:install-official", async () => {
+    const result = await installOfficialOmp(installationOptions());
+    if (!result.selectedPath) throw new Error("OMP installation did not return a compatible executable");
     await settings.update({
-      ompExecutableOverride: result.installed.path,
+      ompExecutableOverride: result.selectedPath,
       runtimeSetupComplete: true,
       onboardingComplete: false,
     });
@@ -147,22 +160,6 @@ export function registerIpcHandlers(): void {
     clipboard.writeText(JSON.stringify(await createDiagnostics(), null, 2));
     return { ok: true, message: "Очищенная диагностика скопирована" };
   });
-}
-
-function bundledOmpExecutable(): string | null {
-  const executableName = process.platform === "win32" ? "omp.exe" : "omp";
-  if (!(["linux", "win32"] as NodeJS.Platform[]).includes(process.platform) || process.arch !== "x64") return null;
-  return app.isPackaged
-    ? join(process.resourcesPath, "omp", executableName)
-    : join(app.getAppPath(), "vendor", "omp", `${process.platform}-${process.arch}`, executableName);
-}
-
-async function installationOptions(bundledPath: string | null) {
-  const lock = await loadOmpLock(app.getAppPath());
-  const key = `${process.platform}-${process.arch}`;
-  const asset = lock.assets[key];
-  if (!asset) throw new Error(`Mahiko does not bundle OMP ${lock.version} for ${key}`);
-  return { bundledPath, expectedVersion: lock.version, expectedSha256: asset.sha256 };
 }
 
 

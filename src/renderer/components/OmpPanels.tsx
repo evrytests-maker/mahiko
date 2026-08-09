@@ -19,6 +19,8 @@ interface PoolRow {
   identities: string;
 }
 
+type ProviderLoadState = "starting" | "runtime-error" | "loading" | "provider-error" | "success";
+
 function messageFrom(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
@@ -34,11 +36,12 @@ export function OmpBootstrapOverlay({ snapshot, busy, error, onInstall, onExit }
   onInstall(): void;
   onExit(): void;
 }): JSX.Element {
-  const installed = snapshot?.installed ?? null;
-  const actionLabel = installed
-    ? `Заменить на версию ${snapshot?.expectedVersion ?? "17.2.9"}`
-    : `Установить OMP ${snapshot?.expectedVersion ?? "17.2.9"}`;
-  const canInstall = snapshot?.bundledReady === true && (!installed || installed.replaceable);
+  const external = snapshot?.external ?? null;
+  const selectedPath = snapshot?.selectedPath ?? null;
+  const actionLabel = selectedPath
+    ? `Использовать OMP ${snapshot?.expectedVersion ?? "17.2.9"}`
+    : `Установить OMP ${snapshot?.expectedVersion ?? "17.2.9"} как CLI`;
+  const canInstall = snapshot !== null;
 
   return (
     <div className="surface-layer setup-surface-layer omp-bootstrap-layer" role="dialog" aria-modal="true" aria-label="Первоначальная настройка OMP" tabIndex={-1} autoFocus onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
@@ -53,25 +56,24 @@ export function OmpBootstrapOverlay({ snapshot, busy, error, onInstall, onExit }
           {!snapshot ? <div className="empty-state">Проверяю установку OMP…</div> : null}
           {snapshot ? (
             <div className="omp-installation-result">
-              <span className={installed ? "warning" : "dim"}>{installed ? "● НАЙДЕН" : "○ НЕ НАЙДЕН"}</span>
-              <strong>{installed ? `OMP ${installed.version ?? "неизвестной версии"}` : "Внешняя установка отсутствует"}</strong>
-              {installed ? <code>{installed.path}</code> : null}
+              <span className={selectedPath ? "success" : external ? "warning" : "dim"}>{selectedPath ? "● ГОТОВ" : external ? "● НЕСОВМЕСТИМ" : "○ НЕ НАЙДЕН"}</span>
+              <strong>{snapshot.managedReady ? `Официальный OMP ${snapshot.expectedVersion}` : external ? `Внешний OMP ${external.version ?? "неизвестной версии"}` : "Совместимая установка отсутствует"}</strong>
+              {selectedPath || external?.path ? <code>{selectedPath || external?.path}</code> : <code>{snapshot.managedPath}</code>}
               <p>{snapshot.detail}</p>
             </div>
           ) : null}
           <div className="setup-note omp-data-safety-note">
             <strong>Чаты и аккаунты сохраняются</strong>
-            <span>Mahiko заменяет только исполняемый файл OMP. Каталоги данных, профили, сессии и базы аккаунтов не удаляются и не перемещаются.</span>
+            <span>Mahiko запускает официальный installer OMP. Команда omp будет доступна в терминале и использует те же профили, сессии и аккаунты, что и Mahiko; базы данных не удаляются и не перемещаются.</span>
             {snapshot?.dataLocations.length ? <details><summary>Проверенные расположения данных</summary>{snapshot.dataLocations.map((path) => <code key={path}>{path}</code>)}</details> : null}
           </div>
-          {installed && !installed.replaceable ? <div className="inline-status">Этот OMP находится вне пользовательского каталога. Автоматическая замена заблокирована; Mahiko не запрашивает повышенные права и не удаляет системные файлы.</div> : null}
           {error ? <div className="inline-status" role="alert">{error}</div> : null}
         </div>
         <footer className="setup-footer omp-bootstrap-actions">
-          <span className={snapshot?.bundledReady ? "success" : "warning"}>{snapshot?.bundledReady ? "● OMP 17.2.9 ПРОВЕРЕН" : "○ OMP НЕ ГОТОВ"}</span>
+          <span className={selectedPath ? "success" : "warning"}>{selectedPath ? "● OMP 17.2.9 ПРОВЕРЕН" : "○ ТРЕБУЕТСЯ УСТАНОВКА CLI"}</span>
           <div>
             <button type="button" onClick={onExit} disabled={busy}>Выход</button>
-            <button type="button" className="primary" onClick={onInstall} disabled={!canInstall || busy}>{busy ? "Установка…" : actionLabel}</button>
+            <button type="button" className="primary" onClick={onInstall} disabled={!canInstall || busy}>{busy ? "Установка и проверка…" : actionLabel}</button>
           </div>
         </footer>
       </section>
@@ -79,11 +81,13 @@ export function OmpBootstrapOverlay({ snapshot, busy, error, onInstall, onExit }
   );
 }
 
-export function OmpSetupOverlay({ onClose, onComplete, runtime }: { onClose(): void; onComplete(): void; runtime: RuntimeSnapshot | null }): JSX.Element {
+export function OmpSetupOverlay({ onClose, onComplete, onRetryRuntime, runtime }: { onClose(): void; onComplete(): void; onRetryRuntime(): Promise<void>; runtime: RuntimeSnapshot | null }): JSX.Element {
   const rootRef = useNonModalSurfaceFocus(onClose, "#environment-trigger");
+  const runtimePath = runtime?.executable || runtime?.versionCheck.path || "Путь OMP неизвестен";
   const [tab, setTab] = useState<"providers" | "pool" | "custom">("providers");
   const [providers, setProviders] = useState<OmpLoginProvider[]>([]);
-  const [providersLoading, setProvidersLoading] = useState(runtime?.rpc.ready === true);
+  const [providerState, setProviderState] = useState<ProviderLoadState>(runtime ? runtime.rpc.ready ? "loading" : "runtime-error" : "starting");
+  const [providerError, setProviderError] = useState("");
   const [loginBusy, setLoginBusy] = useState<string | null>(null);
   const [poolRows, setPoolRows] = useState<PoolRow[]>([]);
   const [poolSnapshot, setPoolSnapshot] = useState<AccountPoolSnapshot | null>(null);
@@ -92,9 +96,18 @@ export function OmpSetupOverlay({ onClose, onComplete, runtime }: { onClose(): v
   const [status, setStatus] = useState("");
 
   const refreshProviders = async () => {
-    const observed = await api.omp.getLoginProviders();
-    setProviders(observed);
-    return observed;
+    setProviderState("loading");
+    setProviderError("");
+    try {
+      const observed = await api.omp.getLoginProviders();
+      setProviders(observed);
+      setProviderState("success");
+      return observed;
+    } catch (error) {
+      setProviderError(messageFrom(error));
+      setProviderState("provider-error");
+      throw error;
+    }
   };
 
   useEffect(() => {
@@ -108,16 +121,35 @@ export function OmpSetupOverlay({ onClose, onComplete, runtime }: { onClose(): v
       .catch((error: unknown) => { if (active) setStatus(`Ошибка чтения пула: ${messageFrom(error)}`); })
       .finally(() => { if (active) setPoolLoading(false); });
 
-    if (runtime?.rpc.ready) {
+    if (!runtime) {
+      setProviders([]);
+      setProviderState("starting");
+      setProviderError("");
+    } else if (runtime.rpc.ready) {
+      setProviderState("loading");
+      setProviderError("");
       void api.omp.getLoginProviders()
-        .then((observed) => { if (active) setProviders(observed); })
-        .catch((error: unknown) => { if (active) setStatus(`Ошибка OMP: ${messageFrom(error)}`); })
-        .finally(() => { if (active) setProvidersLoading(false); });
+        .then((observed) => { if (active) { setProviders(observed); setProviderState("success"); } })
+        .catch((error: unknown) => { if (active) { setProviderError(messageFrom(error)); setProviderState("provider-error"); } });
     } else {
-      setProvidersLoading(false);
+      setProviders([]);
+      setProviderState("runtime-error");
+      setProviderError("");
     }
     return () => { active = false; };
-  }, [runtime?.rpc.ready]);
+  }, [runtime?.checkedAt, runtime?.rpc.ready]);
+
+  const retryRuntime = async () => {
+    setProviders([]);
+    setProviderError("");
+    setProviderState("starting");
+    try {
+      await onRetryRuntime();
+    } catch (error) {
+      setProviderError(`Не удалось повторно проверить OMP: ${messageFrom(error)}`);
+      setProviderState("runtime-error");
+    }
+  };
 
   const login = async (provider: OmpLoginProvider) => {
     setLoginBusy(provider.id);
@@ -168,7 +200,7 @@ export function OmpSetupOverlay({ onClose, onComplete, runtime }: { onClose(): v
         <TuiEscapeButton className="settings-close window-corner" label="Закрыть подключение OMP" onClick={onClose} />
         <header className="setup-header">
           <div className="setup-mark">π</div>
-          <div><h2>Настройка среды</h2><p>Подключение провайдеров, регистрация и пулы аккаунтов работают через OMP.</p></div>
+          <div><h2>Настройка среды</h2></div>
         </header>
         <div className="setup-tabs" role="tablist" aria-label="Разделы подключения OMP">
           <button type="button" role="tab" aria-selected={tab === "providers"} onClick={() => setTab("providers")}>Провайдеры</button>
@@ -183,9 +215,28 @@ export function OmpSetupOverlay({ onClose, onComplete, runtime }: { onClose(): v
                 <strong>Регистрация через GUI</strong>
                 <span>Кнопка запускает штатную авторизацию OMP. Пароль, CAPTCHA и подтверждения вводятся только в защищённом окне провайдера.</span>
               </div>
-              {providersLoading ? <div className="empty-state">Читаю провайдеры OMP…</div> : null}
-              {!providersLoading && providers.length === 0 ? <div className="empty-state">OMP не сообщил доступных провайдеров.</div> : null}
-              {providers.map((provider) => {
+              {providerState === "starting" ? <div className="empty-state">OMP запускается…</div> : null}
+              {providerState === "loading" ? <div className="empty-state">Читаю провайдеры OMP…</div> : null}
+              {providerState === "runtime-error" ? (
+                <div className="setup-note inline-status provider-runtime-status" role="alert">
+                  <strong>OMP RPC не готов</strong>
+                  <span>Стадия: {runtime?.rpc.failureStage ?? "readiness"}{runtime?.rpc.errorCode ? ` · ${runtime.rpc.errorCode}` : ""}</span>
+                  <span>{providerError || runtime?.rpc.detail || "Readiness OMP ещё не завершена."}</span>
+                  <code>{runtimePath}</code>
+                  <button type="button" onClick={() => void retryRuntime()}>Повторить</button>
+                </div>
+              ) : null}
+              {providerState === "provider-error" ? (
+                <div className="setup-note inline-status provider-runtime-status" role="alert">
+                  <strong>Ошибка списка провайдеров</strong>
+                  <span>Стадия: get_login_providers</span>
+                  <span>{providerError}</span>
+                  <code>{runtimePath}</code>
+                  <button type="button" onClick={() => void retryRuntime()}>Повторить</button>
+                </div>
+              ) : null}
+              {providerState === "success" && providers.length === 0 ? <div className="empty-state">OMP не сообщил доступных провайдеров.</div> : null}
+              {providerState === "success" ? providers.map((provider) => {
                 const busy = loginBusy === provider.id;
                 const action = provider.authenticated ? `Переподключить ${provider.name}` : `Подключить ${provider.name}`;
                 return (
@@ -196,7 +247,7 @@ export function OmpSetupOverlay({ onClose, onComplete, runtime }: { onClose(): v
                     <button type="button" aria-label={action} disabled={!runtime?.rpc.ready || !provider.available || loginBusy !== null} onClick={() => void login(provider)}>{busy ? "Ожидание…" : provider.authenticated ? "Переподключить" : "Подключить / регистрация"}</button>
                   </div>
                 );
-              })}
+              }) : null}
             </section>
           ) : null}
           {tab === "pool" ? (

@@ -11,7 +11,7 @@ const initialSettings = (): AppSettings => ({ ...defaultSettings, projectPath: "
 const initialSession = (): OmpSessionState => ({ model: testModels[0], thinkingLevel: "xhigh", isStreaming: false, isCompacting: false, sessionId: "test-session", autoCompactionEnabled: true, tokensPerSecond: null, messageCount: 0, queuedMessageCount: 0, contextUsage: { tokens: 20_900, contextWindow: 1_100_000, percent: 1.9 } });
 const versionCheck = (path: string) => ({ ok: true as const, code: "ok" as const, path, expectedVersion: "17.2.9", foundVersion: "17.2.9", exitCode: 0, detail: "Ready" });
 const runtimeSnapshot = (): RuntimeSnapshot => ({ checkedAt: new Date(0).toISOString(), executable: "/tmp/omp", expectedVersion: "17.2.9", version: "17.2.9", available: true, compatible: true, versionCheck: versionCheck("/tmp/omp"), integrity: { checked: false, ok: null, path: "/tmp/omp", expectedSha256: null, actualSha256: null, detail: "external fixture" }, rpc: { ready: true, mode: "rpc-ui", protocolVersion: 2, supportedProtocolVersions: [1, 2], detail: "Ready" } });
-const installationSnapshot = (): OmpInstallationSnapshot => ({ checkedAt: new Date(0).toISOString(), expectedVersion: "17.2.9", expectedSha256: "a".repeat(64), bundledPath: "/tmp/bundled-omp", bundledVersion: "17.2.9", bundledSha256: "a".repeat(64), bundledVersionCheck: versionCheck("/tmp/bundled-omp"), bundledIntegrity: { checked: true, ok: true, path: "/tmp/bundled-omp", expectedSha256: "a".repeat(64), actualSha256: "a".repeat(64), detail: "Ready" }, bundledReady: true, installed: { path: "/tmp/omp", version: "17.2.9", versionCheck: versionCheck("/tmp/omp"), source: "path", replaceable: true }, dataLocations: ["/tmp/.omp"], detail: "Ready" });
+const installationSnapshot = (): OmpInstallationSnapshot => ({ checkedAt: new Date(0).toISOString(), expectedVersion: "17.2.9", assetUrl: "https://github.com/can1357/oh-my-pi/releases/download/v17.2.9/omp-linux-x64", expectedSha256: "a".repeat(64), managedPath: "/home/test/.local/bin/omp", managedVersion: "17.2.9", managedSha256: "a".repeat(64), managedVersionCheck: versionCheck("/home/test/.local/bin/omp"), managedIntegrity: { checked: true, ok: true, path: "/home/test/.local/bin/omp", expectedSha256: "a".repeat(64), actualSha256: "a".repeat(64), detail: "Ready" }, managedReady: true, external: null, selectedPath: "/home/test/.local/bin/omp", dataLocations: ["/home/test/.omp"], detail: "Ready" });
 const browserState: EmbeddedBrowserState = { url: "https://example.com/", title: "Example", loading: false, canGoBack: false, canGoForward: false, error: null };
 let settings = initialSettings();
 let session = initialSession();
@@ -31,7 +31,7 @@ if (typeof window !== "undefined" && !window.mahiko) {
       getSnapshot: async () => runtimeSnapshot(),
       refresh: async () => runtimeSnapshot(),
       getInstallation: async () => installationSnapshot(),
-      installBundled: async () => installationSnapshot(),
+      installOfficial: async () => installationSnapshot(),
     },
     application: { openExternal: async () => ({ ok: true, message: "opened" }), quit: async () => undefined },
     project: {

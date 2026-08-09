@@ -1,5 +1,6 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import type { OmpUiRequest, OmpUiResponse, RpcMode } from "../shared/contracts";
+import { OMP_RPC_START_TIMEOUT_MS } from "./omp-runtime";
 
 interface RpcReadyFrame {
   type: "ready";
@@ -35,11 +36,16 @@ export interface PromptResult {
   cancelled: boolean;
 }
 
-const START_TIMEOUT_MS = 10_000;
 const REQUEST_TIMEOUT_MS = 30_000;
 const TURN_TIMEOUT_MS = 10 * 60_000;
 const ABORT_TERMINAL_GRACE_MS = 250;
 const MAX_REASSEMBLED_BYTES = 64 * 1024 * 1024;
+
+class OmpRpcStartupError extends Error {
+  constructor(message: string, readonly fallbackEligible: boolean) {
+    super(message);
+  }
+}
 
 export class OmpRpcClient {
   private child: ChildProcessWithoutNullStreams | null = null;
@@ -60,6 +66,7 @@ export class OmpRpcClient {
     readonly cwd: string,
     private readonly env: NodeJS.ProcessEnv = process.env,
     private readonly modes: readonly RpcMode[] = ["rpc-ui", "rpc"],
+    private readonly startTimeoutMs = OMP_RPC_START_TIMEOUT_MS,
   ) {}
 
   get mode(): RpcMode | null {
@@ -87,13 +94,15 @@ export class OmpRpcClient {
 
   private async startWithFallback(): Promise<void> {
     let lastError: Error | null = null;
-    for (const mode of this.modes) {
+    for (const [index, mode] of this.modes.entries()) {
       try {
         await this.startMode(mode);
         return;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         this.resetConnection(lastError);
+        const nextMode = this.modes[index + 1];
+        if (!(error instanceof OmpRpcStartupError && error.fallbackEligible && mode === "rpc-ui" && nextMode === "rpc")) throw lastError;
       }
     }
     throw lastError ?? new Error("OMP RPC mode не настроен");
@@ -122,7 +131,15 @@ export class OmpRpcClient {
       readyResolve = resolve;
       readyReject = reject;
     });
-    const timer = setTimeout(() => readyReject?.(new Error(`OMP ${mode} не прислал ready frame за 10 секунд`)), START_TIMEOUT_MS);
+    const timer = setTimeout(() => {
+      const timedOutBeforeReady = this.readyFrame === null;
+      readyReject?.(new OmpRpcStartupError(
+        timedOutBeforeReady
+          ? `OMP ${mode} не прислал ready frame за ${this.startTimeoutMs} ms`
+          : `OMP ${mode} protocol v2 negotiation timed out after ${this.startTimeoutMs} ms`,
+        timedOutBeforeReady,
+      ));
+    }, this.startTimeoutMs);
 
     child.stdout.setEncoding("utf8");
     child.stdout.on("data", (chunk: string) => {
@@ -153,9 +170,12 @@ export class OmpRpcClient {
       readyReject?.(error);
       this.failConnection(error);
     });
-    child.once("exit", (code, signal) => {
+    child.once("close", (code, signal) => {
+      const exitedBeforeReady = this.readyFrame === null;
       const detail = this.stderrTail.join("\n").trim();
-      const error = new Error(`OMP ${mode} завершился (${code ?? signal ?? "unknown"})${detail ? `: ${detail}` : ""}`);
+      const unsupportedMode = /(?:unknown|invalid|unsupported).*(?:rpc-ui|mode)|(?:rpc-ui).*(?:unknown|invalid|unsupported)/i.test(detail);
+      const fallbackEligible = exitedBeforeReady && (!detail || unsupportedMode);
+      const error = new OmpRpcStartupError(`OMP ${mode} завершился (${code ?? signal ?? "unknown"})${detail ? `: ${detail}` : ""}`, fallbackEligible);
       readyReject?.(error);
       this.failConnection(error, child);
     });

@@ -1,6 +1,5 @@
 import process from "node:process";
 import { createRequire } from "node:module";
-import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
@@ -11,10 +10,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const fixture = fileURLToPath(new URL("../tests/fixtures/omp-live-read.txt", import.meta.url));
 const lock = await loadOmpLock(root);
 const override = process.env.MAHIKO_OMP_PATH ?? null;
-const bundled = ["linux", "win32"].includes(process.platform) && process.arch === "x64"
-  ? join(root, "vendor", "omp", `${process.platform}-${process.arch}`, process.platform === "win32" ? "omp.exe" : "omp")
-  : null;
-const runtime = await discoverRuntime(root, lock, override, { bundledExecutable: bundled });
+const runtime = await discoverRuntime(root, lock, override);
 if (!runtime.compatible || !runtime.rpc.ready || runtime.rpc.protocolVersion !== 2 || !runtime.executable || !runtime.rpc.mode) {
   throw new Error(`OMP runtime gate failed: ${runtime.rpc.detail}`);
 }

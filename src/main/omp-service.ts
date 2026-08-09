@@ -37,7 +37,7 @@ const OMP_THINKING_LEVELS = new Set<OmpThinkingLevel>(["minimal", "low", "medium
 
 interface OmpServiceOptions {
   appRoot: string;
-  bundledExecutable?: string | null;
+  managedExecutable?: string | null;
   getSettings(): Promise<AppSettings>;
   accountPoolPath: string;
   onUiRequest(request: OmpUiRequest): void;
@@ -76,7 +76,7 @@ export class OmpService {
 
   async runtimeSnapshot(connectRpc = false): Promise<RuntimeSnapshot> {
     const settings = await this.options.getSettings();
-    const snapshot = await discoverRuntime(settings.projectPath || process.cwd(), await this.lock(), settings.ompExecutableOverride, { bundledExecutable: this.options.bundledExecutable });
+    const snapshot = await discoverRuntime(settings.projectPath || process.cwd(), await this.lock(), settings.ompExecutableOverride, { managedExecutable: this.options.managedExecutable });
     if (!connectRpc || !snapshot.compatible || !snapshot.rpc.ready) return snapshot;
     try {
       const client = await this.ensureClient();
@@ -424,7 +424,7 @@ export class OmpService {
 
   private async requireExecutable(settings: AppSettings): Promise<string> {
     const runtime = await discoverRuntime(settings.projectPath || process.cwd(), await this.lock(), settings.ompExecutableOverride, {
-      bundledExecutable: this.options.bundledExecutable,
+      managedExecutable: this.options.managedExecutable,
       probeRpc: false,
     });
     if (!runtime.compatible || !runtime.executable) {
@@ -439,7 +439,7 @@ export class OmpService {
   }
 
   private async verifiedRuntime(settings: AppSettings): Promise<RuntimeSnapshot> {
-    const runtime = await discoverRuntime(settings.projectPath || process.cwd(), await this.lock(), settings.ompExecutableOverride, { bundledExecutable: this.options.bundledExecutable });
+    const runtime = await discoverRuntime(settings.projectPath || process.cwd(), await this.lock(), settings.ompExecutableOverride, { managedExecutable: this.options.managedExecutable });
     if (!runtime.compatible || !runtime.rpc.ready || runtime.rpc.protocolVersion !== 2) throw new Error(runtime.rpc.detail);
     return runtime;
   }

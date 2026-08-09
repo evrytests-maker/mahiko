@@ -5,13 +5,6 @@ release/
 coverage/
 *.log
 
-# Reproducibly downloaded, checksum-verified OMP release executables. The
-# manifest and license are committed; the >100 MiB platform binaries are
-# fetched from the pinned upstream release before packaging.
-vendor/omp/linux-x64/omp
-vendor/omp/win32-x64/omp.exe
-vendor/omp/**/*.download
-
 .codex/scratch/*
 !.codex/scratch/.gitkeep
 

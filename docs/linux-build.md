@@ -11,7 +11,7 @@ npm run build:source
 npm run pack:linux
 ```
 
-`build:source` downloads the pinned OMP asset for the current platform, verifies its SHA-256 and builds Mahiko. `pack:linux` creates an unpacked x64 application. `npm run dist:linux` additionally creates AppImage, deb, rpm and tar.gz artifacts in `release/`. The CI workflow performs a clean Node 22 build and packages the Linux targets on Ubuntu 24.04.
+`build:source` builds Mahiko without downloading OMP. `pack:linux` creates an unpacked x64 application. `npm run dist:linux` additionally creates AppImage, deb, rpm and tar.gz artifacts in `release/`. None of these artifacts contains an OMP executable. The CI workflow performs a clean Node 22 build and packages the Linux targets on Ubuntu 24.04.
 
 ## Build-host preparation
 
@@ -25,7 +25,7 @@ The distro-neutral unpacked and tar.gz paths need fewer target-specific tools th
 
 ## Runtime libraries
 
-Electron normally requires GTK 3, NSS, ALSA, ATK/AT-SPI, GBM, X11/XCB-related libraries and a desktop session. Exact package names depend on the distribution and are also declared by the generated native package metadata. OMP `17.2.9` is embedded in every package; first launch offers a visible file-only installation/replacement step before provider setup.
+Electron normally requires GTK 3, NSS, ALSA, ATK/AT-SPI, GBM, X11/XCB-related libraries and a desktop session. Exact package names depend on the distribution and are also declared by the generated native package metadata. On first launch Mahiko asks for consent before executing the tagged official OMP installer as `install.sh --binary --ref v17.2.9`. It installs the shared user CLI at `$HOME/.local/bin/omp`; Mahiko and terminal OMP then use the same normal OMP data roots. The executable is checked against the pinned SHA-256 and exact `omp/17.2.9` output, with rollback on failure.
 
 ## Verification boundary
 

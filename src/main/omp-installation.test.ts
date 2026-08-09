@@ -1,167 +1,172 @@
-import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
-import { installBundledOmp, inspectOmpInstallation, isReplaceableOmpPath } from "./omp-installation";
-import { sha256File } from "./omp-runtime";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { installOfficialOmp, officialOmpAsset, officialOmpCliPath, officialOmpInstaller, officialOmpInstallerCommand } from "./omp-installation";
 
-const temporaryDirectories: string[] = [];
+const directories: string[] = [];
+const lock = {
+  package: "@oh-my-pi/pi-coding-agent" as const,
+  version: "17.2.9",
+  cliVersion: "omp/17.2.9",
+  preferredRpcMode: "rpc-ui" as const,
+  fallbackRpcMode: "rpc" as const,
+  protocolVersion: 2 as const,
+  installers: {
+    linux: {
+      url: "https://raw.githubusercontent.com/can1357/oh-my-pi/v17.2.9/scripts/install.sh",
+      sha256: "1b9a74f608a430977892c972ed071f3fc46bf6d09bbf81c8827a655beaa73df7",
+    },
+    win32: {
+      url: "https://raw.githubusercontent.com/can1357/oh-my-pi/v17.2.9/scripts/install.ps1",
+      sha256: "f0006f0cf6ce33dbe2a1a734fb8b8613a3936fb288d53a4d3cc241bf0a8a976e",
+    },
+  },
+  assets: {
+    "linux-x64": {
+      url: "https://github.com/can1357/oh-my-pi/releases/download/v17.2.9/omp-linux-x64",
+      sha256: "4f7aeb33b2f347c11a5ac8c73630e31d02c0a3eef3693468880b9f5e8f02a02b",
+    },
+    "win32-x64": {
+      url: "https://github.com/can1357/oh-my-pi/releases/download/v17.2.9/omp-windows-x64.exe",
+      sha256: "dd0c0d3fb123dd458a534d61456b87790a8042769aa20234145fa25e4205f821",
+    },
+  },
+};
 
-function temporaryDirectory(prefix: string): string {
-  const directory = mkdtempSync(join(process.cwd(), prefix));
-  temporaryDirectories.push(directory);
+function temporaryDirectory(): string {
+  const directory = mkdtempSync(join(tmpdir(), "mahiko-omp-installation-test-"));
+  directories.push(directory);
   return directory;
 }
 
-function fakeOmp(path: string, version: string, extra = ""): string {
+function fakeOmp(path: string, version: string): Buffer {
+  const payload = Buffer.from(`#!/usr/bin/env node\nrequire("node:fs").writeSync(1, "omp/${version}\\n");\n`, "utf8");
   mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, `#!/usr/bin/env node\nconst fs = require("node:fs");\n${extra}\nfs.writeSync(1, "omp/${version}\\n");\n`, "utf8");
+  writeFileSync(path, payload, { mode: 0o755 });
   chmodSync(path, 0o755);
-  return path;
+  return payload;
+}
+
+function fetchFixture(payload: Buffer): typeof fetch {
+  return (async () => new Response(payload, { status: 200 })) as typeof fetch;
 }
 
 afterEach(() => {
-  for (const directory of temporaryDirectories.splice(0)) rmSync(directory, { recursive: true, force: true });
+  vi.restoreAllMocks();
+  for (const directory of directories.splice(0)) rmSync(directory, { recursive: true, force: true });
 });
 
-describe("OMP installation inspection", () => {
-  it("recognizes a symlink and reports exact bundled version and SHA separately", async () => {
-    const root = temporaryDirectory(".mahiko-test-install-");
-    const home = join(root, "home");
-    const bundled = fakeOmp(join(root, "resources", "omp", "omp"), "17.2.9");
-    const oldBinary = fakeOmp(join(root, "old", "omp"), "17.2.8");
-    const installed = join(home, ".bun", "bin", "omp");
-    mkdirSync(dirname(installed), { recursive: true });
-    symlinkSync(oldBinary, installed);
-    const expectedSha256 = await sha256File(bundled);
-
-    const snapshot = await inspectOmpInstallation({
-      bundledPath: bundled,
-      expectedVersion: "17.2.9",
-      expectedSha256,
-      env: { PATH: dirname(process.execPath) },
-      home,
-      platform: "linux",
-    });
-
-    expect(snapshot.bundledVersionCheck).toMatchObject({ ok: true, foundVersion: "17.2.9" });
-    expect(snapshot.bundledIntegrity).toMatchObject({ checked: true, ok: true, actualSha256: expectedSha256 });
-    expect(snapshot.installed).toMatchObject({ path: installed, version: "17.2.8", replaceable: true });
-    expect(snapshot.detail).toContain(installed);
-    expect(snapshot.detail).toContain("17.2.8");
-    expect(snapshot.detail).toContain("17.2.9");
-  });
-});
-
-describe("safe executable-only replacement", () => {
-  it("backs up and replaces a broken executable symlink", async () => {
-    const root = temporaryDirectory(".mahiko-test-broken-link-");
-    const home = join(root, "home");
-    const bundled = fakeOmp(join(root, "resources", "omp", "omp"), "17.2.9");
-    const installed = join(home, ".local", "bin", "omp");
-    mkdirSync(dirname(installed), { recursive: true });
-    symlinkSync(join(root, "missing-omp"), installed);
-
-    const snapshot = await installBundledOmp({
-      bundledPath: bundled,
-      expectedVersion: "17.2.9",
-      expectedSha256: await sha256File(bundled),
-      env: { PATH: dirname(process.execPath) },
-      home,
-      platform: "linux",
-    });
-
-    expect(snapshot.installed).toMatchObject({ path: installed, version: "17.2.9" });
-    expect(lstatSync(installed).isFile()).toBe(true);
+describe("official OMP asset selection", () => {
+  it.each([
+    ["linux", "omp", lock.assets["linux-x64"]],
+    ["win32", "omp.exe", lock.assets["win32-x64"]],
+  ] as const)("selects the pinned %s x64 release", (platform, executableName, expected) => {
+    expect(officialOmpAsset(lock, platform, "x64")).toEqual({ ...expected, executableName });
   });
 
-  it("replaces one Linux symlink, preserves OMP data and rechecks version plus hash", async () => {
-    const root = temporaryDirectory(".mahiko-test-replace-");
-    const home = join(root, "home");
-    const bundled = fakeOmp(join(root, "resources", "omp", "omp"), "17.2.9");
-    const oldBinary = fakeOmp(join(root, "old", "omp"), "17.2.8");
-    const installed = join(home, ".bun", "bin", "omp");
-    const accountDb = join(home, ".omp", "agent", "agent.db");
-    const session = join(home, ".omp", "agent", "sessions", "keep.jsonl");
-    mkdirSync(dirname(installed), { recursive: true });
-    mkdirSync(dirname(accountDb), { recursive: true });
-    mkdirSync(dirname(session), { recursive: true });
-    symlinkSync(oldBinary, installed);
-    writeFileSync(accountDb, "account-data", "utf8");
-    writeFileSync(session, "chat-data", "utf8");
-    const expectedSha256 = await sha256File(bundled);
+  it("uses the official per-user CLI locations on Linux and Windows", () => {
+    expect(officialOmpCliPath("linux", "/home/alice", {})).toBe("/home/alice/.local/bin/omp");
+    expect(officialOmpCliPath("win32", "C:\\Users\\Alice", { LOCALAPPDATA: "C:\\Users\\Alice\\AppData\\Local" }))
+      .toBe("C:\\Users\\Alice\\AppData\\Local\\omp\\omp.exe");
+  });
 
-    const snapshot = await installBundledOmp({
-      bundledPath: bundled,
-      expectedVersion: "17.2.9",
-      expectedSha256,
-      env: { PATH: dirname(process.execPath) },
-      home,
-      platform: "linux",
-    });
-
-    expect(snapshot.installed).toMatchObject({ path: installed, version: "17.2.9" });
-    expect(lstatSync(installed).isSymbolicLink()).toBe(false);
-    await expect(sha256File(installed)).resolves.toBe(expectedSha256);
-    expect(lstatSync(installed).mode & 0o111).not.toBe(0);
-    expect(readFileSync(accountDb, "utf8")).toBe("account-data");
-    expect(readFileSync(session, "utf8")).toBe("chat-data");
+  it("selects the pinned official installer for Linux and Windows", () => {
+    expect(officialOmpInstaller(lock, "linux")).toEqual(lock.installers.linux);
+    expect(officialOmpInstaller(lock, "win32")).toEqual(lock.installers.win32);
   });
 
   it.each([
-    ["project .omp", (_root: string, home: string) => join(home, "projects", "demo", ".omp", "bin", "omp"), (_root: string, _home: string) => ({})],
-    ["PI_CODING_AGENT_DIR", (_root: string, home: string) => join(home, "agent-data", "bin", "omp"), (_root: string, home: string) => ({ PI_CODING_AGENT_DIR: join(home, "agent-data") })],
-    ["XDG data", (_root: string, home: string) => join(home, "xdg-data", "omp", "bin", "omp"), (_root: string, home: string) => ({ XDG_DATA_HOME: join(home, "xdg-data") })],
-  ])("refuses a PATH executable inside %s", async (_label, targetFor, envFor) => {
-    const root = temporaryDirectory(".mahiko-test-protected-");
-    const home = join(root, "home");
-    const target = targetFor(root, home);
-    const bundled = fakeOmp(join(root, "resources", "omp", "omp"), "17.2.9");
-    fakeOmp(target, "17.2.8");
-    const env = envFor(root, home);
-    const options = {
-      bundledPath: bundled,
-      expectedVersion: "17.2.9",
-      expectedSha256: await sha256File(bundled),
-      env: { ...env, PATH: `${dirname(target)}:${dirname(process.execPath)}` },
-      home,
-      platform: "linux" as const,
-    };
+    ["linux", "/tmp/install.sh", "/home/alice/.local/bin/omp", "sh", ["/tmp/install.sh", "--binary", "--ref", "v17.2.9"]],
+    ["win32", "C:\\Temp\\install.ps1", "C:\\Users\\Alice\\AppData\\Local\\omp\\omp.exe", "powershell.exe", ["-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "C:\\Temp\\install.ps1", "-Binary", "-Ref", "v17.2.9"]],
+  ] as const)("runs the tagged official %s installer in binary mode", (platform, installerPath, targetPath, command, args) => {
+    const invocation = officialOmpInstallerCommand({
+      platform,
+      installerPath,
+      targetPath,
+      versionRef: "v17.2.9",
+      timeoutMs: 1_000,
+      env: { PATH: "fixture" },
+      cwd: "/tmp",
+      isolatedUserProfile: "/tmp/isolated-profile",
+    });
 
-    const before = await inspectOmpInstallation(options);
-    expect(before.installed).toMatchObject({ path: target, replaceable: false });
-    await expect(installBundledOmp(options)).rejects.toThrow(target);
-    expect(existsSync(target)).toBe(true);
+    expect(invocation.command).toBe(command);
+    expect(invocation.args).toEqual(args);
+    expect(invocation.env.PI_INSTALL_DIR).toBe(platform === "win32" ? "C:\\Users\\Alice\\AppData\\Local\\omp" : "/home/alice/.local/bin");
+    expect(invocation.env.USERPROFILE).toBe(platform === "win32" ? "/tmp/isolated-profile" : undefined);
+  });
+});
+
+describe("official OMP consent action", () => {
+  it("uses a compatible PATH executable without downloading or modifying it", async () => {
+    const root = temporaryDirectory();
+    const home = join(root, "home");
+    const externalPath = join(root, "path", "omp");
+    const original = fakeOmp(externalPath, "17.2.9");
+    const fetchImpl = vi.fn<typeof fetch>();
+
+    const snapshot = await installOfficialOmp({
+      assetUrl: lock.assets["linux-x64"].url,
+      installerUrl: lock.installers.linux.url,
+      expectedInstallerSha256: lock.installers.linux.sha256,
+      targetPath: join(home, ".local", "bin", "omp"),
+      expectedVersion: lock.version,
+      expectedCliVersion: lock.cliVersion,
+      expectedSha256: lock.assets["linux-x64"].sha256,
+      platform: "linux",
+      home,
+      env: { PATH: `${dirname(externalPath)}:${dirname(process.execPath)}` },
+      fetchImpl,
+    });
+
+    expect(snapshot.selectedPath).toBe(externalPath);
+    expect(snapshot.external?.versionCheck.ok).toBe(true);
+    expect(fetchImpl).not.toHaveBeenCalled();
+    expect(readFileSync(externalPath)).toEqual(original);
   });
 
-  it("rejects Linux system paths and Windows Program Files without elevation", () => {
-    expect(isReplaceableOmpPath("/usr/local/bin/omp", {}, "/home/alice", "linux")).toBe(false);
-    expect(isReplaceableOmpPath("C:\\Program Files\\OMP\\omp.exe", { ProgramFiles: "C:\\Program Files" }, "C:\\Users\\Alice", "win32")).toBe(false);
-    expect(isReplaceableOmpPath("C:\\Users\\Alice\\AppData\\Local\\omp\\omp.exe", { LOCALAPPDATA: "C:\\Users\\Alice\\AppData\\Local" }, "C:\\Users\\Alice", "win32")).toBe(true);
-  });
-
-  it("rolls back the previous executable when the installed copy fails its version recheck", async () => {
-    const root = temporaryDirectory(".mahiko-test-rollback-");
+  it("runs the official installer into the CLI location and leaves OMP data untouched", async () => {
+    const root = temporaryDirectory();
     const home = join(root, "home");
-    const target = fakeOmp(join(home, ".local", "bin", "omp"), "17.2.8");
-    const original = readFileSync(target);
-    const bundled = fakeOmp(join(root, "resources", "omp", "omp"), "17.2.9", `
-if (process.argv[1].endsWith(".local/bin/omp")) {
-  fs.writeSync(1, "omp/0.0.0\\n");
-  process.exit(0);
-}
-`);
-    const options = {
-      bundledPath: bundled,
-      expectedVersion: "17.2.9",
-      expectedSha256: await sha256File(bundled),
-      env: { PATH: dirname(process.execPath) },
-      home,
-      platform: "linux" as const,
-    };
+    const externalPath = join(root, "path", "omp");
+    const externalOriginal = fakeOmp(externalPath, "17.2.8");
+    const accountDb = join(home, ".omp", "agent", "agent.db");
+    mkdirSync(dirname(accountDb), { recursive: true });
+    writeFileSync(accountDb, "account-data", "utf8");
+    const targetPath = join(home, ".local", "bin", "omp");
+    const official = fakeOmp(join(root, "fixture", "omp"), "17.2.9");
+    const installer = Buffer.from("#!/bin/sh\n# official installer fixture\n", "utf8");
+    const installerRunner = vi.fn(async ({ targetPath: installerTarget }: { targetPath: string }) => {
+      mkdirSync(dirname(installerTarget), { recursive: true });
+      writeFileSync(installerTarget, official, { mode: 0o755 });
+      chmodSync(installerTarget, 0o755);
+    });
 
-    await expect(installBundledOmp(options)).rejects.toThrow(/повторн|version|верси/i);
-    expect(readFileSync(target)).toEqual(original);
-    expect(existsSync(`${target}.mahiko-backup-${process.pid}`)).toBe(false);
-    expect(existsSync(`${target}.mahiko-new-${process.pid}`)).toBe(false);
+    const snapshot = await installOfficialOmp({
+      assetUrl: lock.assets["linux-x64"].url,
+      installerUrl: lock.installers.linux.url,
+      expectedInstallerSha256: createHash("sha256").update(installer).digest("hex"),
+      targetPath,
+      expectedVersion: lock.version,
+      expectedCliVersion: lock.cliVersion,
+      expectedSha256: createHash("sha256").update(official).digest("hex"),
+      platform: "linux",
+      home,
+      env: { PATH: `${dirname(externalPath)}:${dirname(process.execPath)}` },
+      fetchImpl: fetchFixture(installer),
+      installerRunner,
+    });
+
+    expect(snapshot.selectedPath).toBe(targetPath);
+    expect(snapshot.managedReady).toBe(true);
+    expect(installerRunner).toHaveBeenCalledWith(expect.objectContaining({
+      platform: "linux",
+      targetPath,
+      versionRef: "v17.2.9",
+    }));
+    expect(readFileSync(externalPath)).toEqual(externalOriginal);
+    expect(readFileSync(accountDb, "utf8")).toBe("account-data");
   });
 });

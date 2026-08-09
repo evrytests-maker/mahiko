@@ -71,9 +71,9 @@ function createWindow(): void {
   else void mainWindow.loadFile(join(__dirname, "../../dist/index.html"));
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   if (process.platform === "win32") app.setAppUserModelId("com.github.evrytestsmaker.mahiko");
-  registerIpcHandlers();
+  await registerIpcHandlers();
   createWindow();
   createTray();
   app.on("activate", showMainWindow);

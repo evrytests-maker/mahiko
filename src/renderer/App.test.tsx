@@ -16,6 +16,36 @@ async function openWorkbench(user: ReturnType<typeof userEvent.setup>) {
 }
 
 describe("оболочка mahiko", () => {
+  it("asks for consent when a previously configured OMP is no longer compatible", async () => {
+    const originalSettings = window.mahiko!.settings.get;
+    const originalRuntime = window.mahiko!.runtime.getSnapshot;
+    const originalInstallation = window.mahiko!.runtime.getInstallation;
+    const settings = await originalSettings();
+    const runtime = await originalRuntime();
+    const getInstallation = vi.fn(originalInstallation);
+    window.mahiko!.settings.get = async () => ({ ...settings, runtimeSetupComplete: true });
+    window.mahiko!.runtime.getSnapshot = async () => ({
+      ...runtime,
+      executable: null,
+      available: false,
+      compatible: false,
+      version: null,
+      versionCheck: { ok: false, code: "ENOENT", path: "/missing/omp", expectedVersion: "17.2.9", foundVersion: null, exitCode: null, detail: "OMP не найден" },
+      rpc: { ready: false, mode: null, protocolVersion: null, supportedProtocolVersions: [], detail: "RPC не запускался", failureStage: "version" },
+    });
+    window.mahiko!.runtime.getInstallation = getInstallation;
+
+    try {
+      render(<App />);
+      expect(await screen.findByRole("dialog", { name: "Первоначальная настройка OMP" })).toBeVisible();
+      expect(getInstallation).toHaveBeenCalledOnce();
+    } finally {
+      window.mahiko!.settings.get = originalSettings;
+      window.mahiko!.runtime.getSnapshot = originalRuntime;
+      window.mahiko!.runtime.getInstallation = originalInstallation;
+    }
+  });
+
   it("показывает только реальные Workbench-инструменты и открывает файл проекта", async () => {
     const user = userEvent.setup();
     render(<App />);

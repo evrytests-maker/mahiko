@@ -21,7 +21,14 @@ const lockSchema = z.object({
   preferredRpcMode: z.literal("rpc-ui"),
   fallbackRpcMode: z.literal("rpc"),
   protocolVersion: z.literal(2),
-  assets: z.record(z.string(), z.object({ sha256: z.string().regex(/^[a-f0-9]{64}$/) })).default({}),
+  installers: z.record(z.string(), z.object({
+    url: z.string().url().startsWith("https://raw.githubusercontent.com/can1357/oh-my-pi/"),
+    sha256: z.string().regex(/^[a-f0-9]{64}$/),
+  })),
+  assets: z.record(z.string(), z.object({
+    url: z.string().url().startsWith("https://github.com/can1357/oh-my-pi/releases/download/"),
+    sha256: z.string().regex(/^[a-f0-9]{64}$/),
+  })).default({}),
 });
 
 export type OmpLock = z.infer<typeof lockSchema>;
@@ -31,7 +38,7 @@ export interface RuntimeOptions {
   probeTimeoutMs?: number;
   probeRpc?: boolean;
   env?: NodeJS.ProcessEnv;
-  bundledExecutable?: string | null;
+  managedExecutable?: string | null;
   platform?: NodeJS.Platform;
   arch?: string;
   home?: string;
@@ -58,6 +65,7 @@ interface CandidateSelection {
 
 const OUTPUT_LIMIT = 32 * 1024;
 const FRAME_LIMIT = 1024 * 1024;
+export const OMP_RPC_START_TIMEOUT_MS = 45_000;
 
 export async function loadOmpLock(appRoot: string): Promise<OmpLock> {
   const raw = await readFile(join(appRoot, "omp.lock.json"), "utf8");
@@ -101,12 +109,12 @@ export function ompCandidatePaths(options: OmpCandidateOptions = {}): string[] {
 export async function findOmpExecutable(
   override?: string | null,
   env: NodeJS.ProcessEnv = process.env,
-  bundledExecutable?: string | null,
+  managedExecutable?: string | null,
   options: Pick<RuntimeOptions, "platform" | "home"> = {},
 ): Promise<string | null> {
   const platform = options.platform ?? process.platform;
   if (override) return (await executableAccessCode(override, platform)) === "ok" ? override : null;
-  if (bundledExecutable && (await executableAccessCode(bundledExecutable, platform)) === "ok") return bundledExecutable;
+  if (managedExecutable && (await executableAccessCode(managedExecutable, platform)) === "ok") return managedExecutable;
   return (await selectCandidate(ompCandidatePaths({ env, platform, home: options.home }), platform)).path;
 }
 
@@ -118,10 +126,10 @@ export async function sha256File(path: string): Promise<string> {
 
 export async function checkOmpIntegrity(path: string | null, expectedSha256: string | null): Promise<OmpIntegrityCheck> {
   if (!path) {
-    return { checked: true, ok: false, path: null, expectedSha256, actualSha256: null, detail: "Встроенный OMP отсутствует" };
+    return { checked: true, ok: false, path: null, expectedSha256, actualSha256: null, detail: "Управляемый OMP отсутствует" };
   }
   if (!expectedSha256) {
-    return { checked: true, ok: false, path, expectedSha256: null, actualSha256: null, detail: `Для встроенного OMP ${path} не задан ожидаемый SHA-256` };
+    return { checked: true, ok: false, path, expectedSha256: null, actualSha256: null, detail: `Для управляемого OMP ${path} не задан ожидаемый SHA-256` };
   }
   try {
     const actualSha256 = await sha256File(path);
@@ -133,8 +141,8 @@ export async function checkOmpIntegrity(path: string | null, expectedSha256: str
       expectedSha256,
       actualSha256,
       detail: ok
-        ? `SHA-256 встроенного OMP подтверждён: ${actualSha256}`
-        : `SHA-256 встроенного OMP ${path} не совпадает: найден ${actualSha256}, ожидается ${expectedSha256}`,
+        ? `SHA-256 управляемого OMP подтверждён: ${actualSha256}`
+        : `SHA-256 управляемого OMP ${path} не совпадает: найден ${actualSha256}, ожидается ${expectedSha256}`,
     };
   } catch (error) {
     const code = nodeErrorCode(error);
@@ -144,7 +152,7 @@ export async function checkOmpIntegrity(path: string | null, expectedSha256: str
       path,
       expectedSha256,
       actualSha256: null,
-      detail: `Не удалось вычислить SHA-256 встроенного OMP ${path}: ${code ?? messageOf(error)}`,
+      detail: `Не удалось вычислить SHA-256 управляемого OMP ${path}: ${code ?? messageOf(error)}`,
     };
   }
 }
@@ -155,9 +163,11 @@ export async function checkOmpVersion(
   expectedVersion: string,
   timeoutMs = 5_000,
   env: NodeJS.ProcessEnv = process.env,
+  expectedCliVersion?: string,
 ): Promise<OmpVersionCheck> {
   const result = await runCommand(path, ["--version"], cwd, timeoutMs, env);
-  const foundVersion = parseOmpVersion(`${result.stdout}\n${result.stderr}`);
+  const output = `${result.stdout}\n${result.stderr}`;
+  const foundVersion = parseOmpVersion(output);
   if (result.timedOut) return versionFailure("timeout", path, expectedVersion, foundVersion, result.exitCode, `Проверка версии OMP по пути ${path} превысила timeout ${timeoutMs} мс; ожидается ${expectedVersion}`);
   if (result.errorCode === "ENOENT") return versionFailure("ENOENT", path, expectedVersion, foundVersion, result.exitCode, `OMP не найден по пути ${path}; ожидается версия ${expectedVersion}`);
   if (result.errorCode === "EACCES") return versionFailure("EACCES", path, expectedVersion, foundVersion, result.exitCode, `Нет права выполнить OMP по пути ${path} (EACCES); ожидается версия ${expectedVersion}`);
@@ -168,6 +178,9 @@ export async function checkOmpVersion(
   }
   if (result.exitCode !== 0) {
     return versionFailure("nonzero-exit", path, expectedVersion, foundVersion, result.exitCode, `OMP ${path} сообщил версию ${foundVersion}, но omp --version завершился с кодом ${result.exitCode}; ожидается ${expectedVersion}`);
+  }
+  if (expectedCliVersion && compactOutput(output) !== expectedCliVersion) {
+    return versionFailure("unknown-format", path, expectedVersion, foundVersion, result.exitCode, `OMP по пути ${path} вернул ${compactOutput(output) || "пустой вывод"}; ожидается точный вывод ${expectedCliVersion}`);
   }
   if (foundVersion !== expectedVersion) return versionFailure("version-mismatch", path, expectedVersion, foundVersion, result.exitCode, `Несовместимый OMP по пути ${path}: найден ${foundVersion}, ожидается ${expectedVersion}`);
   return {
@@ -251,7 +264,7 @@ export function probeRpc(
   executable: string,
   cwd: string,
   mode: RpcMode,
-  timeoutMs = 10_000,
+  timeoutMs = OMP_RPC_START_TIMEOUT_MS,
   env: NodeJS.ProcessEnv = process.env,
 ): Promise<RpcStatus> {
   return new Promise((resolve) => {
@@ -389,22 +402,23 @@ export async function discoverRuntime(
   let versionCheck: OmpVersionCheck;
   let integrity: OmpIntegrityCheck;
 
+  const managedPath = options.managedExecutable ?? null;
   if (override) {
-    versionCheck = await checkOmpVersion(override, cwd, lock.version, options.versionTimeoutMs ?? 5_000, env);
+    const managedOverride = managedPath !== null && pathsEqual(override, managedPath, platform);
+    versionCheck = await checkOmpVersion(override, cwd, lock.version, options.versionTimeoutMs ?? 5_000, env, managedOverride ? lock.cliVersion : undefined);
     executable = versionCheck.code === "ENOENT" ? null : override;
-    integrity = uncheckedIntegrity(override);
+    integrity = managedOverride ? await checkOmpIntegrity(override, expectedSha256) : uncheckedIntegrity(override);
   } else {
-    const bundledPath = options.bundledExecutable ?? null;
-    const bundledVersion = bundledPath
-      ? await checkOmpVersion(bundledPath, cwd, lock.version, options.versionTimeoutMs ?? 5_000, env)
+    const managedVersion = managedPath
+      ? await checkOmpVersion(managedPath, cwd, lock.version, options.versionTimeoutMs ?? 5_000, env, lock.cliVersion)
       : null;
-    const bundledIntegrity = bundledPath
-      ? await checkOmpIntegrity(bundledPath, expectedSha256)
+    const managedIntegrity = managedPath
+      ? await checkOmpIntegrity(managedPath, expectedSha256)
       : null;
-    if (bundledPath && bundledVersion?.ok && bundledIntegrity?.ok) {
-      executable = bundledPath;
-      versionCheck = bundledVersion;
-      integrity = bundledIntegrity;
+    if (managedPath && managedVersion?.ok && managedIntegrity?.ok) {
+      executable = managedPath;
+      versionCheck = managedVersion;
+      integrity = managedIntegrity;
     } else {
       const candidates = ompCandidatePaths({ env, platform, home });
       const selected = await selectCandidate(candidates, platform);
@@ -413,10 +427,10 @@ export async function discoverRuntime(
         executable = selected.path;
         versionCheck = await checkOmpVersion(selectedPath, cwd, lock.version, options.versionTimeoutMs ?? 5_000, env);
         integrity = uncheckedIntegrity(selectedPath);
-      } else if (bundledPath && bundledVersion && bundledIntegrity) {
-        executable = bundledVersion.code === "ENOENT" ? null : bundledPath;
-        versionCheck = bundledVersion;
-        integrity = bundledIntegrity;
+      } else if (managedPath && managedVersion && managedIntegrity) {
+        executable = managedVersion.code === "ENOENT" ? null : managedPath;
+        versionCheck = managedVersion;
+        integrity = managedIntegrity;
       } else {
         const expectedPath = candidates[0] ?? (platform === "win32" ? "omp.exe" : "omp");
         versionCheck = versionFailure("ENOENT", expectedPath, lock.version, null, null, `OMP не найден: проверены ${candidates.join(", ") || expectedPath}; ожидается версия ${lock.version}`);
@@ -444,7 +458,7 @@ export async function discoverRuntime(
     return { ...base, rpc: failedRpc("RPC readiness не проверялась на этапе настройки провайдера", "readiness", undefined, "not-probed") };
   }
 
-  const probeTimeoutMs = options.probeTimeoutMs ?? 10_000;
+  const probeTimeoutMs = options.probeTimeoutMs ?? OMP_RPC_START_TIMEOUT_MS;
   let rpc = await probeRpc(executable, cwd, lock.preferredRpcMode, probeTimeoutMs, env);
   if (!rpc.ready && isFallbackEligible(rpc)) rpc = await probeRpc(executable, cwd, lock.fallbackRpcMode, probeTimeoutMs, env);
   return { ...base, rpc };
@@ -485,7 +499,14 @@ function versionFailure(
 }
 
 function uncheckedIntegrity(path: string | null): OmpIntegrityCheck {
-  return { checked: false, ok: null, path, expectedSha256: null, actualSha256: null, detail: "SHA-256 применяется только к встроенному OMP" };
+  return { checked: false, ok: null, path, expectedSha256: null, actualSha256: null, detail: "SHA-256 применяется только к загруженному Mahiko OMP" };
+}
+
+function pathsEqual(left: string, right: string, platform: NodeJS.Platform): boolean {
+  const pathApi = platform === "win32" ? win32 : posix;
+  const normalizedLeft = pathApi.resolve(left);
+  const normalizedRight = pathApi.resolve(right);
+  return platform === "win32" ? normalizedLeft.toLowerCase() === normalizedRight.toLowerCase() : normalizedLeft === normalizedRight;
 }
 
 function isFallbackEligible(status: RpcStatus): boolean {

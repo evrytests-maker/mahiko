@@ -86,7 +86,7 @@ export function App(): JSX.Element {
         setSettings(nextSettings); setRuntime(nextRuntime); setFiles(nextFiles);
         setWorkbenchWidth(nextSettings.inspectorWidth === 460 ? 600 : nextSettings.inspectorWidth);
         document.documentElement.dataset.theme = nextSettings.theme;
-        if (!nextSettings.runtimeSetupComplete) {
+        if (!nextSettings.runtimeSetupComplete || !nextRuntime.compatible) {
           const nextInstallation = await api.runtime.getInstallation();
           if (cancelled) return;
           setInstallation(nextInstallation);
@@ -181,11 +181,11 @@ export function App(): JSX.Element {
       .catch((error) => setUiNotice(`Не удалось сохранить первоначальную настройку: ${messageOf(error)}`));
   }, [settings?.onboardingComplete, updateSettings]);
 
-  const installBundledOmp = useCallback(() => {
+  const installOfficialOmp = useCallback(() => {
     if (installationBusy) return;
     setInstallationBusy(true);
     setInstallationError("");
-    void api.runtime.installBundled()
+    void api.runtime.installOfficial()
       .then(async (nextInstallation) => {
         const [nextSettings, nextRuntime] = await Promise.all([api.settings.get(), api.runtime.refresh()]);
         setInstallation(nextInstallation);
@@ -420,9 +420,9 @@ export function App(): JSX.Element {
           {windows.map((record, index) => { const size = floatingSize(record.kind); return <FloatingWindow key={record.id} id={record.id.replace(/[^a-z0-9_-]/gi, "-")} title={record.title} zIndex={50 + index} initialPosition={initialPosition(record.kind, index)} width={size.width} height={size.height} onActivate={() => activateFloating(record.id)} onClose={() => closeFloating(record.id)}>{renderFloatingBody(record, { settings, runtime, files, activeFile, fileLoading, chooseProject, openFile })}</FloatingWindow>; })}
         </div>
       </main>
-      {runtimeSetupOpen ? <OmpBootstrapOverlay snapshot={installation} busy={installationBusy} error={installationError} onInstall={installBundledOmp} onExit={() => void api.application.quit()} /> : null}
+      {runtimeSetupOpen ? <OmpBootstrapOverlay snapshot={installation} busy={installationBusy} error={installationError} onInstall={installOfficialOmp} onExit={() => void api.application.quit()} /> : null}
       {settingsOpen ? <SettingsOverlay settings={settings} initialTab={settingsDestination.tab} initialSection={settingsDestination.section} onUpdate={updateSettings} onClose={() => setSettingsOpen(false)} /> : null}
-      {setupOpen ? <OmpSetupOverlay runtime={runtime} onClose={closeSetup} onComplete={closeSetup} /> : null}
+      {setupOpen ? <OmpSetupOverlay runtime={runtime} onClose={closeSetup} onComplete={closeSetup} onRetryRuntime={refreshRuntime} /> : null}
       {paletteOpen ? <CommandPalette onClose={() => setPaletteOpen(false)} onCommand={handleCommand} /> : null}
       {ompUiRequest ? <OmpUiDialog request={ompUiRequest} browserRequest={ompBrowserRequest} onOpenExternal={(url) => api.application.openExternal(url)} onRespond={respondToOmpUi} /> : null}
     </div>

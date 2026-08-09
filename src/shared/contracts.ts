@@ -48,21 +48,22 @@ export interface OmpInstallation {
   path: string;
   version: string | null;
   source: "path" | "official" | "bun";
-  replaceable: boolean;
   versionCheck: OmpVersionCheck;
 }
 
 export interface OmpInstallationSnapshot {
   checkedAt: string;
   expectedVersion: string;
-  bundledPath: string | null;
-  bundledVersion: string | null;
+  assetUrl: string;
   expectedSha256: string;
-  bundledSha256: string | null;
-  bundledVersionCheck: OmpVersionCheck | null;
-  bundledIntegrity: OmpIntegrityCheck;
-  bundledReady: boolean;
-  installed: OmpInstallation | null;
+  managedPath: string;
+  managedVersion: string | null;
+  managedSha256: string | null;
+  managedVersionCheck: OmpVersionCheck;
+  managedIntegrity: OmpIntegrityCheck;
+  managedReady: boolean;
+  external: OmpInstallation | null;
+  selectedPath: string | null;
   dataLocations: string[];
   detail: string;
 }
@@ -332,7 +333,7 @@ export interface MahikoApi {
     getSnapshot(): Promise<RuntimeSnapshot>;
     refresh(): Promise<RuntimeSnapshot>;
     getInstallation(): Promise<OmpInstallationSnapshot>;
-    installBundled(): Promise<OmpInstallationSnapshot>;
+    installOfficial(): Promise<OmpInstallationSnapshot>;
   };
   application: {
     openExternal(url: string): Promise<OperationResult>;
