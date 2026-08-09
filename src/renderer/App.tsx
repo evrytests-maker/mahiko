@@ -4,13 +4,13 @@ import { api } from "./api";
 import { applyAgentStreamEvent, createPreparingRun, nextActivityRunId } from "./activity";
 import { ActivityStream } from "./components/ActivityStream";
 import { FloatingWindow } from "./components/FloatingWindow";
-import { Composer, MessageBlock, StartupTranscript, type ComposerOverlay, type ThinkingLevel, type TranscriptMessage } from "./components/OmpChrome";
+import { Composer, MessageBlock, StartupTranscript, type ComposerNotice, type ComposerOverlay, type ThinkingLevel, type TranscriptMessage } from "./components/OmpChrome";
 import { OmpBootstrapOverlay, OmpSetupOverlay } from "./components/OmpPanels";
 import { CommandPalette, SettingsOverlay } from "./components/Overlays";
 import { CodingWorkbench, type WorkbenchTool } from "./components/CodingWorkbench";
 import { ProjectsPage } from "./components/Pages";
 import { TuiEscapeButton } from "./components/TuiControls";
-import { OmpUiDialog, type InteractiveOmpUiRequest } from "./components/OmpUiDialog";
+import { OmpUiDialog, type InteractiveOmpUiRequest, type OmpBrowserRequest } from "./components/OmpUiDialog";
 
 type TranscriptEntry = { type: "message"; message: TranscriptMessage } | { type: "activity"; run: ActivityRun };
 type WindowKind = "projects" | "main" | "tree" | "file";
@@ -60,14 +60,18 @@ export function App(): JSX.Element {
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [unseenEvents, setUnseenEvents] = useState(0);
   const [windows, setWindows] = useState<FloatingRecord[]>([]);
-  const [uiNotice, setUiNotice] = useState<string | null>(null);
+  const [uiNotice, setUiNoticeState] = useState<ComposerNotice | null>(null);
   const [ompUiRequest, setOmpUiRequest] = useState<InteractiveOmpUiRequest | null>(null);
+  const [ompBrowserRequest, setOmpBrowserRequest] = useState<OmpBrowserRequest | null>(null);
   const transcriptRef = useRef<HTMLDivElement>(null);
   const nearBottomRef = useRef(true);
   const mountedRef = useRef(true);
   const activeControllerRef = useRef<{ runId: string; controller: AbortController } | null>(null);
   const floatingOpenersRef = useRef<Map<string, HTMLElement>>(new Map());
   const working = activeRunId !== null;
+  const setUiNotice = useCallback((message: string, anchor: ComposerNotice["anchor"] = null) => {
+    setUiNoticeState({ message, anchor });
+  }, []);
 
   const openSettings = useCallback((tab = "Appearance", section?: string) => {
     setSettingsDestination({ tab, section });
@@ -111,6 +115,7 @@ export function App(): JSX.Element {
     }
     if (request.type === "cancel") {
       setOmpUiRequest((current) => current?.id === request.targetId ? null : current);
+      setOmpBrowserRequest(null);
       return;
     }
     if (request.type === "editor_text") { setComposer(request.text); return; }
@@ -118,13 +123,17 @@ export function App(): JSX.Element {
     if (request.type === "notify") { setUiNotice(request.message); return; }
     if (request.type === "status" && request.text) { setUiNotice(request.text); return; }
     if (request.type === "widget" && request.lines?.length) { setUiNotice(request.lines.join(" · ")); return; }
-    if (request.type === "open_url") setUiNotice(request.instructions || "OMP открыл защищённую страницу входа в системном браузере.");
+    if (request.type === "open_url") {
+      setOmpBrowserRequest(request);
+      setUiNotice(request.instructions || "OMP открыл защищённую страницу входа в системном браузере.");
+    }
   }), []);
 
   const respondToOmpUi = useCallback((response: OmpUiResponse) => {
     setOmpUiRequest(null);
+    setOmpBrowserRequest(null);
     void api.omp.respondUi(response).catch((error) => setUiNotice(messageOf(error)));
-  }, []);
+  }, [setUiNotice]);
 
   useEffect(() => {
     if (!settings || settings.inspectorWidth === workbenchWidth) return undefined;
@@ -197,14 +206,14 @@ export function App(): JSX.Element {
 
   const selectModel = useCallback(async (model: OmpModel) => {
     setSessionState((current) => current ? { ...current, model } : current);
-    setUiNotice(`Переключение на ${model.name}…`);
+    setUiNotice(`Переключение на ${model.name}…`, "model");
     try {
       const selected = await api.omp.setModel(model.provider, model.id);
       setSessionState((current) => current ? { ...current, model: selected } : current);
-      setUiNotice(`Модель: ${selected.name}`);
+      setUiNotice(`Модель: ${selected.name}`, "model");
     } catch (error) {
       try { setSessionState(await api.omp.getState()); } catch { /* Keep the last observed state when OMP is unavailable. */ }
-      setUiNotice(`Не удалось переключить модель: ${messageOf(error)}`);
+      setUiNotice(`Не удалось переключить модель: ${messageOf(error)}`, "model");
       throw error;
     }
   }, []);
@@ -216,18 +225,20 @@ export function App(): JSX.Element {
     // successfully selected `auto` label in this renderer until the next
     // external refresh while OMP continues to resolve each turn itself.
     setSessionState(observed && level === "auto" ? { ...observed, thinkingLevel: "auto" } : observed);
-  }, []);
+    setUiNotice(`Thinking: ${level}`, "reasoning");
+  }, [setUiNotice]);
 
   const toggleAutoCompact = useCallback(async (enabled: boolean) => {
     await api.omp.setAutoCompaction(enabled);
     setSessionState(await api.omp.getState());
-  }, []);
+    setUiNotice(`Автосжатие ${enabled ? "включено" : "выключено"}.`, "context");
+  }, [setUiNotice]);
 
   const compactNow = useCallback(async () => {
     const result = await api.omp.compact();
-    setUiNotice(result.message);
+    setUiNotice(result.message, "context");
     setSessionState(await api.omp.getState());
-  }, []);
+  }, [setUiNotice]);
 
   const chooseProject = useCallback(async () => {
     const path = await api.project.choose(); if (!path) return;
@@ -400,8 +411,7 @@ export function App(): JSX.Element {
             <div className="session-workspace minimal-session">
               <div className="transcript" ref={transcriptRef} onScroll={updateScrollPosition} aria-busy={working} aria-label="Транскрипт сессии"><div className="transcript-inner">{entries.length ? null : <StartupTranscript runtime={runtime} projectName={projectName} />}{entries.map((entry) => entry.type === "message" ? <MessageBlock key={entry.message.id} message={entry.message} /> : <ActivityStream key={entry.run.id} run={entry.run} onStop={() => activeControllerRef.current?.controller.abort()} onRetry={retryRun} />)}</div></div>
               {unseenEvents ? <button type="button" className="new-events-button" onClick={scrollToLatest}>↓ К новым событиям · {unseenEvents}</button> : null}
-              {uiNotice ? <button type="button" className="omp-notice" aria-label="Закрыть уведомление" onClick={() => setUiNotice(null)}><span>OMP</span>{uiNotice}<em>×</em></button> : null}
-              <Composer value={composer} onChange={setComposer} onSubmit={submitPrompt} working={working} projectName={projectName} runtime={runtime} sessionState={sessionState} models={models} onCommand={handleCommand} overlay={composerOverlay} onOverlayChange={setComposerOverlay} onSelectModel={selectModel} onSelectThinking={selectThinking} onToggleAutoCompact={toggleAutoCompact} onCompactNow={compactNow} onChooseProject={chooseProject} onRefreshRuntime={refreshRuntime} />
+              <Composer value={composer} onChange={setComposer} onSubmit={submitPrompt} working={working} projectName={projectName} runtime={runtime} sessionState={sessionState} models={models} notice={uiNotice} onDismissNotice={() => setUiNoticeState(null)} onCommand={handleCommand} overlay={composerOverlay} onOverlayChange={setComposerOverlay} onSelectModel={selectModel} onSelectThinking={selectThinking} onToggleAutoCompact={toggleAutoCompact} onCompactNow={compactNow} onChooseProject={chooseProject} onRefreshRuntime={refreshRuntime} />
             </div>
           </div>
         </section>
@@ -414,7 +424,7 @@ export function App(): JSX.Element {
       {settingsOpen ? <SettingsOverlay settings={settings} initialTab={settingsDestination.tab} initialSection={settingsDestination.section} onUpdate={updateSettings} onClose={() => setSettingsOpen(false)} /> : null}
       {setupOpen ? <OmpSetupOverlay runtime={runtime} onClose={closeSetup} onComplete={closeSetup} /> : null}
       {paletteOpen ? <CommandPalette onClose={() => setPaletteOpen(false)} onCommand={handleCommand} /> : null}
-      {ompUiRequest ? <OmpUiDialog request={ompUiRequest} onRespond={respondToOmpUi} onEscape={() => activeControllerRef.current?.controller.abort()} /> : null}
+      {ompUiRequest ? <OmpUiDialog request={ompUiRequest} browserRequest={ompBrowserRequest} onOpenExternal={(url) => api.application.openExternal(url)} onRespond={respondToOmpUi} /> : null}
     </div>
   );
 }

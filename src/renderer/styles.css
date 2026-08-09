@@ -3294,3 +3294,149 @@ textarea { resize: vertical; }
   .mcp-form-actions { align-items: stretch; flex-direction: column; }
   .mcp-form-actions button { width: 100%; }
 }
+
+/* Composer overlays stay attached to the control that opened them. */
+#model-picker-trigger { anchor-name: --mahiko-model-trigger; }
+#reasoning-picker-trigger { anchor-name: --mahiko-reasoning-trigger; }
+#compact-picker-trigger { anchor-name: --mahiko-context-trigger; }
+
+.composer-popover { right: auto; }
+.model-popover {
+  position-anchor: --mahiko-model-trigger;
+  left: anchor(left);
+}
+.reasoning-popover {
+  position-anchor: --mahiko-reasoning-trigger;
+  left: anchor(left);
+}
+.context-popover {
+  position-anchor: --mahiko-context-trigger;
+  right: auto;
+  left: anchor(left);
+}
+
+.composer-notice {
+  position: absolute;
+  z-index: 119;
+  bottom: calc(100% + 7px);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  width: max-content;
+  max-width: min(360px, calc(100vw - 30px));
+  min-height: 30px;
+  padding: 5px 7px;
+  border: 1px solid #40535c;
+  border-radius: 7px;
+  color: #aebac1;
+  background: #10191ef2;
+  box-shadow: 0 9px 26px #0009;
+  font: 9px/1.4 "DejaVu Sans Mono", "Liberation Mono", monospace;
+  animation: tui-window-in 140ms cubic-bezier(.2, .75, .2, 1);
+}
+.composer-notice > span { color: var(--accent); font-weight: 700; }
+.composer-notice > strong { overflow: hidden; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.composer-notice > button { width: 20px; height: 20px; border-radius: 4px; color: #74838d; }
+.composer-notice > button:hover { color: #edf2f4; background: #1d292f; }
+.composer-notice-model { position-anchor: --mahiko-model-trigger; left: anchor(left); }
+.composer-notice-reasoning { position-anchor: --mahiko-reasoning-trigger; left: anchor(left); }
+.composer-notice-context { position-anchor: --mahiko-context-trigger; right: auto; left: anchor(left); }
+.composer-notice-composer { right: 0; }
+
+/* Compact observed activity: all OMP events remain inspectable without a large banner. */
+.activity-stream-compact {
+  margin-bottom: 20px;
+  padding: 8px 10px 9px;
+  border: 1px solid #293740;
+  border-radius: 9px;
+  background: #0e1519;
+}
+.activity-stream-compact .activity-header {
+  min-height: 39px;
+  padding: 2px 1px 7px;
+  border-top: 0;
+}
+.activity-stream-compact .activity-heading { gap: 1px; }
+.activity-stream-compact .activity-thinking {
+  margin: 7px 0 3px;
+  overflow: hidden;
+  border: 1px solid #2c423f;
+  border-radius: 7px;
+  background: #0d1518;
+}
+.activity-stream-compact .activity-thinking > header { padding: 5px 8px; }
+.activity-stream-compact .activity-thinking summary { padding: 5px 8px; }
+.activity-stream-compact .activity-thinking pre { max-height: 160px; padding: 7px 8px 8px 23px; }
+.activity-stream-compact .activity-list { padding-top: 4px; }
+.activity-stream-compact .activity-event,
+.activity-stream-compact .activity-row-toggle,
+.activity-stream-compact .activity-row-static { min-height: 30px; }
+.activity-stream-compact .activity-row-toggle,
+.activity-stream-compact .activity-row-static { padding-block: 2px; }
+.activity-stream-compact .activity-actions { min-height: 31px; margin-top: 4px; padding-top: 5px; }
+
+/* Provider OAuth is a focused, localised task instead of a raw OMP prompt. */
+.omp-ui-overlay { z-index: 230; }
+.omp-auth-dialog {
+  width: min(520px, calc(100vw - 28px));
+  overflow: hidden;
+  border-color: #425861;
+  border-radius: 10px;
+  background: #10181d;
+  box-shadow: 0 24px 70px #000c;
+}
+.omp-auth-dialog .frame-title {
+  min-height: 34px;
+  padding: 9px 13px;
+  border-bottom: 1px solid #2d3b43;
+  color: #778791;
+  background: #121b20;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.omp-auth-dialog .dialog-content { padding: 16px; }
+.omp-auth-dialog h2 { margin: 0 0 12px; color: #e8eef1; font-size: 15px; }
+.auth-browser-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px 12px;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 10px;
+  border: 1px solid #2f4549;
+  border-radius: 7px;
+  background: #111f20;
+}
+.auth-browser-card strong { color: #cfe2dd; font-size: 10px; }
+.auth-browser-card p { margin: 3px 0 0; color: #788790; font-size: 9px; line-height: 1.5; }
+.auth-browser-card button { min-height: 29px; padding: 0 8px; border: 1px solid #466c64; border-radius: 5px; color: var(--accent); background: #132320; }
+.auth-browser-card button:hover { border-color: var(--accent); background: #18312c; }
+.auth-browser-card .field-error { grid-column: 1 / -1; color: var(--error); }
+.dialog-field { display: grid; gap: 6px; color: #a2afb7; font-size: 9px; }
+.dialog-field input {
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid #384a53;
+  border-radius: 6px;
+  outline: 0;
+  color: #e4ecef;
+  background: #0c1317;
+  font: 10px/1.4 "DejaVu Sans Mono", "Liberation Mono", monospace;
+}
+.dialog-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px #7dd3b612; }
+.dialog-hint { margin: 7px 0 0; color: #667680; font-size: 8px; line-height: 1.5; }
+.omp-auth-dialog .dialog-actions { margin-top: 13px; padding: 10px 0 0; border-top-color: #2a3840; }
+.omp-auth-dialog .dialog-actions button { min-height: 32px; border-radius: 5px; }
+.omp-auth-dialog .dialog-actions button:disabled { opacity: .42; cursor: default; }
+
+@media (max-width: 720px) {
+  .model-popover,
+  .reasoning-popover,
+  .context-popover { right: 0; left: 0; width: 100%; max-width: 100%; }
+  .composer-notice { right: 0; left: auto; max-width: 100%; }
+  .auth-browser-card { grid-template-columns: 1fr; }
+  .auth-browser-card button { justify-self: start; }
+}

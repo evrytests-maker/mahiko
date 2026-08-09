@@ -5,6 +5,7 @@ import { TuiEscapeButton } from "./TuiControls";
 
 export type ThinkingLevel = "off" | "auto" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
 export type ComposerOverlay = "model" | "reasoning" | "context" | null;
+export interface ComposerNotice { message: string; anchor?: "model" | "reasoning" | "context" | null }
 
 const THINKING_LEVELS: ReadonlyArray<{ value: ThinkingLevel; label: string; hint: string }> = [
   { value: "off", label: "off", hint: "без reasoning" },
@@ -65,6 +66,8 @@ interface ComposerProps {
   runtime: RuntimeSnapshot | null;
   sessionState: OmpSessionState | null;
   models: OmpModel[];
+  notice?: ComposerNotice | null;
+  onDismissNotice?(): void;
   onCommand(command: string): void;
   overlay: ComposerOverlay;
   onOverlayChange(overlay: ComposerOverlay): void;
@@ -76,7 +79,7 @@ interface ComposerProps {
   onRefreshRuntime?(): void;
 }
 
-export function Composer({ value, onChange, onSubmit, working, projectName, runtime, sessionState, models, onCommand, overlay, onOverlayChange, onSelectModel, onSelectThinking, onToggleAutoCompact, onCompactNow, onChooseProject, onRefreshRuntime }: ComposerProps): JSX.Element {
+export function Composer({ value, onChange, onSubmit, working, projectName, runtime, sessionState, models, notice, onDismissNotice, onCommand, overlay, onOverlayChange, onSelectModel, onSelectThinking, onToggleAutoCompact, onCompactNow, onChooseProject, onRefreshRuntime }: ComposerProps): JSX.Element {
   const [suggestionIndex, setSuggestionIndex] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -120,6 +123,7 @@ export function Composer({ value, onChange, onSubmit, working, projectName, runt
 
   return (
     <div ref={rootRef} className="composer-stack">
+      {notice ? <ComposerNoticeView notice={notice} onDismiss={onDismissNotice} /> : null}
       {overlay === "model" ? <ModelPicker models={models} selected={sessionState?.model} onSelect={(model) => { closeOverlay("model"); void Promise.resolve(onSelectModel(model)).catch(() => undefined); }} onClose={() => closeOverlay("model")} runtime={runtime} /> : null}
       {overlay === "reasoning" ? <ThinkingPicker model={sessionState?.model} selected={normalizeThinking(sessionState?.thinkingLevel)} onSelect={(level) => { void Promise.resolve(onSelectThinking(level)).then(() => closeOverlay("reasoning")); }} onClose={() => closeOverlay("reasoning")} /> : null}
       {overlay === "context" ? <CompactPicker state={sessionState} runtime={runtime} onToggleAuto={onToggleAutoCompact} onCompact={onCompactNow} onClose={() => closeOverlay("context")} /> : null}
@@ -137,6 +141,7 @@ export function Composer({ value, onChange, onSubmit, working, projectName, runt
           projectName={projectName}
           runtime={runtime}
           sessionState={sessionState}
+          activeOverlay={overlay}
           onModelClick={() => toggleOverlay("model")}
           onThinkingClick={() => toggleOverlay("reasoning")}
           onProjectClick={onChooseProject}
@@ -172,7 +177,7 @@ function ModelPicker({ models, selected, onSelect, onClose, runtime }: { models:
   };
 
   return (
-    <div ref={pickerRef} className="composer-popover model-popover compact-model-picker" role="listbox" aria-label="Выбор модели OMP" aria-activedescendant={models.length ? `model-option-${highlighted}` : undefined} tabIndex={-1} onKeyDown={onKeyDown}>
+    <div id="model-picker-popover" data-anchor-for="model-picker-trigger" ref={pickerRef} className="composer-popover model-popover compact-model-picker" role="listbox" aria-label="Выбор модели OMP" aria-activedescendant={models.length ? `model-option-${highlighted}` : undefined} tabIndex={-1} onKeyDown={onKeyDown}>
       <TuiEscapeButton className="window-corner" label="Закрыть выбор модели" onClick={onClose} />
       <div className="model-picker-title"><span>МОДЕЛЬ</span><span>{runtime?.rpc.ready ? "OMP" : "offline"}</span></div>
       {!models.length ? <div className="picker-empty">Модели не найдены</div> : null}
@@ -200,7 +205,7 @@ function ThinkingPicker({ model, selected, onSelect, onClose }: { model?: OmpMod
     else if (event.key === "Enter") { const next = levels[highlighted]; if (next) { event.preventDefault(); onSelect(next.value); } }
   };
   return (
-    <div ref={pickerRef} className="composer-popover reasoning-popover" role="listbox" aria-label="Уровень рассуждения OMP" aria-activedescendant={`thinking-option-${highlighted}`} tabIndex={-1} onKeyDown={onKeyDown}>
+    <div id="reasoning-picker-popover" data-anchor-for="reasoning-picker-trigger" ref={pickerRef} className="composer-popover reasoning-popover" role="listbox" aria-label="Уровень рассуждения OMP" aria-activedescendant={`thinking-option-${highlighted}`} tabIndex={-1} onKeyDown={onKeyDown}>
       <TuiEscapeButton className="window-corner" label="Закрыть выбор reasoning" onClick={onClose} />
       <div className="model-picker-title"><span>REASONING</span></div>
       {levels.map((level, index) => <button key={level.value} id={`thinking-option-${index}`} type="button" role="option" aria-label={`${level.label} — ${level.hint}`} aria-selected={level.value === selected} className={`${level.value === selected ? "selected " : ""}${index === highlighted ? "highlighted" : ""}`.trim()} onMouseEnter={() => setHighlighted(index)} onClick={() => onSelect(level.value)}><span>{index === highlighted ? "❯" : " "}</span><strong>{level.label}</strong><span>{level.hint}</span><em>{level.value === selected ? "●" : ""}</em></button>)}
@@ -226,7 +231,7 @@ function CompactPicker({ state, runtime, onToggleAuto, onCompact, onClose }: { s
     }
   };
   return (
-    <section ref={ref} className="composer-popover context-popover compact-picker" aria-label="Контекст OMP" tabIndex={-1} onKeyDown={(event: KeyboardEvent<HTMLElement>) => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); onClose(); } }}>
+    <section id="compact-picker-popover" data-anchor-for="compact-picker-trigger" ref={ref} className="composer-popover context-popover compact-picker" aria-label="Контекст OMP" tabIndex={-1} onKeyDown={(event: KeyboardEvent<HTMLElement>) => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); onClose(); } }}>
       <TuiEscapeButton className="window-corner" label="Закрыть контекст" onClick={onClose} />
       <header><span>КОНТЕКСТ</span><strong>{contextLabel(state)}</strong></header>
       <button type="button" className="context-setting-row" disabled={busy !== null} aria-pressed={state?.autoCompactionEnabled ?? false} aria-label="Автосжатие" onClick={() => void invoke("auto", () => onToggleAuto(!(state?.autoCompactionEnabled ?? false)))}><span><strong>Автосжатие</strong></span><em>{state?.autoCompactionEnabled ? "● ВКЛ" : "○ ВЫКЛ"}</em></button>
@@ -236,7 +241,7 @@ function CompactPicker({ state, runtime, onToggleAuto, onCompact, onClose }: { s
   );
 }
 
-export function StatusSegments({ projectName, runtime, sessionState, canRun = false, working = false, onModelClick, onThinkingClick, onProjectClick, onContextClick, onRuntimeClick, onRunClick }: { projectName: string; runtime: RuntimeSnapshot | null; sessionState?: OmpSessionState | null; canRun?: boolean; working?: boolean; onModelClick?(): void; onThinkingClick?(): void; onProjectClick?(): void; onContextClick?(): void; onRuntimeClick?(): void; onRunClick?(): void }): JSX.Element {
+export function StatusSegments({ projectName, runtime, sessionState, activeOverlay = null, canRun = false, working = false, onModelClick, onThinkingClick, onProjectClick, onContextClick, onRuntimeClick, onRunClick }: { projectName: string; runtime: RuntimeSnapshot | null; sessionState?: OmpSessionState | null; activeOverlay?: ComposerOverlay; canRun?: boolean; working?: boolean; onModelClick?(): void; onThinkingClick?(): void; onProjectClick?(): void; onContextClick?(): void; onRuntimeClick?(): void; onRunClick?(): void }): JSX.Element {
   const projectLabel = projectName === "проект не выбран" ? "выбрать проект" : projectName;
   const modelLabel = sessionState?.model?.name ?? "модель";
   const thinking = normalizeThinking(sessionState?.thinkingLevel);
@@ -244,14 +249,25 @@ export function StatusSegments({ projectName, runtime, sessionState, canRun = fa
     <div className="status-segments" aria-label="Строка состояния OMP">
       <span className="status-cluster">
         <span className="status-frame-start" aria-hidden="true">╭─</span><span className="status-mark">π</span><i>›</i>
-        {onModelClick ? <button id="model-picker-trigger" type="button" className="status-model status-action" aria-label={`Выбрать модель: ${modelLabel}`} onClick={onModelClick}>⬢ {modelLabel}</button> : <span className="status-model">⬢ {modelLabel}</span>}<span className="status-dot">·</span>
-        {onThinkingClick ? <button id="reasoning-picker-trigger" type="button" className="status-thinking status-action" aria-label={`Выбрать уровень рассуждения: ${thinking}`} onClick={onThinkingClick}>◕ {thinking}</button> : <span className="status-thinking">◕ {thinking}</span>}<i>›</i>
+        {onModelClick ? <button id="model-picker-trigger" type="button" className="status-model status-action" aria-label={`Выбрать модель: ${modelLabel}`} aria-controls="model-picker-popover" aria-haspopup="listbox" aria-expanded={activeOverlay === "model"} onClick={onModelClick}>⬢ {modelLabel}</button> : <span className="status-model">⬢ {modelLabel}</span>}<span className="status-dot">·</span>
+        {onThinkingClick ? <button id="reasoning-picker-trigger" type="button" className="status-thinking status-action" aria-label={`Выбрать уровень рассуждения: ${thinking}`} aria-controls="reasoning-picker-popover" aria-haspopup="listbox" aria-expanded={activeOverlay === "reasoning"} onClick={onThinkingClick}>◕ {thinking}</button> : <span className="status-thinking">◕ {thinking}</span>}<i>›</i>
         {onProjectClick ? <button type="button" className="status-path status-action" aria-label={`Выбрать проект. Текущий: ${projectName}`} onClick={onProjectClick}>▱ {projectLabel}</button> : <span className="status-path">▱ {projectLabel}</span>}<i>›</i>
-        {onContextClick ? <button id="compact-picker-trigger" type="button" className="status-context status-action" aria-label={`Открыть контекст. ${contextLabel(sessionState)}`} onClick={onContextClick}>{contextShort(sessionState)}</button> : <span className="status-context">{contextShort(sessionState)}</span>}
+        {onContextClick ? <button id="compact-picker-trigger" type="button" className="status-context status-action" aria-label={`Открыть контекст. ${contextLabel(sessionState)}`} aria-controls="compact-picker-popover" aria-haspopup="dialog" aria-expanded={activeOverlay === "context"} onClick={onContextClick}>{contextShort(sessionState)}</button> : <span className="status-context">{contextShort(sessionState)}</span>}
         {onRuntimeClick ? <button type="button" className={`${runtime?.rpc.ready ? "status-ready" : "status-warn"} status-action`} aria-label="Обновить read-only состояние OMP" onClick={onRuntimeClick}>⟲</button> : null}
         {!working && onRunClick ? <button type="button" className="status-run status-action" aria-label="Отправить сообщение" disabled={!canRun} onClick={onRunClick}>▶</button> : null}
       </span>
       <span className="status-rule" aria-hidden="true" /><span className="status-frame-end" aria-hidden="true">╮</span>
+    </div>
+  );
+}
+
+function ComposerNoticeView({ notice, onDismiss }: { notice: ComposerNotice; onDismiss?(): void }): JSX.Element {
+  const anchor = notice.anchor ?? null;
+  const anchorId = anchor === "model" ? "model-picker-trigger" : anchor === "reasoning" ? "reasoning-picker-trigger" : anchor === "context" ? "compact-picker-trigger" : "composer";
+  return (
+    <div role="status" aria-label="Уведомление OMP" data-anchor-for={anchorId} className={`composer-notice composer-notice-${anchor ?? "composer"}`}>
+      <span>OMP</span><strong>{notice.message}</strong>
+      {onDismiss ? <button type="button" aria-label="Закрыть уведомление" onClick={onDismiss}>×</button> : null}
     </div>
   );
 }

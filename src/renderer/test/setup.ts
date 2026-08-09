@@ -33,7 +33,7 @@ if (typeof window !== "undefined" && !window.mahiko) {
       getInstallation: async () => installationSnapshot(),
       installBundled: async () => installationSnapshot(),
     },
-    application: { quit: async () => undefined },
+    application: { openExternal: async () => ({ ok: true, message: "opened" }), quit: async () => undefined },
     project: {
       choose: async () => null,
       listFiles: async () => [{ path: "README.md", name: "README.md", kind: "file", depth: 0 }],

@@ -1,7 +1,7 @@
 {
   "name": "mahiko",
   "desktopName": "mahiko.desktop",
-  "version": "0.1.1-beta.1",
+  "version": "0.1.1-beta.2",
   "private": true,
   "description": "A buildable Electron integration workspace for OMP 17.2.9",
   "homepage": "https://github.com/evrytests-maker/mahiko",
@@ -81,6 +81,10 @@
         {
           "from": "vendor/omp/LICENSE",
           "to": "omp/LICENSE"
+        },
+        {
+          "from": "build/icon.png",
+          "to": "tray/icon.png"
         }
       ],
       "artifactName": "${productName}-${version}-${arch}.${ext}",
@@ -114,6 +118,10 @@
         {
           "from": "vendor/omp/LICENSE",
           "to": "omp/LICENSE"
+        },
+        {
+          "from": "build/icon.ico",
+          "to": "tray/icon.ico"
         }
       ],
       "target": [

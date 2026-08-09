@@ -288,7 +288,7 @@ export class OmpRpcClient {
     return () => this.uiListeners.delete(listener);
   }
 
-  respondUi(response: OmpUiResponse): void {
+  respondUi(response: OmpUiResponse): Promise<void> {
     const child = this.child;
     if (!child || !this.connected) throw new Error("OMP RPC недоступен");
     if (typeof response.id !== "string" || response.id.length < 1 || response.id.length > 256) throw new Error("Недопустимый OMP UI request id");
@@ -300,7 +300,9 @@ export class OmpRpcClient {
       : "confirmed" in response
         ? { type: "extension_ui_response", id: response.id, confirmed: response.confirmed }
         : { type: "extension_ui_response", id: response.id, cancelled: true };
-    child.stdin.write(`${JSON.stringify(payload)}\n`);
+    return new Promise((resolve, reject) => {
+      child.stdin.write(`${JSON.stringify(payload)}\n`, "utf8", (error) => error ? reject(error) : resolve());
+    });
   }
 
   dispose(): void {

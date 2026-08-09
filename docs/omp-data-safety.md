@@ -1,6 +1,6 @@
 # OMP executable replacement and data safety
 
-Mahiko `0.1.1-beta.1` packages the official OMP `17.2.9` executables. The first-run
+Mahiko `0.1.1-beta.2` packages the official OMP `17.2.9` executables. The first-run
 screen searches for an existing OMP installation and requires explicit consent
 before replacing it. The operation is intentionally file-only: no OMP data
 directory is ever removed, renamed or copied.

@@ -37,7 +37,7 @@ function stateFor(model = models[0], thinkingLevel: ThinkingLevel = "xhigh", aut
   };
 }
 
-function ComposerHarness({ onCommand = vi.fn(), working = false }: { onCommand?(command: string): void; working?: boolean }): JSX.Element {
+function ComposerHarness({ onCommand = vi.fn(), working = false, notice }: { onCommand?(command: string): void; working?: boolean; notice?: { message: string; anchor: "model" | "reasoning" | "context" } }): JSX.Element {
   const [value, setValue] = useState("");
   const [selected, setSelected] = useState(models[0]);
   const [thinking, setThinking] = useState<ThinkingLevel>("xhigh");
@@ -62,6 +62,8 @@ function ComposerHarness({ onCommand = vi.fn(), working = false }: { onCommand?(
       onCompactNow={vi.fn()}
       onChooseProject={vi.fn()}
       onRefreshRuntime={vi.fn()}
+      notice={notice}
+      onDismissNotice={vi.fn()}
     />
   );
 }
@@ -109,11 +111,17 @@ describe("OMP composer chrome", () => {
     const contextTrigger = screen.getByRole("button", { name: /Открыть контекст/i });
 
     await user.click(modelTrigger);
-    expect(screen.getByRole("listbox", { name: "Выбор модели OMP" })).toBeVisible();
+    const modelPicker = screen.getByRole("listbox", { name: "Выбор модели OMP" });
+    expect(modelPicker).toBeVisible();
+    expect(modelTrigger).toHaveAttribute("aria-controls", "model-picker-popover");
+    expect(modelTrigger).toHaveAttribute("aria-expanded", "true");
+    expect(modelPicker).toHaveAttribute("id", "model-picker-popover");
+    expect(modelPicker).toHaveAttribute("data-anchor-for", "model-picker-trigger");
     await user.click(thinkingTrigger);
     expect(screen.queryByRole("listbox", { name: "Выбор модели OMP" })).not.toBeInTheDocument();
 
     const reasoning = screen.getByRole("listbox", { name: "Уровень рассуждения OMP" });
+    expect(reasoning).toHaveAttribute("data-anchor-for", "reasoning-picker-trigger");
     expect(reasoning).toHaveFocus();
     await user.keyboard("{ArrowDown}{Enter}");
     await waitFor(() => expect(screen.getByRole("button", { name: "Выбрать уровень рассуждения: max" })).toHaveFocus());
@@ -121,10 +129,20 @@ describe("OMP composer chrome", () => {
     await user.click(contextTrigger);
     expect(screen.queryByRole("listbox", { name: "Уровень рассуждения OMP" })).not.toBeInTheDocument();
     expect(screen.getByLabelText("Контекст OMP")).toBeVisible();
+    expect(screen.getByLabelText("Контекст OMP")).toHaveAttribute("data-anchor-for", "compact-picker-trigger");
     expect(screen.getByRole("button", { name: "Автосжатие" })).toBeVisible();
     await user.keyboard("{Escape}");
     expect(screen.queryByLabelText("Контекст OMP")).not.toBeInTheDocument();
     await waitFor(() => expect(contextTrigger).toHaveFocus());
+  });
+
+  it("anchors a model confirmation directly to the model trigger", () => {
+    render(<ComposerHarness notice={{ message: "Модель: GPT-5.6 Sol", anchor: "model" }} />);
+
+    const notice = screen.getByRole("status", { name: "Уведомление OMP" });
+    expect(notice).toHaveTextContent("Модель: GPT-5.6 Sol");
+    expect(notice).toHaveAttribute("data-anchor-for", "model-picker-trigger");
+    expect(notice).toHaveClass("composer-notice", "composer-notice-model");
   });
 
   it("перемещается по компактному model picker и Escape возвращает фокус", async () => {

@@ -9,6 +9,7 @@ import { SettingsStore } from "./settings-store";
 import { browserWindowFor, embeddedBrowserFor } from "./browser-view";
 import { inspectOmpInstallation, installBundledOmp } from "./omp-installation";
 import { loadOmpLock } from "./omp-runtime";
+import { normalizeExternalUrl } from "./external-url";
 
 export function registerIpcHandlers(): void {
   const settings = new SettingsStore(join(app.getPath("userData"), "settings.json"));
@@ -18,7 +19,7 @@ export function registerIpcHandlers(): void {
     bundledExecutable,
     getSettings: () => settings.get(),
     accountPoolPath: join(app.getPath("userData"), "omp-account-pool.json"),
-    openExternal: async (url) => { await shell.openExternal(url); },
+    openExternal: async (url) => { await shell.openExternal(normalizeExternalUrl(url)); },
     onUiRequest: (request) => {
       for (const window of BrowserWindow.getAllWindows()) window.webContents.send("omp:ui-request", request);
     },
@@ -70,6 +71,10 @@ export function registerIpcHandlers(): void {
   });
   handle("application:quit", () => {
     setImmediate(() => app.quit());
+  });
+  handle("application:open-external", async (url: string) => {
+    await shell.openExternal(normalizeExternalUrl(url));
+    return { ok: true, message: "Системный браузер открыт" };
   });
   handle("project:choose", async () => {
     const result = await dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });

@@ -127,7 +127,8 @@ export function OmpSetupOverlay({ onClose, onComplete, runtime }: { onClose(): v
       await refreshProviders();
       setStatus(result.message);
     } catch (error) {
-      setStatus(`Ошибка авторизации: ${messageFrom(error)}`);
+      const message = messageFrom(error);
+      setStatus(/oauth callback cancell?ed|operation was cancelle?d/i.test(message) ? "Вход отменён." : `Ошибка авторизации: ${message}`);
     } finally {
       setLoginBusy(null);
     }

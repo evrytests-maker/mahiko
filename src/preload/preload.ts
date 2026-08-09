@@ -9,6 +9,7 @@ const api: MahikoApi = {
     installBundled: () => ipcRenderer.invoke("runtime:install-bundled"),
   },
   application: {
+    openExternal: (url) => ipcRenderer.invoke("application:open-external", url),
     quit: () => ipcRenderer.invoke("application:quit"),
   },
   project: {

@@ -71,11 +71,10 @@ export function ActivityStream({ run, onStop, onRetry }: ActivityStreamProps): J
   };
 
   return (
-    <section className={`activity-stream activity-run-${run.status}`} aria-label={`Ход выполнения: ${run.safeSummary}`}>
+    <section className={`activity-stream activity-stream-compact activity-run-${run.status}`} aria-label={`Ход выполнения: ${run.safeSummary}`}>
       <p className="sr-only" aria-live="polite" aria-atomic="true">{announcement}</p>
       <header className="activity-header">
         <div className="activity-heading">
-          <span className="activity-kicker">ACTIVITY · безопасная сводка</span>
           <strong>{currentEvent?.summary ?? run.safeSummary}</strong>
           <span className="activity-progress">{completedCount}/{plannedEvents.length} шагов · попытка {run.attempt + 1}</span>
         </div>

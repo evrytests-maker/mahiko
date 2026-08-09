@@ -44,6 +44,14 @@ describe("ActivityStream", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(1);
   });
 
+  it("keeps the activity summary compact and removes the internal safety label", () => {
+    render(<ActivityStream run={observedRun()} onStop={vi.fn()} onRetry={vi.fn()} />);
+
+    expect(screen.queryByText(/ACTIVITY · безопасная сводка/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: /Ход выполнения/i })).toHaveClass("activity-stream", "activity-stream-compact");
+    expect(screen.getByRole("region", { name: /Ход выполнения/i }).querySelector(".activity-heading strong")).toHaveTextContent("OMP завершил запрос");
+  });
+
   it("keeps a compact five-row rail and expands observed tool details", async () => {
     const user = userEvent.setup();
     render(<ActivityStream run={observedRun()} onStop={vi.fn()} onRetry={vi.fn()} />);

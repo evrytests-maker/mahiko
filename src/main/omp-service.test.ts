@@ -7,7 +7,9 @@ const fakes = vi.hoisted(() => ({
   start: vi.fn<() => Promise<void>>(),
   dispose: vi.fn(),
   request: vi.fn<(frame: Record<string, unknown>) => Promise<unknown>>(),
+  respondUi: vi.fn<(frame: Record<string, unknown>) => void>(),
   prompt: vi.fn<(message: string, options: { onEvent?(frame: Record<string, unknown>): void }) => Promise<{ text: string; eventTypes: string[]; cancelled: boolean }>>(),
+  uiListener: null as null | ((request: Record<string, unknown>) => void),
 }));
 
 vi.mock("./omp-runtime", () => ({
@@ -47,8 +49,13 @@ vi.mock("./omp-rpc-client", () => ({
       return fakes.prompt(message, options);
     }
 
-    onUiRequest(): () => void {
-      return () => undefined;
+    onUiRequest(listener: (request: Record<string, unknown>) => void): () => void {
+      fakes.uiListener = listener;
+      return () => { if (fakes.uiListener === listener) fakes.uiListener = null; };
+    }
+
+    respondUi(frame: Record<string, unknown>): void {
+      fakes.respondUi(frame);
     }
 
     dispose(): void {
@@ -64,6 +71,7 @@ import { discoverRuntime } from "./omp-runtime";
 describe("OmpService startup", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fakes.uiListener = null;
     fakes.prompt.mockResolvedValue({ text: "", eventTypes: [], cancelled: false });
     fakes.request.mockImplementation(async (frame) => frame.type === "get_state"
       ? {
@@ -120,6 +128,56 @@ describe("OmpService startup", () => {
     expect(discoverRuntime).toHaveBeenCalledTimes(1);
     expect(fakes.start).toHaveBeenCalledTimes(1);
     service.dispose();
+  });
+
+  it("surfaces an external-browser launch failure separately while preserving the OMP launch URL", async () => {
+    fakes.start.mockResolvedValue(undefined);
+    const onUiRequest = vi.fn();
+    const openExternal = vi.fn().mockRejectedValue(new Error("desktop portal denied the request"));
+    const service = new OmpService({
+      appRoot: "/tmp/mahiko",
+      getSettings: async () => ({ projectPath: "/tmp/project", theme: "dark", ompExecutableOverride: "" }),
+      accountPoolPath: "/tmp/nonexistent-mahiko-account-pool.json",
+      onUiRequest,
+      openExternal,
+    });
+    await service.getModels();
+    const openRequest = {
+      type: "open_url",
+      id: "oauth-open",
+      url: "https://example.com/oauth/authorize",
+      launchUrl: "http://127.0.0.1:4567/launch",
+      instructions: "Complete sign in",
+    };
+
+    fakes.uiListener?.(openRequest);
+
+    await vi.waitFor(() => expect(openExternal).toHaveBeenCalledWith(openRequest.url));
+    expect(onUiRequest).toHaveBeenCalledWith(openRequest);
+    await vi.waitFor(() => expect(onUiRequest).toHaveBeenCalledWith(expect.objectContaining({
+      type: "notify",
+      message: expect.stringMatching(/Не удалось открыть системный браузер.*desktop portal denied/i),
+    })));
+    service.dispose();
+  });
+
+  it("ends an active provider login immediately after its UI request is cancelled", async () => {
+    fakes.start.mockResolvedValue(undefined);
+    fakes.request.mockImplementation((frame) => frame.type === "login" ? new Promise(() => undefined) : Promise.resolve({ providers: [] }));
+    const service = new OmpService({
+      appRoot: "/tmp/mahiko",
+      getSettings: async () => ({ projectPath: "/tmp/project", theme: "dark", ompExecutableOverride: "" }),
+      accountPoolPath: "/tmp/nonexistent-mahiko-account-pool.json",
+      onUiRequest: () => undefined,
+      openExternal: async () => undefined,
+    });
+
+    void service.login("anthropic").catch(() => undefined);
+    await vi.waitFor(() => expect(fakes.request).toHaveBeenCalledWith(expect.objectContaining({ type: "login", providerId: "anthropic" })));
+    await service.respondUi({ id: "oauth-code", cancelled: true });
+
+    expect(fakes.respondUi).toHaveBeenCalledWith({ id: "oauth-code", cancelled: true });
+    expect(fakes.dispose).toHaveBeenCalledTimes(1);
   });
 
   it("allows first-run custom provider setup after version verification even when RPC is not ready yet", async () => {

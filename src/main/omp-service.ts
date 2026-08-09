@@ -51,12 +51,17 @@ export class OmpService {
   private removeUiListener: (() => void) | null = null;
   private lockPromise: Promise<OmpLock> | null = null;
   private activeRun: { id: string; controller: AbortController } | null = null;
+  private activeLogin: { providerId: string; cancelled: boolean } | null = null;
 
   constructor(private readonly options: OmpServiceOptions) {}
 
   dispose(): void {
     this.activeRun?.controller.abort();
     this.activeRun = null;
+    this.disposeClient();
+  }
+
+  private disposeClient(): void {
     this.removeUiListener?.();
     this.removeUiListener = null;
     this.client?.dispose();
@@ -183,15 +188,30 @@ export class OmpService {
 
   async login(providerId: string): Promise<OperationResult> {
     if (!providerId.trim()) throw new Error("providerId обязателен");
-    await (await this.ensureClient()).request({ type: "login", providerId }, 10 * 60_000);
-    const providers = await this.getLoginProviders();
-    const provider = providers.find((entry) => entry.id === providerId);
-    if (!provider?.authenticated) throw new Error(`OMP завершил login, но ${providerId} не помечен authenticated`);
-    return { ok: true, message: `OMP подтвердил вход: ${provider?.name ?? providerId}` };
+    if (this.activeRun) throw new Error("Сначала завершите активный запрос OMP, затем откройте авторизацию");
+    if (this.activeLogin) throw new Error(`Уже выполняется авторизация ${this.activeLogin.providerId}`);
+    const login = { providerId, cancelled: false };
+    this.activeLogin = login;
+    try {
+      await (await this.ensureClient()).request({ type: "login", providerId }, 10 * 60_000);
+      const providers = await this.getLoginProviders();
+      const provider = providers.find((entry) => entry.id === providerId);
+      if (!provider?.authenticated) throw new Error(`OMP завершил login, но ${providerId} не помечен authenticated`);
+      return { ok: true, message: `OMP подтвердил вход: ${provider?.name ?? providerId}` };
+    } catch (error) {
+      if (login.cancelled) throw new Error("OAuth callback cancelled", { cause: error });
+      throw error;
+    } finally {
+      if (this.activeLogin === login) this.activeLogin = null;
+    }
   }
 
   async respondUi(response: OmpUiResponse): Promise<OperationResult> {
-    (await this.ensureClient()).respondUi(response);
+    await (await this.ensureClient()).respondUi(response);
+    if ("cancelled" in response && response.cancelled && this.activeLogin) {
+      this.activeLogin.cancelled = true;
+      this.disposeClient();
+    }
     return { ok: true, message: "Ответ отправлен в OMP RPC" };
   }
 
@@ -294,6 +314,7 @@ export class OmpService {
     if (!normalized) throw new Error("Пустой запрос не может быть выполнен");
     if (normalized.length > 8_000) throw new Error("Запрос превышает лимит 8000 символов");
     if (this.activeRun) throw new Error("OMP уже выполняет другой запрос");
+    if (this.activeLogin) throw new Error(`Дождитесь завершения авторизации ${this.activeLogin.providerId}`);
     const client = await this.ensureClient();
     const controller = new AbortController();
     this.activeRun = { id: runId, controller };
@@ -370,8 +391,15 @@ export class OmpService {
     this.client = client;
     this.clientKey = key;
     this.removeUiListener = client.onUiRequest((request) => {
-      if (request.type === "open_url" && request.url.startsWith("https://")) void this.options.openExternal(request.url);
       this.options.onUiRequest(request);
+      if (request.type !== "open_url") return;
+      void this.options.openExternal(request.url).catch((error) => {
+        this.options.onUiRequest({
+          type: "notify",
+          id: `${request.id}:open-error`,
+          message: `Не удалось открыть системный браузер: ${safeErrorMessage(error)}. Используйте кнопку «Открыть браузер снова».`,
+        });
+      });
     });
     const promise = (async () => {
       try {

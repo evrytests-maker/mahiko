@@ -100,6 +100,19 @@ describe("OmpSetupOverlay", () => {
     expect(screen.getByText("Antigravity подключён")).toBeVisible();
   });
 
+  it("reports an RPC OAuth cancellation as a cancelled login instead of a version or timeout error", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(api.omp, "getAccountPool").mockResolvedValue({ configured: false, filePath: "/tmp/omp-account-pool.json", value: {}, requiresRestart: false });
+    vi.spyOn(api.omp, "getLoginProviders").mockResolvedValue([{ id: "anthropic", name: "Anthropic", available: true, authenticated: false }]);
+    vi.spyOn(api.omp, "login").mockRejectedValue(new Error("OAuth callback cancelled: TimeoutError: The operation timed out."));
+
+    render(<OmpSetupOverlay runtime={readyRuntime} onClose={vi.fn()} onComplete={vi.fn()} />);
+    await user.click(await screen.findByRole("button", { name: "Подключить Anthropic" }));
+
+    expect(await screen.findByText("Вход отменён.")).toBeVisible();
+    expect(screen.queryByText(/Ошибка авторизации|TimeoutError/i)).not.toBeInTheDocument();
+  });
+
   it("saves a custom provider through the real OMP API", async () => {
     const user = userEvent.setup();
     vi.spyOn(api.omp, "getAccountPool").mockResolvedValue({ configured: false, filePath: "/tmp/omp-account-pool.json", value: {}, requiresRestart: false });
