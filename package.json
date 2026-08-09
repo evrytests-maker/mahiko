@@ -1,7 +1,7 @@
 {
   "name": "mahiko",
   "desktopName": "mahiko.desktop",
-  "version": "0.1.1-beta.2",
+  "version": "0.1.1-beta.3",
   "private": true,
   "description": "A buildable Electron integration workspace for OMP 17.2.9",
   "homepage": "https://github.com/evrytests-maker/mahiko",
@@ -79,19 +79,27 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "tar.gz",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
@@ -107,7 +115,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
